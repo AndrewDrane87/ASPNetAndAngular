@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.Data;
 using API.Entities;
 using AutoMapper;
@@ -31,6 +32,23 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<MemberDto>> GetUser(string userName)
     {
         return await userRepository.GetMemberAsync(userName);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+    {
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var user = await userRepository.GetUserByUserNameAsync(username);
+
+        if (user == null) return NotFound();
+        //Use auto mapper to assign all properties from memberdto from client to the db object we just got
+        mapper.Map(memberUpdateDto, user);
+
+        if (await userRepository.SaveAllAsync())
+            return NoContent();
+        else
+            return BadRequest("Failed to update user");
+
     }
 }
 
