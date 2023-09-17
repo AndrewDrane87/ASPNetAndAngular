@@ -12,7 +12,7 @@ public class BuggyController : BaseApiController
     private readonly DataContext _context;
     public BuggyController(DataContext context)
     {
-
+        _context = context;
     }
 
     [Authorize]
@@ -26,10 +26,6 @@ public class BuggyController : BaseApiController
     public ActionResult<AppUser> GetNotFound()
     {
         return NotFound();
-        var thing = _context.Users.Find(-1);
-
-        if (thing == null) return NotFound();
-        else return thing;
     }
 
     [HttpGet("server-error")]

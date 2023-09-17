@@ -38,7 +38,7 @@
       dropdown
     >
     <img src="{{user.photoUrl || './assets/user.png'}}" alt="user photo">
-      <a dropdownToggle class="dropdown-toggle text-light text-decoration-none ms-2" >Welcome {{ user.username }}</a >
+      <a dropdownToggle class="dropdown-toggle text-light text-decoration-none ms-2" >Welcome {{ user.knownAs }}</a >
       <div class="dropdown-menu" *dropdownMenu>
         <a class="dropdown-item" routerLink="/member/edit">Edit Profile</a>
         <a class="dropdown-item" (click)="logout()">Logout</a>
