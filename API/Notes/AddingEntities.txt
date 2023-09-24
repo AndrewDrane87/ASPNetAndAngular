@@ -1,0 +1,16 @@
+API
+
+1. Create the entity object
+2. Add DbSet to data context
+3. DbContext - add builder to OnModelCreating if necessary (many to many relationships)
+4. Create Repository interface
+5. Create Dto
+6. Create the repository
+7. Add repository to application service extensions
+8. Add to automapper profiles (Helpers => Automapper)
+9. Create Controller
+
+Client
+
+1. Create the model (JSON to TS on the google)
+2. Create a service
