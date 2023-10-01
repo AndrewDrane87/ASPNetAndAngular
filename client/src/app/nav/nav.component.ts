@@ -20,6 +20,7 @@ export class NavComponent implements OnInit {
       next: () => {
         //Send to a useful page once logged in
         this.router.navigateByUrl('/members')
+        this.model = {};
       },
       
     });
