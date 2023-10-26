@@ -1,0 +1,27 @@
+<div>
+  <table class="mt-0" style="width: 100%" *ngIf="availableItems !== undefined">
+    <thead>
+      <td style="width: 20"></td>
+      <td style="width: 20%">Name</td>
+      <td style="width: 20%">Attack Value</td>
+      <td style="width: 20%">Armor Value</td>
+      <td style="width: 20%"></td>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of availableItems; let index = index">
+        <td>
+          <img class="img-circle" src="{{ item.photoUrl }}" alt="" />
+        </td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.attackValue === undefined ? 0:item.attackValue }}</td>
+        <td>{{ item.armorValue }}</td>
+        <td>
+          <button class="btn btn-primary" (click)="selectItem(item)">
+            Select
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-warning" (click)="cancel()">Cancel</button>
+</div>

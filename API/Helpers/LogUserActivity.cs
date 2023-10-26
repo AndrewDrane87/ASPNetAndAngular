@@ -10,7 +10,7 @@ public class LogUserActivity : IAsyncActionFilter
         if (!resultContext.HttpContext.User.Identity.IsAuthenticated) return;
 
         var userId = resultContext.HttpContext.User.GetUserId();
-        var uow = resultContext.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+        var uow = resultContext.HttpContext.RequestServices.GetRequiredService<UnitOfWork>();
         var user = await uow.UserRepository.GetUserByIDAsync(userId);
         user.LastActive = DateTime.UtcNow;
         await uow.Complete();

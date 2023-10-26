@@ -55,9 +55,11 @@ public class UserRepository : IUserRepository
 
     public async Task<AppUser> GetUserByUserNameAsync(string username)
     {
-        return await context.Users
+        var user = await context.Users
         .Include(p => p.Photos)
+        .Include(c => c.MyCharacters)
         .SingleOrDefaultAsync(x => x.UserName == username);
+        return user;
     }
 
     public async Task<string> GetUserGender(string username)

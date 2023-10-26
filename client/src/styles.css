@@ -7,6 +7,10 @@
     padding: 10px;
     border-radius: 4px;
   }
+
+  .bg-primary{
+    color: #333333;
+  }
   
   .nav-tabs > li.open, .member-tabset > .nav-tabs > li:hover {
     border-bottom: 4px solid #fbcdcf;

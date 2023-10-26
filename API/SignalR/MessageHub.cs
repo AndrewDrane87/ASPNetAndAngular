@@ -8,11 +8,11 @@ namespace API;
 [Authorize]
 public class MessageHub : Hub
 {
-    private readonly IUnitOfWork uow;
+    private readonly UnitOfWork uow;
     private readonly IMapper mapper;
     private readonly IHubContext<PresenceHub> presenceHub;
 
-    public MessageHub(IUnitOfWork uow, IMapper mapper, IHubContext<PresenceHub> presenceHub)
+    public MessageHub(UnitOfWork uow, IMapper mapper, IHubContext<PresenceHub> presenceHub)
     {
         this.uow = uow;
         this.mapper = mapper;

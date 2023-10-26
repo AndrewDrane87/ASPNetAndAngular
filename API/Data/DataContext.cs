@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using API.Entities.Adventure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Data;
 
 public class DataContext : IdentityDbContext<AppUser, AppRole, int,
-    IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>, 
+    IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
     IdentityRoleClaim<int>, IdentityUserToken<int>>
 {
     public DataContext(DbContextOptions options) : base(options)
@@ -15,13 +16,25 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
 
     public DbSet<UserLike> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
-    public DbSet<Group> Groups {get;set;}
-    public DbSet<Connection> Connections {get;set;}
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<Connection> Connections { get; set; }
+    public DbSet<PlayerCharacter> PlayerCharacters { get; set; }
+    public DbSet<Item> ItemCollection { get; set; }
+    public DbSet<ItemPhoto> ItemPhotoCollection { get; set; }
+    public DbSet<Adventure> Adventures { get; set; }
+    public DbSet<Location> Locations { get; set; }
+    public DbSet<LocationLink> LocationLink { get; set; }
+    public DbSet<NPC> NPCCollection { get; set; }
+    public DbSet<Dialogue> DialogueCollection { get; set; }
+    public DbSet<DialogueResponse> ResponseCollection { get; set; }
+    public DbSet<Container> ContainerCollection { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        
+
         builder.Entity<AppUser>()
         .HasMany(ur => ur.UserRoles)
         .WithOne(u => u.User)
@@ -58,6 +71,26 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
         .HasOne(u => u.Sender)
         .WithMany(m => m.MessagesSent)
         .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<LocationLink>().HasKey(e => new { e.FromId, e.ToId });
+        builder.Entity<LocationLink>()
+            .HasOne(e => e.FromLocation)
+            .WithMany(l => l.ConnectedToLocations)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<DialogueResponseLink>()
+            .HasOne(d => d.FromDialogue)
+            .WithMany(r => r.ChildResponses);
+        builder.Entity<DialogueResponseLink>()
+            .HasOne(r => r.FromResponse)
+            .WithOne(d => d.ChildDialogue);
+        
+        
+        builder.Entity<ContainerItem>()
+            .HasOne(e => e.Container)
+            .WithMany(i => i.Items)
+            .OnDelete(DeleteBehavior.Cascade);
+
 
     }
 }

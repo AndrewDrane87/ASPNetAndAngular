@@ -1,0 +1,30 @@
+<form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && register()" autocomplete="off">
+    <h2 class="text-center text-primary">Create New Character</h2>
+    <hr />
+  
+    <app-text-input
+      [formControl]="$any(registerForm.controls['name'])"
+      [label]="'Character Name'"
+    />
+  
+    <img class="mb-3 img-thumbnail" src="{{registerForm.value.photoUrl || 'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg'}}">
+    <app-text-input
+      [formControl]="$any(registerForm.controls['photoUrl'])"
+      [label]="'Photo Url'"
+    />
+
+    <!-- output a list of errors from the API -->
+    <div class="row" *ngIf="validationErrors">
+      <ul class="text-danger">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+  
+    <div class="text-center">
+      <button class="btn btn-success me-2" type="submit" [disabled]="!registerForm.valid">Create</button>
+      <button class="btn btn-default" type="button" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+  </form>
+  

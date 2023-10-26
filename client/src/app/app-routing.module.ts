@@ -14,6 +14,11 @@ import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.gu
 import { memberDetailedResolver } from './_resolvers/member-detailed.resolver';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { adminGuard } from './_guard/admin.guard';
+import { MyCharactersComponent } from './player/my-characters/my-characters.component';
+import { LocationManagementComponent } from './admin/adventure/location-management/location-management.component';
+import { locationManagementResolver } from './_resolvers/location-management.resolver';
+import { AdventureManagementComponent } from './admin/adventure/adventure-management/adventure-management.component';
+import { adventureManagementResolver } from './_resolvers/adventure-management.resolver';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,12 +30,15 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard],
     children: [
+      {path: 'playercharacters', component: MyCharactersComponent},
       {path: 'members', component: MemberListComponent},
       { path: 'members/:username', component: MemberDetailComponent, resolve:{member: memberDetailedResolver} },
       { path: 'member/edit', component: MemberEditComponent, canDeactivate:[preventUnsavedChangesGuard] },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
       { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard] },
+      { path: 'admin/location/:locationId', component: LocationManagementComponent, resolve:{location: locationManagementResolver} },
+      { path: 'admin/adventure/:adventureId', component: AdventureManagementComponent, resolve:{adventure: adventureManagementResolver} },
     ],
   },
 

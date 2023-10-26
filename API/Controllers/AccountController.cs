@@ -80,7 +80,8 @@ public class AccountController : BaseApiController
         };
         if (userDto.Username.ToLower() != "admin")
         {
-            userDto.PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain).Url;
+            var photo = user.Photos.FirstOrDefault(x => x.IsMain);
+            userDto.PhotoUrl = photo == null ? string.Empty : photo.Url;
             userDto.KnownAs = user.KnownAs;
             userDto.Gender = user.Gender;
         }

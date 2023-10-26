@@ -33,6 +33,27 @@ import { RolesModalComponent } from './modals/roles-modal/roles-modal.component'
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './_services/customRouteReuseStrategy';
 import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
+import { MyCharactersComponent } from './player/my-characters/my-characters.component';
+import { CreateCharacterComponent } from './player/create-character/create-character/create-character.component';
+import { ItemCardComponent } from './player/item-card/item-card.component';
+import { ItemManagerComponent } from './admin/items/item-manager/item-manager.component';
+import { ItemPhotoUploaderComponent } from './admin/items/item-photo-uploader/item-photo-uploader.component';
+import { CreateItemFormComponent } from './admin/items/create-item-form/create-item-form.component';
+import { ItemTypeSelectorComponent } from './admin/items/item-type-selector/item-type-selector.component';
+import { ImageSelectorComponent } from './image-selector/image-selector.component';
+import { CharacterDisplayComponent } from './player/character-display/character-display.component';
+import { ItemSelectorComponent } from './player/item-selector/item-selector.component';
+import { CreateAdventureFormComponent } from './admin/adventure/create-adventure-form/create-adventure-form.component';
+import { AdventureAdminComponent } from './admin/adventure/adventure-admin/adventure-admin.component';
+import { CreateLocationFormComponent } from './admin/adventure/create-location-form/create-location-form.component';
+import { CreateNameDescriptionComponent } from './admin/modals/create-name-description/create-name-description.component';
+import { OpenModalComponent } from './examples/modals/open-modal/open-modal.component';
+import { ExampleModalComponent } from './examples/modals/example-modal/example-modal.component';
+import { CreateLocationLinkComponent } from './admin/modals/create-location-link/create-location-link.component';
+import { LocationManagementComponent } from './admin/adventure/location-management/location-management.component';
+import { AdventureManagementComponent } from './admin/adventure/adventure-management/adventure-management.component';
+import { CreateNpcComponent } from './admin/modals/create-npc/create-npc.component';
+import { CreateContainerComponent } from './admin/modals/create-container/create-container.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +78,27 @@ import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.c
     PhotoManagementComponent,
     RolesModalComponent,
     ConfirmDialogComponent,
+    MyCharactersComponent,
+    CreateCharacterComponent,
+    ItemCardComponent,
+    ItemManagerComponent,
+    ItemPhotoUploaderComponent,
+    CreateItemFormComponent,
+    ItemTypeSelectorComponent,
+    ImageSelectorComponent,
+    CharacterDisplayComponent,
+    ItemSelectorComponent,
+    CreateAdventureFormComponent,
+    AdventureAdminComponent,
+    CreateLocationFormComponent,
+    CreateNameDescriptionComponent,
+    OpenModalComponent,
+    ExampleModalComponent,
+    CreateLocationLinkComponent,
+    LocationManagementComponent,
+    AdventureManagementComponent,
+    CreateNpcComponent,
+    CreateContainerComponent,
   ],
   imports: [
     BrowserModule,

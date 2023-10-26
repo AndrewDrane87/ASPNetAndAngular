@@ -1,0 +1,43 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="form.valid && onSubmit()"
+  autocomplete="off"
+  class="ms-2 mb-2 me-2"
+>
+  <h2 class="text-center text-primary">{{header}}</h2>
+  <hr />
+
+    <div>
+    <p class="mb-0">Name</p>
+    <app-text-input
+      [formControl]="$any(form.controls['name'])"
+      [label]="'Name'"
+    />
+
+    <p class="mb-0">Description</p>
+    <app-text-input
+      [formControl]="$any(form.controls['description'])"
+      [label]="'Description'"
+    />
+
+    <!-- output a list of errors from the API -->
+    <div class="row" *ngIf="validationErrors">
+      <ul class="text-danger">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <div class="text-center">
+      <button
+        class="btn btn-success me-2"
+        type="submit"
+        [disabled]="!form.valid"
+      >
+        Create
+      </button>
+      <button class="btn btn-default" type="button" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</form>

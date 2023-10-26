@@ -4,10 +4,11 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace API.Data.Migrations
+namespace API.Data.migrations
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
@@ -15,15 +16,19 @@ namespace API.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("API.AppUserRole", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -35,13 +40,13 @@ namespace API.Data.Migrations
             modelBuilder.Entity("API.Connection", b =>
                 {
                     b.Property<string>("ConnectionId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("GroupName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Username")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("ConnectionId");
 
@@ -50,23 +55,237 @@ namespace API.Data.Migrations
                     b.ToTable("Connections");
                 });
 
+            modelBuilder.Entity("API.Entities.Adventure.Adventure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("StartingLocationId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StartingLocationId");
+
+                    b.ToTable("Adventures");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Container", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("ContainerCollection");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.ContainerItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContainerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContainerId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ContainerItem");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Dialogue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DialogueCollection");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.DialogueResponse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ResponseCollection");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.DialogueResponseLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("FromDialogueId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("FromResponseId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ToDialogueId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ToResponseId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromDialogueId");
+
+                    b.HasIndex("FromResponseId");
+
+                    b.HasIndex("ToDialogueId");
+
+                    b.HasIndex("ToResponseId");
+
+                    b.ToTable("DialogueResponseLink");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AdventureId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdventureId");
+
+                    b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.LocationLink", b =>
+                {
+                    b.Property<int>("FromId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ToId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("FromLocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FromId", "ToId");
+
+                    b.HasIndex("FromLocationId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("LocationLink");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.NPC", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Caption")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("DialogueId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DialogueId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("NPCCollection");
+                });
+
             modelBuilder.Entity("API.Entities.AppRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -81,84 +300,86 @@ namespace API.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("City")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Country")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Gender")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Interests")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Introduction")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("KnownAs")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("LastActive")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LookingFor")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -176,19 +397,21 @@ namespace API.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AppUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsMain")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PublicId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Url")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -200,45 +423,108 @@ namespace API.Data.Migrations
             modelBuilder.Entity("API.Group", b =>
                 {
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Name");
 
                     b.ToTable("Groups");
                 });
 
+            modelBuilder.Entity("API.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArmorValue")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AttackValue")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DamageType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ItemType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Modifiers")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequiredLevel")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("ItemCollection");
+                });
+
+            modelBuilder.Entity("API.ItemPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ItemType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ItemPhotos");
+                });
+
             modelBuilder.Entity("API.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("DateRead")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("MessageSent")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("RecipientDeleted")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("RecipientId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("RecipientUsername")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<bool>("SenderDeleted")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("SenderId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("SenderUsername")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -249,13 +535,62 @@ namespace API.Data.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("API.PlayerCharacter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("BodyId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("FeetId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("HelmetId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LeftHandId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("RightHandId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("BodyId");
+
+                    b.HasIndex("FeetId");
+
+                    b.HasIndex("HelmetId");
+
+                    b.HasIndex("LeftHandId");
+
+                    b.HasIndex("RightHandId");
+
+                    b.ToTable("PlayerCharacters");
+                });
+
             modelBuilder.Entity("API.UserLike", b =>
                 {
                     b.Property<int>("SourceUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<int>("TargetUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("SourceUserId", "TargetUserId");
 
@@ -268,16 +603,18 @@ namespace API.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -290,16 +627,18 @@ namespace API.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -311,16 +650,16 @@ namespace API.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -332,16 +671,16 @@ namespace API.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -374,6 +713,102 @@ namespace API.Data.Migrations
                         .HasForeignKey("GroupName");
                 });
 
+            modelBuilder.Entity("API.Entities.Adventure.Adventure", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Location", "StartingLocation")
+                        .WithMany()
+                        .HasForeignKey("StartingLocationId");
+
+                    b.Navigation("StartingLocation");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Container", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Location", null)
+                        .WithMany("Containers")
+                        .HasForeignKey("LocationId");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.ContainerItem", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Container", "Container")
+                        .WithMany("Items")
+                        .HasForeignKey("ContainerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Container");
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.DialogueResponseLink", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Dialogue", "FromDialogue")
+                        .WithMany("ChildResponses")
+                        .HasForeignKey("FromDialogueId");
+
+                    b.HasOne("API.Entities.Adventure.DialogueResponse", "FromResponse")
+                        .WithMany("ChildDialogue")
+                        .HasForeignKey("FromResponseId");
+
+                    b.HasOne("API.Entities.Adventure.Dialogue", "ToDialogue")
+                        .WithMany()
+                        .HasForeignKey("ToDialogueId");
+
+                    b.HasOne("API.Entities.Adventure.DialogueResponse", "ToResponse")
+                        .WithMany()
+                        .HasForeignKey("ToResponseId");
+
+                    b.Navigation("FromDialogue");
+
+                    b.Navigation("FromResponse");
+
+                    b.Navigation("ToDialogue");
+
+                    b.Navigation("ToResponse");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Location", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Adventure", null)
+                        .WithMany("Locations")
+                        .HasForeignKey("AdventureId");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.LocationLink", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Location", "FromLocation")
+                        .WithMany("ConnectedToLocations")
+                        .HasForeignKey("FromLocationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("API.Entities.Adventure.Location", null)
+                        .WithMany("ConnectedFromLocations")
+                        .HasForeignKey("LocationId");
+
+                    b.Navigation("FromLocation");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.NPC", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Dialogue", "Dialogue")
+                        .WithMany()
+                        .HasForeignKey("DialogueId");
+
+                    b.HasOne("API.Entities.Adventure.Location", null)
+                        .WithMany("NPCs")
+                        .HasForeignKey("LocationId");
+
+                    b.Navigation("Dialogue");
+                });
+
             modelBuilder.Entity("API.Entities.Photo", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "AppUser")
@@ -383,6 +818,15 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("API.Item", b =>
+                {
+                    b.HasOne("API.ItemPhoto", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
+
+                    b.Navigation("Photo");
                 });
 
             modelBuilder.Entity("API.Message", b =>
@@ -402,6 +846,43 @@ namespace API.Data.Migrations
                     b.Navigation("Recipient");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("API.PlayerCharacter", b =>
+                {
+                    b.HasOne("API.Entities.AppUser", null)
+                        .WithMany("MyCharacters")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("API.Item", "Body")
+                        .WithMany()
+                        .HasForeignKey("BodyId");
+
+                    b.HasOne("API.Item", "Feet")
+                        .WithMany()
+                        .HasForeignKey("FeetId");
+
+                    b.HasOne("API.Item", "Helmet")
+                        .WithMany()
+                        .HasForeignKey("HelmetId");
+
+                    b.HasOne("API.Item", "LeftHand")
+                        .WithMany()
+                        .HasForeignKey("LeftHandId");
+
+                    b.HasOne("API.Item", "RightHand")
+                        .WithMany()
+                        .HasForeignKey("RightHandId");
+
+                    b.Navigation("Body");
+
+                    b.Navigation("Feet");
+
+                    b.Navigation("Helmet");
+
+                    b.Navigation("LeftHand");
+
+                    b.Navigation("RightHand");
                 });
 
             modelBuilder.Entity("API.UserLike", b =>
@@ -459,6 +940,37 @@ namespace API.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("API.Entities.Adventure.Adventure", b =>
+                {
+                    b.Navigation("Locations");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Container", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Dialogue", b =>
+                {
+                    b.Navigation("ChildResponses");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.DialogueResponse", b =>
+                {
+                    b.Navigation("ChildDialogue");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.Location", b =>
+                {
+                    b.Navigation("ConnectedFromLocations");
+
+                    b.Navigation("ConnectedToLocations");
+
+                    b.Navigation("Containers");
+
+                    b.Navigation("NPCs");
+                });
+
             modelBuilder.Entity("API.Entities.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -473,6 +985,8 @@ namespace API.Data.Migrations
                     b.Navigation("MessagesReceived");
 
                     b.Navigation("MessagesSent");
+
+                    b.Navigation("MyCharacters");
 
                     b.Navigation("Photos");
 

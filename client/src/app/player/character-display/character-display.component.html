@@ -1,0 +1,109 @@
+<div *ngIf="character !== undefined">
+  <div class="row mt-2">
+    <div class="col-1 mb-2 me-2"></div>
+    <div class="col-3 mb-2 me-2">
+      <div class="card" style="height: 100%">
+        <h4>{{ character.name }}</h4>
+        <div class="card-img-wrapper mb-3">
+          <img class="img-thumbnail" src="{{ character.photoUrl }}" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-3 card mb-2 me-2">
+      <div *ngIf="character.helmet !== undefined">
+        <app-item-card
+          [ItemName]="character.helmet.name"
+          [ArmorValue]="character.helmet.armorValue"
+          [PhotoUrl]="character.helmet.photoUrl"
+        ></app-item-card>
+        <button class="btn btn-primary ms-1 mb-1" (click)="itemSelector('helmets')">Select</button>
+      </div>
+    </div>
+
+    <!-- Character Stats -->
+    <div class="col-3 card mb-2 me-2">
+      <div class="row">
+        <h4>Character Stats</h4>
+      </div>
+      <div class="row">
+        <h5>Total Armor: {{ totalArmor }}</h5>
+      </div>
+      <div class="row">
+        <h5 class="col-6">Health {{currentHealth}}/{{totalHealth}}</h5>
+        <button [disabled]="currentHealth <=0" class="btn btn-danger col-2 me-1" (click)="decrementHealth()">-</button>
+        <button [disabled]="currentHealth >= totalHealth" class="btn btn-primary col-2" (click)="incrementHealth()">+</button>
+      </div>
+    </div>
+    <div class="col-1 mb-2 me-2"></div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="row mt-2">
+    <div class="col-1 mb-2 me-2"></div>
+
+    <!-- Left Hand -->
+    <div class="col-3 card mb-2 me-2">
+      <div *ngIf="character.leftHand !== undefined">
+        <app-item-card
+          [ItemName]="character.leftHand.name"
+          [ArmorValue]="character.leftHand.armorValue"
+          [AttackValue]="character.leftHand.attackValue"
+          [PhotoUrl]="character.leftHand.photoUrl"
+        ></app-item-card>
+        <button class="btn btn-primary ms-1 mb-1" (click)="itemSelector('leftHand')">Select</button>
+      </div>
+    </div>
+
+    <!-- Armor -->
+    <div class="col-3 card mb-2 me-2">
+      <div *ngIf="character.body !== undefined">
+        <app-item-card
+          [ItemName]="character.body.name"
+          [ArmorValue]="character.body.armorValue"
+          [PhotoUrl]="character.body.photoUrl"
+        ></app-item-card>
+        <button class="btn btn-primary ms-1 mb-1" (click)="itemSelector('armor')">Select</button>
+      </div>
+    </div>
+
+    <!-- Right Hand -->
+    <div class="col-3 card mb-2 me-2">
+      <div *ngIf="character.rightHand !== undefined">
+        <app-item-card
+          [ItemName]="character.rightHand.name"
+          [ArmorValue]="character.rightHand.armorValue"
+          [AttackValue]="character.rightHand.attackValue"
+          [PhotoUrl]="character.rightHand.photoUrl"
+        ></app-item-card>
+        <button class="btn btn-primary ms-1 mb-1" (click)="itemSelector('rightHand')">Select</button>
+      </div>
+    </div>
+
+    <div class="col-1 mb-2 me-2"></div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-1 mb-2 me-2"></div>
+
+    <!-- filler -->
+    <div class="col-3 card mb-2 me-2"></div>
+
+    <!-- Boots -->
+    <div class="col-3 card mb-2 me-2">
+      <div *ngIf="character.feet !== undefined">
+        <app-item-card
+          [ItemName]="character.feet.name"
+          [ArmorValue]="character.feet.armorValue"
+          [PhotoUrl]="character.feet.photoUrl"
+        ></app-item-card>
+        <button class="btn btn-primary ms-1 mb-1" (click)="itemSelector('boots')">Select</button>
+      </div>
+    </div>
+
+    <!-- Filler -->
+    <div class="col-3 card mb-2 me-2"></div>
+
+    <div class="col-1 mb-2 me-2"></div>
+  </div>
+</div>

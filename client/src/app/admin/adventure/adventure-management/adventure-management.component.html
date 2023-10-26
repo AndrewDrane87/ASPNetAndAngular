@@ -1,0 +1,61 @@
+<div *ngIf="adventure !== undefined">
+  <div class="row">
+    <div class="col-11">
+      <h5>{{ adventure.name }}</h5>
+      <span style="font-weight: bold">Description: </span
+      >{{ adventure.description }}
+    </div>
+    <div class="col-1 text-center">
+      <button
+        class="btn btn-danger col-1 mt-2 mb-2 btn-icon"
+        (click)="deleteAdventure()"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <tabset class="member-tabset">
+      <tab heading="Locations">
+        <div class="row mt-1">
+          <button
+            class="col-2 btn btn-primary"
+            (click)="createLocation(adventure)"
+          >
+            Add Location
+          </button>
+          <button
+            class="col-2 btn btn-primary ms-2"
+            (click)="createLocationLink()"
+          >
+            Add Location Link
+          </button>
+        </div>
+
+        <div
+          *ngFor="let l of adventure.locations"
+          class="element-div mt-1 ms-1"
+        >
+          <div class="row">
+            <div class="col-11" (click)="editLocation(l.id)">
+              <h5>{{ l.name }}</h5>
+              <span style="font-weight: bold">Description: </span
+              >{{ l.description }}
+            </div>
+            <div class="col-1 text-center">
+              <button
+                class="btn btn-danger col-1 mt-2 mb-2 btn-icon"
+                (click)="deleteLocation(l, adventure)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab heading="NPC's'"></tab>
+      <tab heading="Containers"></tab>
+      <tab heading="Enemies"></tab>
+    </tabset>
+  </div>
+</div>

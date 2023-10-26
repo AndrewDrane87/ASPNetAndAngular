@@ -6,10 +6,10 @@ namespace API;
 
 public class MessagesController : BaseApiController
 {
-    private readonly IUnitOfWork uow;
+    private readonly UnitOfWork uow;
     private readonly IMapper mapper;
 
-    public MessagesController(IUnitOfWork uow, IMapper mapper)
+    public MessagesController(UnitOfWork uow, IMapper mapper)
     {
         this.uow = uow;
         this.mapper = mapper;

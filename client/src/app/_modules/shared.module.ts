@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FileUploadModule } from 'ng2-file-upload';
@@ -17,6 +18,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     CommonModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    AccordionModule.forRoot(),
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
     }), // ToastrModule added
@@ -34,13 +36,14 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     BsDropdownModule,
     ToastrModule,
     TabsModule,
+    AccordionModule,
     NgxSpinnerModule,
     FileUploadModule,
     BsDatepickerModule,
     PaginationModule,
     ButtonsModule,
     TimeagoModule,
-    ModalModule
+    ModalModule,
   ],
 })
 export class SharedModule {}

@@ -11,11 +11,11 @@ namespace API.Controllers;
 [Authorize]
 public class UsersController : BaseApiController
 {
-    private readonly IUnitOfWork uow;
+    private readonly UnitOfWork uow;
     private readonly IMapper mapper;
     private readonly IPhotoService photoService;
 
-    public UsersController(IUnitOfWork uow, IMapper mapper, IPhotoService photoService)
+    public UsersController(UnitOfWork uow, IMapper mapper, IPhotoService photoService)
     {
         this.uow = uow;
         this.mapper = mapper;

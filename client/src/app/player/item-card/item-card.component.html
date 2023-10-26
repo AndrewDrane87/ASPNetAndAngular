@@ -1,0 +1,8 @@
+<div>
+  <h4>{{ ItemName }}</h4>
+  <div class="card-img-wrapper">
+    <img class="img-thumbnail" src="{{ PhotoUrl }}" alt="" />
+  </div>
+  <p *ngIf="AttackValue > 0">Attack Value: {{ AttackValue }}</p>  
+  <p *ngIf="ArmorValue > 0">Armor Value: {{ ArmorValue }}</p>
+</div>

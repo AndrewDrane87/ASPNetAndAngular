@@ -1,4 +1,6 @@
-﻿using API.Entities;
+﻿using API.DTOs.Admin;
+using API.Entities;
+using API.Entities.Adventure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +11,12 @@ namespace API.Controllers;
 public class AdminController : BaseApiController
 {
     private readonly UserManager<AppUser> userManager;
+    private readonly UnitOfWork uow;
 
-    public AdminController(UserManager<AppUser> userManager)
+    public AdminController(UserManager<AppUser> userManager, UnitOfWork uow)
     {
         this.userManager = userManager;
+        this.uow = uow;
     }
 
     [Authorize(Policy = "RequireAdminRole")]
@@ -56,4 +60,12 @@ public class AdminController : BaseApiController
     [HttpGet("photos-to-moderate")]
     public ActionResult GetPhotosForModeration() { return Ok("Admins or moderators can see this"); }
 
+    [HttpGet("get-adventure")]
+    public async Task<ActionResult<AdminAdventureDto>> GetAdventure([FromQuery] int id)
+    {
+        var adventure =  await uow.AdventureRepository.GetAdventureForAdmin(id);
+        if(adventure == null) return NotFound();
+
+        return Ok(adventure);
+    }
 }

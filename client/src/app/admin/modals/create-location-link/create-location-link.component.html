@@ -1,0 +1,73 @@
+<div class="container">
+  <div>
+    <div class="btn-group" dropdown>
+      <button
+        id="button-animated"
+        dropdownToggle
+        type="button"
+        class="btn btn-primary dropdown-toggle"
+        aria-controls="dropdown-animated"
+      >
+        {{
+          fromLocation === undefined
+            ? "Select a from location"
+            : fromLocation.name
+        }}<span class="caret"></span>
+      </button>
+      <ul
+        id="dropdown-animated"
+        *dropdownMenu
+        class="dropdown-menu"
+        role="menu"
+        aria-labelledby="button-animated"
+      >
+        <li role="menuitem" *ngFor="let l of locations">
+          <p *ngIf="l.name !== toLocation?.name" (click)="setFromLocation(l)">{{ l.name }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div>
+    <div class="btn-group" dropdown>
+      <button
+        id="button-animated"
+        dropdownToggle
+        type="button"
+        class="btn btn-primary dropdown-toggle"
+        aria-controls="dropdown-animated"
+      >
+        {{
+          toLocation === undefined ? "Select a to location" : toLocation.name
+        }}
+        <span class="caret"></span>
+      </button>
+      <ul
+        id="dropdown-animated"
+        *dropdownMenu
+        class="dropdown-menu"
+        role="menu"
+        aria-labelledby="button-animated"
+      >
+        <li role="menuitem" *ngFor="let l of locations">
+          <p *ngIf="l.name !== fromLocation?.name" (click)="setToLocation(l)">{{ l.name }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <label class="btn btn-primary" [(ngModel)]="linkMode"
+           btnRadio="Two-Way" tabindex="0" role="button">Two-Way</label>
+    <label class="btn btn-primary" [(ngModel)]="linkMode"
+           btnRadio="One-Way" tabindex="0" role="button">One-Way</label>
+  </div>
+
+
+
+  <div>
+    <button [disabled]="!toLocation || !fromLocation" class="btn btn-primary" (click)="submit()">
+      Submit
+    </button>
+  </div>
+</div>

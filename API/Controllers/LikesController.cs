@@ -5,9 +5,9 @@ namespace API;
 
 public class LikesController : BaseApiController
 {
-    private readonly IUnitOfWork uow;
+    private readonly UnitOfWork uow;
 
-    public LikesController(IUnitOfWork uow)
+    public LikesController(UnitOfWork uow)
     {
         this.uow = uow;
     }

@@ -1,0 +1,63 @@
+<form
+  [formGroup]="createItemForm"
+  (ngSubmit)="createItemForm.valid && onSubmit()"
+  autocomplete="off"
+>
+  <h2 class="text-center text-primary">Create New Item</h2>
+  <hr />
+
+  <div class="row">
+    <app-item-type-selector
+      (setItemTypeEvent)="setItemType($event)"
+    ></app-item-type-selector>
+  </div>
+  
+  <div [hidden]="!itemTypeSelected">
+    <p class="mb-0">Item Name</p>
+    <app-text-input
+      [formControl]="$any(createItemForm.controls['name'])"
+      [label]="'Item Name'"
+    />
+
+    <p [hidden]="attackValueDisabled" class="mb-0">Attack Value</p>
+    <app-text-input
+      [hidden]="attackValueDisabled"
+      [formControl]="$any(createItemForm.controls['attackValue'])"
+      [label]="'Attack Value'"
+    />
+
+    <p [hidden]="armorValueDisabled" class="mb-0">Armor Value</p>
+    <app-text-input
+      [hidden]="armorValueDisabled"
+      [formControl]="$any(createItemForm.controls['armorValue'])"
+      [label]="'Armor Value'"
+    />
+
+    <button class="btn btn-primary mb-2" type="button" (click)="openImageSelector()">
+      Select Image
+    </button>
+    <div class="ms-2" *ngIf="itemPhoto !== undefined">
+      <img src="{{ itemPhoto.url }}" alt="" />
+    </div>
+
+    <!-- output a list of errors from the API -->
+    <div class="row" *ngIf="validationErrors">
+      <ul class="text-danger">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <div class="text-center">
+      <button
+        class="btn btn-success me-2"
+        type="submit"
+        [disabled]="!createItemForm.valid || itemPhoto === undefined"
+      >
+        Create
+      </button>
+      <button class="btn btn-default" type="button" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,51 @@
+<form
+  [formGroup]="createAdventureForm"
+  (ngSubmit)="createAdventureForm.valid && onSubmit()"
+  autocomplete="off"
+>
+  <h2 class="text-center text-primary">Create New Item</h2>
+  <hr />
+
+    <div>
+    <p class="mb-0">Name</p>
+    <app-text-input
+      [formControl]="$any(createAdventureForm.controls['name'])"
+      [label]="'Name'"
+    />
+
+    <p class="mb-0">Description</p>
+    <app-text-input
+      [formControl]="$any(createAdventureForm.controls['description'])"
+      [label]="'Description'"
+    />
+
+    
+
+    <!-- <button class="btn btn-primary mb-2" type="button" (click)="openImageSelector()">
+      Select Image
+    </button>
+    <div class="ms-2" *ngIf="itemPhoto !== undefined">
+      <img src="{{ itemPhoto.url }}" alt="" />
+    </div> -->
+
+    <!-- output a list of errors from the API -->
+    <div class="row" *ngIf="validationErrors">
+      <ul class="text-danger">
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <div class="text-center">
+      <button
+        class="btn btn-success me-2"
+        type="submit"
+        [disabled]="!createAdventureForm.valid"
+      >
+        Create
+      </button>
+      <button class="btn btn-default" type="button" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</form>

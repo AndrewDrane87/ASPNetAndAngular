@@ -1,0 +1,38 @@
+<div class="btn-group mb-2" dropdown>
+    <button
+      id="button-basic"
+      dropdownToggle
+      type="button"
+      class="btn btn-primary dropdown-toggle"
+      aria-controls="dropdown-basic"
+    >
+      {{ itemType }}<span class="pointer"></span>
+    </button>
+    <ul
+      id="dropdown-basic"
+      *dropdownMenu
+      class="dropdown-menu"
+      role="menu"
+      aria-labelledby="button-basic"
+    >
+    <li role="menuitem" class="ms-2" (click)="setItemType('Helmet')">
+    Helmet
+    </li>
+    <li class="divider dropdown-divider"></li>  
+    <li role="menuitem" class="ms-2" (click)="setItemType('Sword')">
+        Sword
+      </li>
+      <li role="menuitem" class="ms-2" (click)="setItemType('Shield')">
+        Shield
+      </li>
+      <li class="divider dropdown-divider"></li>
+
+      <li role="menuitem" class="ms-2" (click)="setItemType('Staff')">
+        Staff
+      </li>
+      <li role="menuitem" class="ms-2" (click)="setItemType('Wand')">Wand</li>
+      <li class="divider dropdown-divider"></li>
+      <li role="menuitem" class="ms-2" (click)="setItemType('Armor')">Armor</li>
+      <li role="menuitem" class="ms-2" (click)="setItemType('Boots')">Boots</li>
+    </ul>
+  </div>

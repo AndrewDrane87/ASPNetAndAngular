@@ -19,7 +19,7 @@ export class NavComponent implements OnInit {
     this.accountService.login(this.model).subscribe({
       next: () => {
         //Send to a useful page once logged in
-        this.router.navigateByUrl('/members')
+        this.router.navigateByUrl('/playercharacters')
         this.model = {};
       },
       

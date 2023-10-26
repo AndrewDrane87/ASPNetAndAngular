@@ -1,0 +1,155 @@
+<tabset>
+  <tab heading="Items">
+    <accordion class="mt-3">
+      <accordion-group class="mb-1" heading="Helmets" (isOpenChange)="helmetsOpen($event)">
+        <table
+          class="mt-0"
+          style="width: 100%"
+          *ngIf="itemService.helmets !== undefined"
+        >
+          <thead>
+            <td style="width: 5%"></td>
+            <td style="width: 75%">Name</td>
+            <td style="width: 10%">Armor Value</td>
+            <td style="width: 10%"></td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let helmet of itemService.helmets; let index = index">
+              <td>
+                <img class="img-circle" src="{{ helmet.photoUrl }}" alt="" />
+              </td>
+              <td>{{ helmet.name }}</td>
+              <td>{{ helmet.armorValue }}</td>
+              <td>
+                <button class="btn btn-danger" (click)="deleteHelmet(helmet)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </accordion-group>
+
+      <accordion-group class="mb-1"  heading="Hand Items" (isOpenChange)="handItemsOpen($event)">
+        <table
+          class="mt-0"
+          style="width: 100%"
+          *ngIf="itemService.items !== undefined"
+        >
+          <thead>
+            <td style="width: 5%"></td>
+            <td style="width: 65%">Name</td>
+            <td style="width: 10%">Attack Value</td>
+            <td style="width: 10%">Armor Value</td>
+            <td style="width: 10%"></td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of itemService.items; let index = index">
+              <td>
+                <img class="img-circle" src="{{ item.photoUrl }}" alt="" />
+              </td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.attackValue }}</td>
+              <td>{{ item.armorValue }}</td>
+              <td>
+                <button class="btn btn-danger" (click)="deleteHandItem(item)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </accordion-group>
+
+      <accordion-group class="mb-1"  heading="Armor" (isOpenChange)="armorOpen($event)">
+        <table
+          class="mt-0"
+          style="width: 100%"
+          *ngIf="itemService.items !== undefined"
+        >
+          <thead>
+            <td style="width: 5%"></td>
+            <td style="width: 75%">Name</td>
+            <td style="width: 10%">Armor Value</td>
+            <td style="width: 10%"></td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let armor of itemService.armor; let index = index">
+              <td>
+                <img class="img-circle" src="{{ armor.photoUrl }}" alt="" />
+              </td>
+              <td>{{ armor.name }}</td>
+              <td>{{ armor.armorValue }}</td>
+              <td>
+                <button class="btn btn-danger" (click)="deleteArmor(armor)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </accordion-group>
+      <accordion-group class="mb-1"  heading="Boots" (isOpenChange)="bootsOpen($event)">
+        <table
+          class="mt-0"
+          style="width: 100%"
+          *ngIf="itemService.items !== undefined"
+        >
+          <thead>
+            <td style="width: 5%"></td>
+            <td style="width: 75%">Name</td>
+            <td style="width: 10%">Armor Value</td>
+            <td style="width: 10%"></td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let boot of itemService.boots; let index = index">
+              <td>
+                <img class="img-circle" src="{{ boot.photoUrl }}" alt="" />
+              </td>
+              <td>{{ boot.name }}</td>
+              <td>{{ boot.armorValue }}</td>
+              <td>
+                <button class="btn btn-danger" (click)="deleteBoot(boot)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </accordion-group>
+    </accordion>
+  </tab>
+  <tab heading="Create New Item">
+    <app-create-item-form></app-create-item-form>
+  </tab>
+  <tab heading="Image Collection"
+    ><button class="btn btn-primary mt-5 mb-2" (click)="refreshImages()">
+      Refresh
+    </button>
+    <div class="row">
+      <div
+        class="card card-img-wrapper col-2 me-2 mb-2"
+        *ngFor="let photo of itemPhotos"
+      >
+        <img
+          src="{{ photo.url || './assets/user.png' }}"
+          alt=""
+          class="card-img-top mt-2 mb-2"
+        />
+        <ul class="list-inline member-icons animate text-center">
+          <li class="list-inline-item">
+            <button class="btn btn-primary" (click)="deletePhoto(photo)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </li>
+        </ul>
+        <p>Type: {{ photo.itemType }}</p>
+      </div>
+    </div></tab
+  >
+  <tab heading="Image Uploader"
+    ><app-item-photo-uploader
+      (newImage)="newImage($event)"
+    ></app-item-photo-uploader
+  ></tab>
+</tabset>

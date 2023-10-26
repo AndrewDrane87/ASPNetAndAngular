@@ -1,0 +1,103 @@
+<div *ngIf="location !== undefined">
+  <div class="row">
+    <h1 class="col-10">{{ location.name }}</h1>
+    <button class="btn btn-dark col-2" (click)="backToAdventure()">
+      Back to adventure
+    </button>
+
+    <p class="ms-3">Description: {{ location.description }}</p>
+  </div>
+
+  <!-- NPC's -->
+  <div class="row mt-3">
+    <h3 class="col-10">NPCs</h3>
+    <button class="btn btn-dark col-2" (click)="createNpc()">
+      Add New NPC
+    </button>
+  </div>
+  <div *ngFor="let npc of location.npCs" class="element-div mt-1 ms-1">
+    <div class="row">
+      <div class="col-11">
+        <h5>{{ npc.name }}</h5>
+        <p><span style="font-weight: bold">Caption: </span>{{ npc.caption }}</p>
+      </div>
+      <div class="col-1 text-center">
+        <button
+          class="btn btn-danger col-1 mt-2 mb-2 btn-icon"
+          (click)="deleteNpc(npc)"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Containers -->
+  <div class="row mt-1">
+    <h3 class="col-10">Containers</h3>
+    <button class="btn btn-dark col-2" (click)="createContainer()">
+      Add New Container
+    </button>
+  </div>
+  <div *ngFor="let c of location.containers" class="element-div mt-1 ms-1">
+    <div class="row">
+    <div class="col-11">
+      <h5>{{ c.name }}</h5>
+      <button class="btn btn-dark" (click)="addItemToContainer(c)">Add Item</button>
+    </div>
+    <div class="col-1 text-center">
+      <button
+        class="btn btn-danger col-1 mt-2 mb-2 btn-icon"
+        (click)="deleteContainer(c)"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+    <table style="width: 100%;">
+      <thead>
+        <th style="width: 20%;">Name</th>
+        <th style="width: 15%;">Attack value</th>
+        <th style="width: 15%;">Armor value</th>
+        <th style="width: 15%;">Required Level</th>
+        <th style="width: 15%;">Modifiers</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of c.items" >
+          <td>{{i.name}}</td>
+          <td>{{i.attackValue}}</td>
+          <td>{{i.armorValue}}</td>
+          <td>{{i.requiredLevel}}</td>
+          <td>{{i.modifiers.length > 0 ? i.modifiers : 'None'}}</td>
+        </tr>
+
+      </tbody>
+       
+    </table>
+  </div>
+
+  <!-- Connected Locations -->
+  <div class="row mt-1">
+    <h3 class="col-10">Connected Locations</h3>
+    <!-- <button class="btn btn-dark col-2" (click)="createLocation()">Add New Location</button> -->
+  </div>
+  <div
+    *ngFor="let l of location.connectedLocations"
+    class="element-div mt-1 ms-1"
+  >
+    <div class="row">
+      <div class="col-11" (click)="editLocation(l.id)">
+        <h5>{{ l.name }}</h5>
+        <span style="font-weight: bold">Description: </span>{{ l.description }}
+      </div>
+      <div class="col-1 text-center">
+        <button
+          class="btn btn-danger col-1 mt-2 mb-2 btn-icon"
+          (click)="deleteLocation(l.id)"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
