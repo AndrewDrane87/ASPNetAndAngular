@@ -1,0 +1,17 @@
+<div *ngIf="npc !== undefined">
+  <div class="row">
+    <h1 class="col-10">{{ npc.name }}</h1>
+    <button class="btn btn-dark col-2" (click)="backToLocation()">
+      Back to location
+    </button>
+    <p class="ms-3">Caption: {{ npc.caption }}</p>
+  </div>
+
+  <app-dialogue-editor
+    [dialogue]="dialogue"
+    (addResponseRequest)="addResponse()"
+    (deleteResponseRequest)="deleteResponse($event)"
+    (responseSelectedEvent)="responseSelected($event)"
+    (backRequest)="backToPreviousDialogue()"
+  ></app-dialogue-editor>
+</div>

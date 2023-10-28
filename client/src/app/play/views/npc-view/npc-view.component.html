@@ -1,0 +1,19 @@
+<div *ngIf="npc">
+  <button class="btn btn-dark" (click)="backToLocation()">
+    Back to Location
+  </button>
+  <div class="mt-3">
+    <h1>{{ npc.name }}</h1>
+    <h5>{{ npc.dialogue.text }}</h5>
+  </div>
+
+  <div class="mt-3">
+    <div *ngFor="let r of npc.dialogue.responses">
+      <div class="col-3">
+        <div class="card m-1 text-center" (click)="responseSelected(r)">
+          <p>{{ r.text }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

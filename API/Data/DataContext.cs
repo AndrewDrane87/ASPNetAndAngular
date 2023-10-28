@@ -28,8 +28,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<Dialogue> DialogueCollection { get; set; }
     public DbSet<DialogueResponse> ResponseCollection { get; set; }
     public DbSet<Container> ContainerCollection { get; set; }
-
-
+    public DbSet<Interaction> Interactions { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -78,18 +77,11 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
             .WithMany(l => l.ConnectedToLocations)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<DialogueResponseLink>()
-            .HasOne(d => d.FromDialogue)
-            .WithMany(r => r.ChildResponses);
-        builder.Entity<DialogueResponseLink>()
-            .HasOne(r => r.FromResponse)
-            .WithOne(d => d.ChildDialogue);
-        
-        
         builder.Entity<ContainerItem>()
             .HasOne(e => e.Container)
             .WithMany(i => i.Items)
             .OnDelete(DeleteBehavior.Cascade);
+
 
 
     }

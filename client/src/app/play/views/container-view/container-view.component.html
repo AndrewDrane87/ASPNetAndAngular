@@ -1,0 +1,28 @@
+<div *ngIf="container">
+  <button class="btn btn-dark" (click)="backToLocation()">
+    Back to Location
+  </button>
+
+  <h1>{{ container.name }}</h1>
+
+  <div class="mt-3">
+    <div *ngFor="let i of container.items">
+      <div class="col-3">
+        <div class="card m-1 text-center" [tooltip]="itemData">
+          <ng-template #itemData>
+            <p>Required Level: {{ i.requiredLevel }}</p>
+            <p *ngIf="i.attackValue > 0">Attack: {{ i.attackValue }}</p>
+            <p *ngIf="i.armorValue > 0">Armor: {{ i.armorValue }}</p>
+            <p>
+              Modifiers: {{ i.modifiers.length > 0 ? i.modifiers : "None" }}
+            </p>
+            <p>Item Type: {{ i.itemType }}</p>
+            <p>Damage Type: {{ i.damageType }}</p>
+          </ng-template>
+          <p>{{ i.name }}</p>
+          <img src="{{ i.photoUrl }}" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

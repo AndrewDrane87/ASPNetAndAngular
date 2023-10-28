@@ -19,6 +19,13 @@ import { LocationManagementComponent } from './admin/adventure/location-manageme
 import { locationManagementResolver } from './_resolvers/location-management.resolver';
 import { AdventureManagementComponent } from './admin/adventure/adventure-management/adventure-management.component';
 import { adventureManagementResolver } from './_resolvers/adventure-management.resolver';
+import { NpcManagementComponent } from './admin/adventure/npc-management/npc-management.component';
+import { npcManagementResolver } from './_resolvers/npc-management.resolver';
+import { dialogueManagementResolver } from './_resolvers/dialogue-management.resolver';
+import { DialogueManagementComponent } from './admin/adventure/dialogue-management/dialogue-management.component';
+import { RegisterComponent } from './register/register.component';
+import { AdventureSelectionComponent } from './play/views/adventure-selection/adventure-selection.component';
+import { RunAdventureComponent } from './play/views/run-adventure/run-adventure.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -38,7 +45,12 @@ const routes: Routes = [
       { path: 'messages', component: MessagesComponent },
       { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard] },
       { path: 'admin/location/:locationId', component: LocationManagementComponent, resolve:{location: locationManagementResolver} },
+      { path: 'admin/npc/:npcId', component: NpcManagementComponent, resolve:{npc: npcManagementResolver} },
+      { path: 'admin/dialogue/:Id', component: DialogueManagementComponent, resolve:{dialogue: dialogueManagementResolver} },
       { path: 'admin/adventure/:adventureId', component: AdventureManagementComponent, resolve:{adventure: adventureManagementResolver} },
+      { path: 'play', component: AdventureSelectionComponent},
+      { path: 'register', component: RegisterComponent},
+      { path: 'adventure/:adventureId', component: RunAdventureComponent, resolve:{adventure: adventureManagementResolver} },
     ],
   },
 

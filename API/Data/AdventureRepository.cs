@@ -28,7 +28,7 @@ namespace API.Data
 
         public async Task<List<Adventure>> GetAvailableAdventures()
         {
-            return await context.Adventures.Include(l => l.Locations).ToListAsync();
+            return await context.Adventures.Include(l => l.Locations).Include(a => a.StartingLocation).ToListAsync();
         }
 
         public async Task<Adventure> GetAdventureForAdmin(int id)
@@ -56,6 +56,7 @@ namespace API.Data
             Location location = await context.Locations.Where(l => l.Id == id)
                 .Include(n => n.NPCs)
                 .Include(c => c.Containers).ThenInclude(i => i.Items).ThenInclude(i => i.Item).ThenInclude(p=> p.Photo)
+                .Include(i => i.Interactions)
                 .FirstOrDefaultAsync();
 
             if (location == null) return null;
@@ -80,21 +81,7 @@ namespace API.Data
             {
                 List<ItemDto> items = new List<ItemDto>();
                 foreach(ContainerItem i in c.Items)
-                {
-                    Item item = i.Item;
-                    items.Add(new ItemDto
-                    {
-                        Id = item.Id,
-                        Name = item.Name,
-                        RequiredLevel = item.RequiredLevel,
-                        PhotoUrl = item.Photo.Url,
-                        AttackValue = item.AttackValue,
-                        ArmorValue = item.ArmorValue,
-                        Modifiers = item.Modifiers,
-                        ItemType = item.ItemType,
-                        DamageType = item.DamageType,
-                    });
-                }
+                    items.Add(ItemDto.Convert(i.Item));
 
                 ContainerDto containerDto = new ContainerDto
                 {
@@ -115,10 +102,24 @@ namespace API.Data
                 Description = location.Description,
                 ConnectedLocations = connectedLocations,
                 NPCs = location.NPCs,
-                Containers = containers
+                Containers = containers,
+                Interactions = location.Interactions,
             };
 
             return locationDto;
+        }
+
+        public async Task<LocationDto> GetPlayerLocation(int id)
+        {
+            return await GetLocationById(id);
+        }
+
+        public async Task<ContainerDto> GetContainer(int id)
+        {
+            var container = await context.ContainerCollection
+                .Include(c => c.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return ContainerDto.Convert(container);
         }
 
         public async Task<Location> CreateLocation(NewLocationDto newLocation, int adventureId)
@@ -178,6 +179,45 @@ namespace API.Data
             return true;
         }
 
+        #endregion
+
+        #region Interaction CRUD
+        public async Task<Interaction> CreateInteraction(NewInteractionDto newInteractionDto)
+        {
+            Location location = await context.Locations.Include(l => l.Interactions).FirstOrDefaultAsync(l => l.Id == newInteractionDto.LocationId);
+            if (location == null) return null;
+
+            Interaction interaction = new Interaction
+            {
+                Name = newInteractionDto.Name,
+                Information = newInteractionDto.Information,
+            };
+
+            location.Interactions.Add(interaction);
+            return interaction;
+        }
+
+        public async Task<Interaction> GetInteraction(int id)
+        {
+            Interaction interaction = await context.Interactions.FirstOrDefaultAsync(i => i.Id == id);
+            if (interaction == null) return null;
+
+            return interaction;
+        }
+
+        public async Task<bool> DeleteInteraction(int id)
+        {
+            var interaction = await context.Interactions.FirstOrDefaultAsync(i => i.Id == id);
+            if(interaction == null) return false;
+
+            var location = await context.Locations.Include(l => l.Interactions).FirstOrDefaultAsync(l => l.Interactions.Contains(interaction));
+            if (location != null)
+                location.Interactions.Remove(interaction);
+
+            context.Interactions.Remove(interaction);
+            return true;
+            
+        }
         #endregion
     }
 }

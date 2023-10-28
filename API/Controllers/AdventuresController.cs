@@ -76,6 +76,16 @@ namespace API.Controllers
             return Ok(l);
         }
 
+        [HttpGet("get-player-location")]
+        public async Task<ActionResult<LocationDto>> GetPlayerLocation(int id)
+        {
+            LocationDto l = await uow.AdventureRepository.GetLocationById(id);
+            if (l == null) return BadRequest("That location does not exist");
+            return Ok(l);
+        }
+
+
+
         [HttpDelete("delete-location")]
         public async Task<ActionResult> DeleteLocation([FromQuery] int locationId, [FromQuery] int adventureId)
         {
@@ -109,14 +119,22 @@ namespace API.Controllers
             return containers;
         }
 
+        [HttpGet("get-container")]
+        public async Task<ActionResult<ContainerDto>> GetContainer([FromQuery] int id)
+        {
+            ContainerDto dto = await uow.AdventureRepository.GetContainer(id);
+            if (dto == null) return BadRequest("Could not find container");
+            return Ok(dto);
+        }
+
         [HttpPost("add-item-to-container")]
         public async Task<ActionResult<Container>> AddItemToContainer(int containerId, int itemId)
         {
             var container = await uow.ContainerRepository.AddItemToContainer(containerId, itemId);
 
-            if(container == null) return BadRequest("Container or item do not exist");
+            if (container == null) return BadRequest("Container or item do not exist");
 
-            if(await uow.Complete())
+            if (await uow.Complete())
                 return Ok(container);
 
             return BadRequest("Could not add item to container");
@@ -144,6 +162,39 @@ namespace API.Controllers
                 return Ok();
 
             return BadRequest("Failed to delete container");
+        }
+        #endregion
+
+        #region Interaction CRUD
+        [HttpPost("create-interaction")]
+        public async Task<ActionResult<Interaction>> CreateInteraction(NewInteractionDto newInteraction)
+        {
+            var interaction = await uow.AdventureRepository.CreateInteraction(newInteraction);
+            if (interaction == null) return BadRequest("Could not find location");
+
+            if (await uow.Complete())
+                return Ok(interaction);
+
+            return BadRequest("Failed to create interaction");
+        }
+
+        [HttpGet("get-interaction")]
+        public async Task<ActionResult<Interaction>> GetInteraction([FromQuery] int id)
+        {
+            var interaction = await uow.AdventureRepository.GetInteraction(id);
+            if (interaction == null) return NoContent();
+
+            return Ok(interaction);
+        }
+
+        [HttpDelete("delete-interaction")]
+        public async Task<ActionResult> DeleteInteraction(int id)
+        {
+            if (!await uow.AdventureRepository.DeleteInteraction(id)) return BadRequest("Could not delete interaction. It may not exist");
+            if (await uow.Complete())
+                return Ok();
+
+            return BadRequest("Failed to delete interaction");
         }
         #endregion
     }

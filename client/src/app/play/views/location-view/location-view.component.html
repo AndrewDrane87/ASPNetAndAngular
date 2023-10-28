@@ -1,0 +1,50 @@
+<div *ngIf="location">
+  <h1>{{ location.name }}</h1>
+
+  <div *ngIf="location.connectedLocations.length > 0">
+    <h3>Locations</h3>
+    <div *ngFor="let l of location?.connectedLocations">
+      <div class="col-3">
+        <div class="card m-1 text-center" (click)="locationSelected(l)">
+          <p>{{ l.name }}</p>
+          <p class="description">"{{ l.description }}""</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="mt-3" *ngIf="location.npCs.length > 0">
+      <h3>NPC's</h3>
+      <div *ngFor="let npc of location?.npCs">
+        <div class="col-3">
+          <div class="card m-1 text-center" (click)="npcSelected(npc)">
+            <p>{{ npc.name }}</p>
+            <p class="description">"{{ npc.caption }}""</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <div class="mt-3" *ngIf="location.containers.length > 0">
+    <h3>Containers</h3>
+    <div *ngFor="let c of location.containers">
+      <div class="col-3">
+        <div class="card m-1 text-center" (click)="containerSelected(c)">
+          <p>{{ c.name }}</p>
+          <p class="description">"{{ c.description }}""</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3" *ngIf="location.interactions.length > 0">
+    <h3>Interactions</h3>
+    <div *ngFor="let i of location.interactions">
+      <div class="col-3">
+        <div class="card m-1 text-center" (click)="interactionSelected(i)">
+          <p>{{ i.name }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

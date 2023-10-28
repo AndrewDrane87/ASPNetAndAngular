@@ -54,6 +54,16 @@ import { LocationManagementComponent } from './admin/adventure/location-manageme
 import { AdventureManagementComponent } from './admin/adventure/adventure-management/adventure-management.component';
 import { CreateNpcComponent } from './admin/modals/create-npc/create-npc.component';
 import { CreateContainerComponent } from './admin/modals/create-container/create-container.component';
+import { NpcManagementComponent } from './admin/adventure/npc-management/npc-management.component';
+import { DialogueManagementComponent } from './admin/adventure/dialogue-management/dialogue-management.component';
+import { CreateSingleTextComponent } from './admin/modals/create-single-text/create-single-text.component';
+import { DialogueEditorComponent } from './admin/adventure/dialogue-editor/dialogue-editor.component';
+import { LocationViewComponent } from './play/views/location-view/location-view.component';
+import { AdventureSelectionComponent } from './play/views/adventure-selection/adventure-selection.component';
+import { RunAdventureComponent } from './play/views/run-adventure/run-adventure.component';
+import { NpcViewComponent } from './play/views/npc-view/npc-view.component';
+import { ContainerViewComponent } from './play/views/container-view/container-view.component';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   declarations: [
@@ -99,6 +109,15 @@ import { CreateContainerComponent } from './admin/modals/create-container/create
     AdventureManagementComponent,
     CreateNpcComponent,
     CreateContainerComponent,
+    NpcManagementComponent,
+    DialogueManagementComponent,
+    CreateSingleTextComponent,
+    DialogueEditorComponent,
+    LocationViewComponent,
+    AdventureSelectionComponent,
+    RunAdventureComponent,
+    NpcViewComponent,
+    ContainerViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -108,6 +127,7 @@ import { CreateContainerComponent } from './admin/modals/create-container/create
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
+    TooltipModule.forRoot(),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

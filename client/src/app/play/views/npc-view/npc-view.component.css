@@ -1,0 +1,9 @@
+.card{
+    padding: .25rem;
+    height: 5rem;
+    cursor: pointer;
+}
+
+.description{
+    font-style: italic;
+}

@@ -1,0 +1,36 @@
+<div class="row mt-3">
+  <div class="row">
+    <div class="col-10">
+      <p>
+        <span style="font-weight: bold">Dialogue: </span>{{ dialogue?.text }}
+      </p>
+    </div>
+    
+    <div class="col-1">
+      <button class="btn btn-dark" (click)="back()">Back</button>
+    </div>
+    
+    <div class="col-1">
+      <button class="btn btn-dark" (click)="addResponse()"> Add Response </button>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3" *ngFor="let r of dialogue?.responses; let i = index">
+  <div class="row">
+    <div class="col-11" (click)="responseSelected(r)">
+      <p>
+        <span style="font-weight: bold">Response {{ i + 1 }}: </span
+        >{{ r.text }}
+      </p>
+    </div>
+    <div class="col-1 text-center">
+      <button
+        class="btn btn-danger col-1 mt-2 mb-2 btn-icon"
+        (click)="deleteResponse(r)"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace API.Entities.Adventure
 {
@@ -6,35 +7,25 @@ namespace API.Entities.Adventure
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public List<DialogueResponseLink> ChildResponses { get; set; }
+        public List<DialogueResponse> ChildResponses { get; set; }
+        public DialogueResponse ParentResponse { get; set; }
     }
 
     public class DialogueResponse
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public DialogueResponseLink ChildDialogue { get; set; }
     }
 
-    public class DialogueResponseLink
-    {
-        public int Id { get; set; }
-        
-        public Dialogue FromDialogue { get; set; }
-        public int? FromDialogueId { get; set; }
-        public DialogueResponse ToResponse { get; set; }
-        public int? ToResponseId { get; set; }
-
-        public Dialogue ToDialogue { get; set; }
-        public int? ToDialogueId { get; set; }
-        public DialogueResponse FromResponse { get; set; }
-        public int? FromResponseId { get; set; }
-    }
-
-    public class DialogDto
+    public class DialogueDto
     {
         public int Id { get; set; }
         public string Text { get; set; }
         public List<DialogueResponse> Responses { get; set; }
+
+        public static DialogueDto Convert(Dialogue d)
+        {
+            return new DialogueDto { Id = d.Id, Text = d.Text, Responses = d.ChildResponses };
+        }
     }
 }

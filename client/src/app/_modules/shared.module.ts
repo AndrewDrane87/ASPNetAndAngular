@@ -11,7 +11,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TimeagoModule } from 'ngx-timeago';
 import { ModalModule } from 'ngx-bootstrap/modal';
-
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 @NgModule({
   declarations: [],
   imports: [
@@ -31,6 +31,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     ButtonsModule.forRoot(),
     TimeagoModule.forRoot(),
     ModalModule.forRoot(),
+    TooltipModule.forRoot(),
   ],
   exports: [
     BsDropdownModule,

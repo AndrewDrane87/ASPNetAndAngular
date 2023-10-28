@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AdventureLocation, Container } from 'src/app/_models/Adventure';
-import { NPC } from 'src/app/_models/npc';
+import { Adventure, AdventureLocation, Container } from 'src/app/_models/Adventure';
+import { Dialogue, NPC } from 'src/app/_models/npc';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,20 +9,23 @@ import { environment } from 'src/environments/environment';
 })
 export class LocationService {
 baseUrl = environment.apiUrl;
+adminLocation : AdventureLocation |undefined;
+
   constructor(private http: HttpClient) { }
 
   getLocationDetail(locationId: number){
-    return this.http.get<AdventureLocation>(this.baseUrl + 'adventures/get-location?id=' + locationId);
-  }
+    var url = this.baseUrl + `adventures/get-location?id=${locationId}`;
 
-  createNPC(npc:NPC, locationId: number){
-    var url = this.baseUrl + 'npc/create';
-    return this.http.post<NPC>(url,{'locationId' : locationId,'name': npc.name, 'caption': npc.caption})
-  }
-
-  deleteNpc(npc: NPC){
-    var url = this.baseUrl + `npc/delete?id=${npc.id}`;
-    return this.http.delete(url);
+    return new Promise<AdventureLocation>((resolve, reject) => {
+      this.http.get<AdventureLocation>(url).subscribe({
+        next: (result) => {
+          if (result) {
+            this.adminLocation = result;
+            resolve(result);
+          }
+        },
+      });
+    });
   }
 
   createContainer(container: Container, locationId: number){
@@ -34,4 +37,16 @@ baseUrl = environment.apiUrl;
     var url = this.baseUrl + `adventures/delete-container?containerId=${container.id}`
     return this.http.delete(url);
   }
+
+  getPlayerLocation(id: number){
+    var url = this.baseUrl + `adventures/get-player-location?id=${id}`;
+    return this.http.get<AdventureLocation>(url);
+  }
+
+  getContainerById(id: number){
+    var url = this.baseUrl + `adventures/get-container?id=${id}`;
+    return this.http.get<Container>(url);
+  }
+
+  
 }

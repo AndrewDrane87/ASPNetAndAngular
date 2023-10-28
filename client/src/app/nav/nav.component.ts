@@ -31,4 +31,8 @@ export class NavComponent implements OnInit {
     //Send back home
     this.router.navigateByUrl('/')
   }
+
+  register(){
+    this.router.navigateByUrl('/register')
+  }
 }

@@ -1,0 +1,7 @@
+<div *ngIf="adventureService.adventures.length > 0">
+    <div class="mb-2" *ngFor="let a of adventureService.adventures">
+      <div class="card element-div" (click)="selectAdventure(a)">
+        <h3>{{a.name}}</h3>
+      </div>
+    </div>
+  </div>

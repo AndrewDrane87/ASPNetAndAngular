@@ -19,4 +19,11 @@
         public string Description { get; set; }
         public int LocationId { get; set; }
     }
+
+    public class NewInteractionDto
+    {
+        public int LocationId { get; set; }
+        public string Name { get; set; }
+        public string Information { get; set; }
+    }
 }

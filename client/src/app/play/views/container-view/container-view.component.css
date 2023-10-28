@@ -1,0 +1,14 @@
+.card{
+    padding: .25rem;
+    cursor: pointer;
+}
+
+.description{
+    font-style: italic;
+}
+
+img{
+    width: 10rem;
+    height: 10rem;
+    margin: auto;
+}

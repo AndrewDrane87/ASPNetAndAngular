@@ -38,7 +38,7 @@ namespace API.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult> Get([FromQuery]int id)
+        public async Task<ActionResult<NpcDto>> Get([FromQuery]int id)
         {
             var npc = await uow.NpcRepository.Get(id);
             if (npc == null) return BadRequest("Could not find npc");

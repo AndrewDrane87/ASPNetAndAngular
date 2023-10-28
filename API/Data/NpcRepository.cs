@@ -35,12 +35,35 @@ namespace API.Data
             return true;
         }
 
-        public async Task<NPC> Get(int id)
+        public async Task<NpcDto> Get(int id)
         {
             var npc = await context.NPCCollection.Include(d => d.Dialogue).FirstOrDefaultAsync(i => i.Id == id);
             if(npc == null) return null;
 
-            return npc;
+
+            Dialogue d = await context.DialogueCollection.Include(d => d.ChildResponses).FirstOrDefaultAsync(r => r.Id == npc.Dialogue.Id);
+            List<DialogueResponse> responses = new List<DialogueResponse>();
+            
+            foreach (DialogueResponse r in d.ChildResponses)
+                responses.Add(r);
+
+            DialogueDto dialogue = new DialogueDto
+            {
+                Id = d.Id,
+                Text = d.Text,
+                Responses = responses
+            };
+
+            NpcDto dto = new NpcDto
+            {
+                Id = npc.Id,
+                Name = npc.Name,
+                Caption = npc.Caption,
+                Dialogue = dialogue
+            };
+
+
+            return dto;
         }
     }
 }

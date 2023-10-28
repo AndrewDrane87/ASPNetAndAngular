@@ -1,0 +1,19 @@
+<app-location-view
+  *ngIf="currentView === 'location'"
+  [location]="location"
+  (locationSelectedEvent)="locationSelected($event)"
+  (npcSelectedEvent)="npcSelected($event)"
+  (containerSelectedEvent)="containerSelected($event)"
+></app-location-view>
+
+<app-npc-view
+  *ngIf="currentView === 'npc'"
+  [npc]="npc"
+  (responseSelectedEvent)="responseSelected($event)"
+  (backToLocationEvent)="backToLocation()"
+></app-npc-view>
+
+<app-container-view *ngIf="currentView === 'container'"
+[container]="container"
+(backToLocationEvent)="backToLocation()"
+></app-container-view>

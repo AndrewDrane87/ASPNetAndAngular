@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { AdventureLocation, Container } from 'src/app/_models/Adventure';
+import { AdventureLocation, Container, Interaction } from 'src/app/_models/Adventure';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 import { LocationService } from 'src/app/_services/adventures/locationService';
 import { CreateNameDescriptionComponent } from '../../modals/create-name-description/create-name-description.component';
 import { NPC } from 'src/app/_models/npc';
 import { CreateNpcComponent } from 'src/app/admin/modals/create-npc/create-npc.component';
 import { CreateContainerComponent } from '../../modals/create-container/create-container.component';
+import { NpcService } from 'src/app/_services/adventures/npc.service';
 
 @Component({
   selector: 'app-location-management',
@@ -25,7 +26,8 @@ export class LocationManagementComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private npcService:NpcService,
   ) {}
 
   ngOnInit(): void {
@@ -41,7 +43,7 @@ export class LocationManagementComponent implements OnInit {
 
   backToAdventure() {
     this.router.navigate([
-      'admin/adventure/' + this.adventureService.adminAdventure!.id,
+      'admin/location/' + this.adventureService.adminAdventure!.id,
     ]);
   }
 
@@ -71,7 +73,7 @@ export class LocationManagementComponent implements OnInit {
     return this.modalRef.onHidden!.subscribe(() => {
       if (this.modalRef?.content.result === true) {
         var npc = this.modalRef.content.value as NPC;
-        this.locationService.createNPC(npc, this.location!.id).subscribe({
+        this.npcService.createNPC(npc, this.location!.id).subscribe({
           next: (result) => {
             this.location?.npCs.push(result);
           },
@@ -81,14 +83,20 @@ export class LocationManagementComponent implements OnInit {
     });
   }
 
+  editNpc(id: number){
+    this.router.navigate([`admin/npc/${id}`]);
+  }
+
   deleteNpc(npc: NPC) {
-    this.locationService.deleteNpc(npc).subscribe({
+    this.npcService.deleteNpc(npc).subscribe({
       next: () => {
         this.toastr.success('Deleted npc');
         this.router.navigate(['admin/location/' + this.location!.id]);
       },
     });
   }
+
+  
 
   createContainer() {
     this.modalRef = this.modalService.show(CreateContainerComponent);
@@ -122,4 +130,12 @@ export class LocationManagementComponent implements OnInit {
   }
 
   addItemToContainer(container: Container) {}
+
+  createInteraction(){
+    this.toastr.error('Not implemented');
+  }
+
+  deleteInteraction(i : Interaction){
+    this.toastr.error('Not implemented');
+  }
 }

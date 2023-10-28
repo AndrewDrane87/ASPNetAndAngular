@@ -10,6 +10,7 @@ namespace API.DTOs.Adventure
         public List<NPC> NPCs { get; set; }
         public List<ConnectedLocationDto> ConnectedLocations { get; set; }
         public List<ContainerDto> Containers { get; set; }
+        public List<Interaction> Interactions { get; set; }
     }
 
     public class ConnectedLocationDto

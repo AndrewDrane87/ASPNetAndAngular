@@ -17,6 +17,7 @@ export interface AdventureLocation{
     npCs: NPC[],
     containers: Container[]
     connectedLocations: AdventureLocation[]
+    interactions: Interaction[]
 }
 
 export interface Container{
@@ -24,4 +25,11 @@ export interface Container{
     name: string;
     description: string;
     items: Item[];
+}
+
+export interface Interaction{
+    id: number,
+    name: string,
+    information: string
+    locationId: number
 }

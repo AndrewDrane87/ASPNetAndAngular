@@ -134,10 +134,15 @@ namespace API.Data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ParentResponseId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentResponseId");
 
                     b.ToTable("DialogueCollection");
                 });
@@ -150,15 +155,20 @@ namespace API.Data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("DialogueId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DialogueId");
+
                     b.ToTable("ResponseCollection");
                 });
 
-            modelBuilder.Entity("API.Entities.Adventure.DialogueResponseLink", b =>
+            modelBuilder.Entity("API.Entities.Adventure.Interaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -166,29 +176,20 @@ namespace API.Data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("FromDialogueId")
+                    b.Property<string>("Information")
+                        .HasColumnType("text");
+
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("FromResponseId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ToDialogueId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ToResponseId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FromDialogueId");
+                    b.HasIndex("LocationId");
 
-                    b.HasIndex("FromResponseId");
-
-                    b.HasIndex("ToDialogueId");
-
-                    b.HasIndex("ToResponseId");
-
-                    b.ToTable("DialogueResponseLink");
+                    b.ToTable("Interactions");
                 });
 
             modelBuilder.Entity("API.Entities.Adventure.Location", b =>
@@ -748,31 +749,29 @@ namespace API.Data.migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("API.Entities.Adventure.DialogueResponseLink", b =>
+            modelBuilder.Entity("API.Entities.Adventure.Dialogue", b =>
                 {
-                    b.HasOne("API.Entities.Adventure.Dialogue", "FromDialogue")
+                    b.HasOne("API.Entities.Adventure.DialogueResponse", "ParentResponse")
+                        .WithMany()
+                        .HasForeignKey("ParentResponseId");
+
+                    b.Navigation("ParentResponse");
+                });
+
+            modelBuilder.Entity("API.Entities.Adventure.DialogueResponse", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Dialogue", null)
                         .WithMany("ChildResponses")
-                        .HasForeignKey("FromDialogueId");
+                        .HasForeignKey("DialogueId");
+                });
 
-                    b.HasOne("API.Entities.Adventure.DialogueResponse", "FromResponse")
-                        .WithMany("ChildDialogue")
-                        .HasForeignKey("FromResponseId");
-
-                    b.HasOne("API.Entities.Adventure.Dialogue", "ToDialogue")
-                        .WithMany()
-                        .HasForeignKey("ToDialogueId");
-
-                    b.HasOne("API.Entities.Adventure.DialogueResponse", "ToResponse")
-                        .WithMany()
-                        .HasForeignKey("ToResponseId");
-
-                    b.Navigation("FromDialogue");
-
-                    b.Navigation("FromResponse");
-
-                    b.Navigation("ToDialogue");
-
-                    b.Navigation("ToResponse");
+            modelBuilder.Entity("API.Entities.Adventure.Interaction", b =>
+                {
+                    b.HasOne("API.Entities.Adventure.Location", null)
+                        .WithMany("Interactions")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("API.Entities.Adventure.Location", b =>
@@ -955,11 +954,6 @@ namespace API.Data.migrations
                     b.Navigation("ChildResponses");
                 });
 
-            modelBuilder.Entity("API.Entities.Adventure.DialogueResponse", b =>
-                {
-                    b.Navigation("ChildDialogue");
-                });
-
             modelBuilder.Entity("API.Entities.Adventure.Location", b =>
                 {
                     b.Navigation("ConnectedFromLocations");
@@ -967,6 +961,8 @@ namespace API.Data.migrations
                     b.Navigation("ConnectedToLocations");
 
                     b.Navigation("Containers");
+
+                    b.Navigation("Interactions");
 
                     b.Navigation("NPCs");
                 });

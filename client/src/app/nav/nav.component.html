@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
   <div class="container">
     <a class="navbar-brand" href="#" routerLink="/" routerLinkActive="active"
-      >My Angular App</a
+      >Mythos</a
     >
 
     <ul
@@ -16,26 +16,17 @@
         </li>
         
         <li class="nav-item">
-          <a class="nav-link" routerLink="/lists" routerLinkActive="active"
-            >Lists</a
+          <a class="nav-link" routerLink="/play" routerLinkActive="active"
+            >Play!</a
           >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/messages" routerLinkActive="active"
-            >Messages</a
-          >
-        </li>
+
         <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
           <a class="nav-link" routerLink="/admin" routerLinkActive="active"
             >Admin</a
           >
         </li>
       </ng-container>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/errors" routerLinkActive="active"
-          >Error</a
-        >
-      </li>
     </ul>
 
     <div
@@ -73,6 +64,7 @@
         name="password"
       />
       <button class="btn btn-success" type="submit">Login</button>
+      <button class="btn btn-success ms-1" type="button" (click)="register()">Register</button>
     </form>
   </div>
 </nav>
