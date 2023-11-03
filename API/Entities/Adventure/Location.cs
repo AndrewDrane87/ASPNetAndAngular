@@ -12,6 +12,8 @@ namespace API.Entities.Adventure
         public List<LocationLink> ConnectedFromLocations { get; set; }
         public List<Interaction> Interactions { get; set; }
         public List<Container> Containers { get; set; }
+        public List<ActionTrigger> Triggers { get; set; }
+        public List<Enemy> Enemies { get; set; }
     }
 
     public class LocationLink
@@ -27,5 +29,25 @@ namespace API.Entities.Adventure
         public string Name { get; set; }
         public string Information { get; set; }
         public int LocationId { get; set; }
+        public List<ActionTrigger> Triggers { get; set; }
+    }
+
+    public class LocationDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public List<NPC> NPCs { get; set; }
+        public List<ConnectedLocationDto> ConnectedLocations { get; set; }
+        public List<ContainerDto> Containers { get; set; }
+        public List<Interaction> Interactions { get; set; }
+        public List<ActionTrigger> Triggers { get; set; }
+    }
+
+    public class ConnectedLocationDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     }
 }

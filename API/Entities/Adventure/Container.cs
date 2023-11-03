@@ -6,6 +6,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public List<ContainerItem> Items { get; set; }
+        public List<ActionTrigger> Triggers { get; set; }
     }
 
     public class ContainerItem
@@ -24,6 +25,8 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public List<ItemDto> Items { get; set; }
+        public List<ActionTrigger> Triggers { get; set; }
+
         public static ContainerDto Convert(Container container)
         {
             ContainerDto dto = new ContainerDto

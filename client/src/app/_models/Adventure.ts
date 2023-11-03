@@ -1,3 +1,4 @@
+import { ActionTrigger } from "./actionTrigger";
 import { Item } from "./item";
 import { NPC } from "./npc";
 
@@ -18,6 +19,7 @@ export interface AdventureLocation{
     containers: Container[]
     connectedLocations: AdventureLocation[]
     interactions: Interaction[]
+    triggers: ActionTrigger[];
 }
 
 export interface Container{
@@ -28,8 +30,9 @@ export interface Container{
 }
 
 export interface Interaction{
-    id: number,
-    name: string,
-    information: string
-    locationId: number
+    id: number;
+    name: string;
+    information: string;
+    locationId: number;
+    triggers: ActionTrigger[];
 }

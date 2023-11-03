@@ -1,3 +1,5 @@
+import { ActionTrigger } from "./actionTrigger";
+
 export interface NPC{
     id: number;
     name:string;
@@ -15,4 +17,5 @@ export interface DialogueResponse{
     id: number;
     text: string;
     childDialogue: Dialogue;
+    triggers: ActionTrigger[];
 }

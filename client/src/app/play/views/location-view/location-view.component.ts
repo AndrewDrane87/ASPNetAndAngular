@@ -13,6 +13,7 @@ export class LocationViewComponent implements OnInit {
   @Output() locationSelectedEvent = new EventEmitter<AdventureLocation>();
   @Output() npcSelectedEvent = new EventEmitter<NPC>();
   @Output() containerSelectedEvent = new EventEmitter<Container>();
+  @Output() interactionSelectedEvent = new EventEmitter<Interaction>();
   constructor(private locationService: LocationService) {}
   ngOnInit(): void {}
 
@@ -29,6 +30,6 @@ export class LocationViewComponent implements OnInit {
   }
 
   interactionSelected(interaction: Interaction){
-    
+    this.interactionSelectedEvent.emit(interaction);
   }
 }

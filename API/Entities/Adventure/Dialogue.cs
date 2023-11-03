@@ -9,6 +9,7 @@ namespace API.Entities.Adventure
         public string Text { get; set; }
         public List<DialogueResponse> ChildResponses { get; set; }
         public DialogueResponse ParentResponse { get; set; }
+        public List<ActionTrigger> Triggers { get; set; }
     }
 
     public class DialogueResponse
@@ -22,6 +23,7 @@ namespace API.Entities.Adventure
         public int Id { get; set; }
         public string Text { get; set; }
         public List<DialogueResponse> Responses { get; set; }
+        public List<ActionTrigger> Triggers { get; set; }
 
         public static DialogueDto Convert(Dialogue d)
         {

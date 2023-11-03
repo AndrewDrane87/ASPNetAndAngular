@@ -1,10 +1,6 @@
-﻿using System.Linq;
-using System.Runtime.CompilerServices;
-using API.Data;
+﻿using API.Data;
 using API.DTOs.Items;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 
 namespace API;

@@ -29,6 +29,9 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<DialogueResponse> ResponseCollection { get; set; }
     public DbSet<Container> ContainerCollection { get; set; }
     public DbSet<Interaction> Interactions { get; set; }
+    public DbSet<ActionTrigger> Triggers { get; set; }
+    public DbSet<Enemy> EnemyCollection { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

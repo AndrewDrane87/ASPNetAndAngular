@@ -84,8 +84,6 @@ namespace API.Controllers
             return Ok(l);
         }
 
-
-
         [HttpDelete("delete-location")]
         public async Task<ActionResult> DeleteLocation([FromQuery] int locationId, [FromQuery] int adventureId)
         {
@@ -95,6 +93,35 @@ namespace API.Controllers
                     return Ok();
             }
             return BadRequest("Failed to delete location");
+        }
+        #endregion
+
+        #region Enemy CRUD
+        [HttpPost("create-enemy")]
+        public async Task<ActionResult<EnemyDto>> CreateEnemy([FromQuery] int locationId, Enemy enemy)
+        {
+            var e = await uow.EnemyRepository.CreateEnemy(enemy, locationId);
+            if (e == null) return BadRequest("Could not find location");
+
+            return Ok(e);
+        }
+
+        [HttpGet("get-enemy")]
+        public async Task<ActionResult<EnemyDto>> GetEnemy([FromQuery] int id)
+        {
+            var e = await uow.EnemyRepository.GetEnemyById(id);
+            if (e == null) return BadRequest("Could not find enemy");
+
+            return Ok(e);
+        }
+
+        [HttpGet("get-enemy-by-location")]
+        public async Task<ActionResult<List<EnemyDto>>> GetEnemyById([FromQuery] int id)
+        {
+            var e = await uow.EnemyRepository.GetEnemiesByLocation(id);
+            if (e == null) return BadRequest("Could not find location");
+
+            return Ok(e);
         }
         #endregion
 

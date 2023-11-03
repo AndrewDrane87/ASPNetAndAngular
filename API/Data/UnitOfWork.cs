@@ -25,6 +25,8 @@ public class UnitOfWork
     public NpcRepository NpcRepository => new NpcRepository(context, mapper);
     public DialogRepository DialogRepository => new DialogRepository(context, mapper);
     public ContainerRepository ContainerRepository => new ContainerRepository(context, mapper);
+    public EnemyRepository EnemyRepository => new EnemyRepository(context);
+
     public async Task<bool> Complete() 
     {
         var result = await context.SaveChangesAsync();

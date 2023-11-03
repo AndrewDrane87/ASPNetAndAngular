@@ -10,7 +10,6 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
-import { ListsComponent } from './lists/lists/lists.component';
 import { MessagesComponent } from './messages/messages/messages.component';
 import { SharedModule } from './_modules/shared.module';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
@@ -64,6 +63,10 @@ import { RunAdventureComponent } from './play/views/run-adventure/run-adventure.
 import { NpcViewComponent } from './play/views/npc-view/npc-view.component';
 import { ContainerViewComponent } from './play/views/container-view/container-view.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { InteractionModalComponent } from './play/modals/interaction-modal/interaction-modal.component';
+import { ChallengeModalComponent } from './play/modals/challenge-modal/challenge-modal.component';
+import { InformationModalComponent } from './play/modals/information-modal/information-modal.component';
+import { DamageCalculatorComponent } from './admin/damage-calculator/damage-calculator.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +75,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     HomeComponent,
     RegisterComponent,
     MemberListComponent,
-    ListsComponent,
     MessagesComponent,
     TestErrorComponent,
     NotFoundComponent,
@@ -118,6 +120,10 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     RunAdventureComponent,
     NpcViewComponent,
     ContainerViewComponent,
+    InteractionModalComponent,
+    ChallengeModalComponent,
+    InformationModalComponent,
+    DamageCalculatorComponent,
   ],
   imports: [
     BrowserModule,

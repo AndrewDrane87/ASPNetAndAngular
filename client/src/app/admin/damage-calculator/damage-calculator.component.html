@@ -1,0 +1,102 @@
+<div class="btn-group">
+  <label
+    class="btn btn-dark"
+    [(ngModel)]="radioModel"
+    btnRadio="d4"
+    tabindex="0"
+    role="button"
+    >D4</label
+  >
+  <label
+    class="btn btn-dark"
+    [(ngModel)]="radioModel"
+    btnRadio="d6"
+    tabindex="0"
+    role="button"
+    >D6</label
+  >
+
+  <label
+    class="btn btn-dark"
+    [(ngModel)]="radioModel"
+    btnRadio="d8"
+    tabindex="0"
+    role="button"
+    >D8</label
+  >
+
+  <label
+    class="btn btn-dark"
+    [(ngModel)]="radioModel"
+    btnRadio="d10"
+    tabindex="0"
+    role="button"
+    >D10</label
+  >
+
+  <label
+    class="btn btn-dark"
+    [(ngModel)]="radioModel"
+    btnRadio="d12"
+    tabindex="0"
+    role="button"
+    >D12</label
+  >
+
+  <label
+    class="btn btn-dark"
+    [(ngModel)]="radioModel"
+    btnRadio="none"
+    tabindex="0"
+    role="button"
+    >None</label
+  >
+</div>
+
+<div class="row mt-2">
+  <div class="col-2 text-center">
+    <p class="mb-0">Min Attack</p>
+    <input type="number" [(ngModel)]="minAttack" />
+  </div>
+  <div class="col-2 text-center">
+    <p class="mb-0">Max Attack</p>
+    <input type="number" [(ngModel)]="maxAttack" />
+  </div>
+  <div class="col-2 text-center">
+    <p class="mb-0">Min Health</p>
+    <input type="number" [(ngModel)]="minHealth"/>
+  </div>
+  <div class="col-2 text-center">
+    <p class="mb-0">Max Health</p>
+    <input type="number" [(ngModel)]="maxHealth" />
+  </div>
+  <div class="col-2 text-center">
+    <p class="mb-0">Min Armor</p>
+    <input type="number" [(ngModel)]="minArmor" />
+  </div>
+  <div class="col-2 text-center">
+    <p class="mb-0">Max Armor</p>
+    <input type="number" [(ngModel)]="maxArmor" />
+  </div>
+</div>
+
+<div class="mt-2">
+  <button class="btn btn-dark" (click)="submit()">Calculate</button>
+</div>
+
+<table class="mt-2" style="width: 100%">
+  <thead>
+    <th style="width: 25%">Base Attack</th>
+    <th style="width: 25%">Defender Health</th>
+    <th style="width: 25%">Defender Armor</th>
+    <th style="width: 25%">Average Rounds</th>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of damageData">
+      <td>{{ r.baseAttack }}</td>
+      <td>{{ r.defenderHealth }}</td>
+      <td>{{ r.defenderArmor }}</td>
+      <td>{{ r.averageRounds }}</td>
+    </tr>
+  </tbody>
+</table>

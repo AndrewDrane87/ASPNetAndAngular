@@ -51,49 +51,17 @@ namespace API.Data
         #region Location Crud
         public async Task<LocationDto> GetLocationById(int id)
         {
-            var links = await context.LocationLink.Where(l => l.FromId == id).ToListAsync();
-
             Location location = await context.Locations.Where(l => l.Id == id)
                 .Include(n => n.NPCs)
                 .Include(c => c.Containers).ThenInclude(i => i.Items).ThenInclude(i => i.Item).ThenInclude(p=> p.Photo)
                 .Include(i => i.Interactions)
+                .Include(t => t.Triggers)
                 .FirstOrDefaultAsync();
 
             if (location == null) return null;
 
-            List<ConnectedLocationDto> connectedLocations = new List<ConnectedLocationDto>();
-
-            foreach (LocationLink link in links)
-            {
-                Location to = await context.Locations.Where(l => l.Id == link.ToId).FirstOrDefaultAsync();
-                if (to == null) return null;
-
-                connectedLocations.Add(new ConnectedLocationDto
-                {
-                    Id = to.Id,
-                    Name = to.Name,
-                    Description = to.Description
-                });
-            }
-
-            List<ContainerDto> containers = new List<ContainerDto>();
-            foreach (Container c in location.Containers)
-            {
-                List<ItemDto> items = new List<ItemDto>();
-                foreach(ContainerItem i in c.Items)
-                    items.Add(ItemDto.Convert(i.Item));
-
-                ContainerDto containerDto = new ContainerDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description,
-                    Items = items
-                };
-
-
-                containers.Add(containerDto);
-            }
+            List<ConnectedLocationDto> connectedLocations = await buildConnectedLocationList(id);
+            List<ContainerDto> containers = buildContainerList(location.Containers);
 
             var locationDto = new LocationDto
             {
@@ -104,6 +72,7 @@ namespace API.Data
                 NPCs = location.NPCs,
                 Containers = containers,
                 Interactions = location.Interactions,
+                Triggers = location.Triggers,
             };
 
             return locationDto;
@@ -177,6 +146,48 @@ namespace API.Data
             context.Locations.Remove(location);
 
             return true;
+        }
+
+        private async Task<List<ConnectedLocationDto>> buildConnectedLocationList(int locationId)
+        {
+            List<LocationLink> links = await context.LocationLink.Where(l => l.FromId == locationId).ToListAsync();
+            List<ConnectedLocationDto> connectedLocations = new List<ConnectedLocationDto>();
+            foreach (LocationLink link in links)
+            {
+                Location to = await context.Locations.Where(l => l.Id == link.ToId).FirstOrDefaultAsync();
+                if (to == null) return null;
+
+                connectedLocations.Add(new ConnectedLocationDto
+                {
+                    Id = to.Id,
+                    Name = to.Name,
+                    Description = to.Description
+                });
+            }
+
+            return connectedLocations;
+        }
+
+        private List<ContainerDto> buildContainerList(List<Container> containers)
+        {
+            List<ContainerDto> containerList = new List<ContainerDto>();
+            foreach (Container c in containers)
+            {
+                List<ItemDto> items = new List<ItemDto>();
+                foreach (ContainerItem i in c.Items)
+                    items.Add(ItemDto.Convert(i.Item));
+
+                ContainerDto containerDto = new ContainerDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Items = items
+                };
+
+                containerList.Add(containerDto);
+            }
+            return containerList;
         }
 
         #endregion

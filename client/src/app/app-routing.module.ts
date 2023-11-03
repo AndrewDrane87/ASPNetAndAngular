@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
-import { ListsComponent } from './lists/lists/lists.component';
 import { MessagesComponent } from './messages/messages/messages.component';
 import { authGuard } from './_guards/auth.guard';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
@@ -26,6 +25,7 @@ import { DialogueManagementComponent } from './admin/adventure/dialogue-manageme
 import { RegisterComponent } from './register/register.component';
 import { AdventureSelectionComponent } from './play/views/adventure-selection/adventure-selection.component';
 import { RunAdventureComponent } from './play/views/run-adventure/run-adventure.component';
+import { DamageCalculatorComponent } from './admin/damage-calculator/damage-calculator.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -41,7 +41,6 @@ const routes: Routes = [
       {path: 'members', component: MemberListComponent},
       { path: 'members/:username', component: MemberDetailComponent, resolve:{member: memberDetailedResolver} },
       { path: 'member/edit', component: MemberEditComponent, canDeactivate:[preventUnsavedChangesGuard] },
-      { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
       { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard] },
       { path: 'admin/location/:locationId', component: LocationManagementComponent, resolve:{location: locationManagementResolver} },
@@ -50,6 +49,7 @@ const routes: Routes = [
       { path: 'admin/adventure/:adventureId', component: AdventureManagementComponent, resolve:{adventure: adventureManagementResolver} },
       { path: 'play', component: AdventureSelectionComponent},
       { path: 'register', component: RegisterComponent},
+      { path: 'damagecalculator', component: DamageCalculatorComponent},
       { path: 'adventure/:adventureId', component: RunAdventureComponent, resolve:{adventure: adventureManagementResolver} },
     ],
   },
