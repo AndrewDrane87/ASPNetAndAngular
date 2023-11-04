@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { AdventureLocation, Container, Interaction } from 'src/app/_models/Adventure';
+import { AdminAdventureLocation, AdminContainer, AdminInteraction } from 'src/app/_models/Adventure';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 import { LocationService } from 'src/app/_services/adventures/locationService';
 import { CreateNameDescriptionComponent } from '../../modals/create-name-description/create-name-description.component';
@@ -17,7 +17,7 @@ import { NpcService } from 'src/app/_services/adventures/npc.service';
   styleUrls: ['./location-management.component.css'],
 })
 export class LocationManagementComponent implements OnInit {
-  location: AdventureLocation | undefined;
+  location: AdminAdventureLocation | undefined;
   modalRef: BsModalRef | undefined;
 
   constructor(
@@ -103,7 +103,7 @@ export class LocationManagementComponent implements OnInit {
     this.modalRef.content.header = 'Create Container';
     return this.modalRef.onHidden!.subscribe(() => {
       if (this.modalRef?.content.result === true) {
-        var container = this.modalRef.content.value as Container;
+        var container = this.modalRef.content.value as AdminContainer;
         this.locationService
           .createContainer(container, this.location!.id)
           .subscribe({
@@ -116,7 +116,7 @@ export class LocationManagementComponent implements OnInit {
     });
   }
 
-  deleteContainer(container: Container) {
+  deleteContainer(container: AdminContainer) {
     console.log(container);
     this.locationService.deleteContainer(container).subscribe({
       next: () => {
@@ -129,13 +129,13 @@ export class LocationManagementComponent implements OnInit {
     });
   }
 
-  addItemToContainer(container: Container) {}
+  addItemToContainer(container: AdminContainer) {}
 
   createInteraction(){
     this.toastr.error('Not implemented');
   }
 
-  deleteInteraction(i : Interaction){
+  deleteInteraction(i : AdminInteraction){
     this.toastr.error('Not implemented');
   }
 }

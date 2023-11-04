@@ -1,35 +1,38 @@
 import { ActionTrigger } from "./actionTrigger";
 import { Item } from "./item";
 import { NPC } from "./npc";
+import { PlayerCharacter } from "./playerCharacters/playerCharacter";
 
-export interface AdminAdventure{
+export interface Adventure{
     id: number;
     name: string;
+    saveDescription: string;
     description : string;
-    startingLocation : AdminAdventureLocation;
-    locations: AdminAdventureLocation[];
-
+    currentLocation : AdventureLocation;
+    locations: AdventureLocation[];
+    playerCharacters: PlayerCharacter[];
 }
 
-export interface AdminAdventureLocation{
+export interface AdventureLocation{
     id: number;
+    locationId: number;
     name: string;
     description : string;
     npCs: NPC[],
-    containers: AdminContainer[]
-    connectedLocations: AdminAdventureLocation[]
-    interactions: AdminInteraction[]
+    containers: Container[]
+    connectedLocations: AdventureLocation[]
+    interactions: Interaction[]
     triggers: ActionTrigger[];
 }
 
-export interface AdminContainer{
+export interface Container{
     id: number;
     name: string;
     description: string;
     items: Item[];
 }
 
-export interface AdminInteraction{
+export interface Interaction{
     id: number;
     name: string;
     information: string;

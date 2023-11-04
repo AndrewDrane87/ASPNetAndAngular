@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { Adventure, AdventureLocation } from 'src/app/_models/Adventure';
+import { AdminAdventure, AdminAdventureLocation } from 'src/app/_models/Adventure';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 import { CreateNameDescriptionComponent } from '../../modals/create-name-description/create-name-description.component';
 import { NameDescription } from 'src/app/_models/Generics/NameDescription';
@@ -24,18 +24,18 @@ export class AdventureAdminComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Length: ' + this.adventureService.adventures.length);
-    if (this.adventureService.adventures.length === 0) {
-      this.adventureService.loadAdventures().subscribe({
+    console.log('Length: ' + this.adventureService.adminAdventures.length);
+    if (this.adventureService.adminAdventures.length === 0) {
+      this.adventureService.loadAdminAdventures().subscribe({
         next: (values) => {
           console.log(values);
-          this.adventureService.adventures = values;
+          this.adventureService.adminAdventures = values;
         },
       });
     }
   }
 
-  editAdventure(adventure: Adventure) {
+  editAdventure(adventure: AdminAdventure) {
     this.adventureService.adminAdventure = adventure;
     this.router.navigate(['admin/adventure/' + adventure.id]);
   }

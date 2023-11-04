@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Adventure, AdventureLocation } from 'src/app/_models/Adventure';
+import { AdminAdventure, AdminAdventureLocation } from 'src/app/_models/Adventure';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 import { CreateNameDescriptionComponent } from '../../modals/create-name-description/create-name-description.component';
 import { CreateLocationLinkComponent } from '../../modals/create-location-link/create-location-link.component';
@@ -13,7 +13,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
   styleUrls: ['./adventure-management.component.css'],
 })
 export class AdventureManagementComponent implements OnInit {
-  adventure: Adventure | undefined;
+  adventure: AdminAdventure | undefined;
   constructor(
     private modalRef: BsModalRef,
     private modalService: BsModalService,
@@ -42,12 +42,12 @@ export class AdventureManagementComponent implements OnInit {
     });
   }
 
-  createLocation(adventure: Adventure) {
+  createLocation(adventure: AdminAdventure) {
     this.modalRef = this.modalService.show(CreateNameDescriptionComponent);
     this.modalRef.content.header = 'Create location';
     return this.modalRef.onHidden!.subscribe(() => {
       if (this.modalRef?.content.result === true) {
-        var l = this.modalRef.content.value as AdventureLocation;
+        var l = this.modalRef.content.value as AdminAdventureLocation;
         this.adventureService.createLocation(l);
         this.router.navigate(['admin/adventure/' + adventure.id]);
         console.log(l);
@@ -71,7 +71,7 @@ export class AdventureManagementComponent implements OnInit {
     this.router.navigate(['admin/location/' + locationId]);
   }
 
-  deleteLocation(location: AdventureLocation, adventure: Adventure) {
+  deleteLocation(location: AdminAdventureLocation, adventure: AdminAdventure) {
     this.adventureService.deleteLocation(location).then((result) => {
       if (result) {
         this.toastr.success('Deleted location');

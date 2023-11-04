@@ -17,7 +17,7 @@ import { MyCharactersComponent } from './player/my-characters/my-characters.comp
 import { LocationManagementComponent } from './admin/adventure/location-management/location-management.component';
 import { locationManagementResolver } from './_resolvers/location-management.resolver';
 import { AdventureManagementComponent } from './admin/adventure/adventure-management/adventure-management.component';
-import { adventureManagementResolver } from './_resolvers/adventure-management.resolver';
+import { adventureManagementResolver, playerAdventureResolver } from './_resolvers/adventure-management.resolver';
 import { NpcManagementComponent } from './admin/adventure/npc-management/npc-management.component';
 import { npcManagementResolver } from './_resolvers/npc-management.resolver';
 import { dialogueManagementResolver } from './_resolvers/dialogue-management.resolver';
@@ -50,7 +50,8 @@ const routes: Routes = [
       { path: 'play', component: AdventureSelectionComponent},
       { path: 'register', component: RegisterComponent},
       { path: 'damagecalculator', component: DamageCalculatorComponent},
-      { path: 'adventure/:adventureId', component: RunAdventureComponent, resolve:{adventure: adventureManagementResolver} },
+      { path: 'admin/adventure/:adventureId', component: RunAdventureComponent, resolve:{adventure: adventureManagementResolver} },
+      { path: 'player/adventure/:adventureId', component: RunAdventureComponent, resolve:{adventure: playerAdventureResolver} },
     ],
   },
 

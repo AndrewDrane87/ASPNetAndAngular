@@ -1,8 +1,8 @@
 <div class="tab-panel">
   <tabset class="member-tabset">
     <tab heading="Available Adventures">
-      <div *ngIf="adventureService.adventures.length > 0">
-        <div class="mb-2" *ngFor="let a of adventureService.adventures">
+      <div *ngIf="adventureService.adminAdventures.length > 0">
+        <div class="mb-2" *ngFor="let a of adventureService.adminAdventures">
           <div class="card element-div" (click)="editAdventure(a)">
             <h3>{{a.name}}</h3>
           </div>

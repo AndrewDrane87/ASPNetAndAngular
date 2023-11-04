@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using API.Entities;
+using API.Entities.Adventure;
 
 namespace API;
 
@@ -21,4 +24,9 @@ public class PlayerCharacter
 #nullable enable
     public Item? Feet { get; set; }
     //public ItemBase[] BackPack { get; set; } = new ItemBase[10];
+
+    [ForeignKey("AdventureSave")]
+    public int? AdventureSaveId { get; set; }
+    [JsonIgnore]
+    public AdventureSave? AdventureSave { get; set; }
 }

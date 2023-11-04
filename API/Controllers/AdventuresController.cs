@@ -13,6 +13,8 @@ namespace API.Controllers
             this.uow = uow;
         }
 
+        #region Admin
+
         #region Adventure Crud
         [HttpPost("create-adventure")]
         public async Task<ActionResult<Adventure>> CreateAdventure(Adventure newAdventure)
@@ -26,9 +28,9 @@ namespace API.Controllers
         }
 
         [HttpGet("get-available")]
-        public async Task<ActionResult<List<Adventure>>> GetAdventures()
+        public async Task<ActionResult<List<AdventureSaveDto>>> GetAdventures()
         {
-            return await uow.AdventureRepository.GetAvailableAdventures();
+            return await uow.AdventureRepository.GetAvailableAdventures(User.GetUserId());
         }
 
 
@@ -77,10 +79,11 @@ namespace API.Controllers
         }
 
         [HttpGet("get-player-location")]
-        public async Task<ActionResult<LocationDto>> GetPlayerLocation(int id)
+        public async Task<ActionResult<LocationSaveDto>> GetPlayerLocation(int locationId, int adventureSaveId)
         {
-            LocationDto l = await uow.AdventureRepository.GetLocationById(id);
+            LocationSaveDto l = await uow.AdventureRepository.GetPlayerLocation(locationId, adventureSaveId);
             if (l == null) return BadRequest("That location does not exist");
+
             return Ok(l);
         }
 
@@ -222,6 +225,63 @@ namespace API.Controllers
                 return Ok();
 
             return BadRequest("Failed to delete interaction");
+        }
+        #endregion
+
+        #endregion
+
+        #region Player
+
+        [HttpPost("create-adventure-save")]
+        public async Task<ActionResult> CreateAdventureSave(NewAdventureSave newSave)
+        {
+            AdventureSaveDto save = await uow.AdventureRepository.CreateAdventureSave(newSave, User.GetUserId());
+            if (save == null) return BadRequest("Could not create save");
+
+            if (await uow.Complete())
+                return Ok(save);
+
+            return BadRequest("Failed to create Save");
+        }
+
+        [HttpDelete("delete-adventure-save")]
+        public async Task<ActionResult> DeleteAdventureSave(int id)
+        {
+            if (await uow.AdventureRepository.DeleteAdventureSave(id))
+            {
+                if (await uow.Complete())
+                    return Ok();
+            }
+            return BadRequest("Failed to delete save");
+        }
+
+        [HttpGet("get-adventure-save")]
+        public async Task<ActionResult<AdventureSaveDto>> GetAdventureSave(int id)
+        {
+            var save = await uow.AdventureRepository.GetAdventureSave(id);
+            if (save == null) return BadRequest("Could not find save");
+
+            return Ok(save);
+        }
+
+        [HttpPut("add-pc")]
+        public async Task<ActionResult> AddPlayerCharacterToAdventureSave(int playerCharacterId, int adventureSaveId)
+        {
+            if (await uow.AdventureRepository.AddPlayerCharacterToAdventure(playerCharacterId, adventureSaveId))
+            {
+                if (await uow.Complete())
+                    return Ok();
+            }
+            return BadRequest("Failed to add PC to adventure");
+        }
+
+        [HttpPut("remove-pc")]
+        public async Task<ActionResult> RemovePlayerCharacterFromAdventureSave(int playerCharacterId, int adventureSaveId)
+        {
+            var save = await uow.AdventureRepository.RemovePlayerCharacterFromAdventure(playerCharacterId,adventureSaveId);
+            if (save == null) return BadRequest("failed to remove PC");
+
+            return Ok(save);
         }
         #endregion
     }

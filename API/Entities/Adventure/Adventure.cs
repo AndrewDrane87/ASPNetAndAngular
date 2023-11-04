@@ -1,4 +1,6 @@
-﻿namespace API.Entities.Adventure
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace API.Entities.Adventure
 {
     public class Adventure
     {
@@ -9,6 +11,10 @@
         public List<Location> Locations { get; set; }
         public List<AdventureVariable> Variables { get; set; }
     }
+
+    
+
+
 
     public class AdventureVariable
     {

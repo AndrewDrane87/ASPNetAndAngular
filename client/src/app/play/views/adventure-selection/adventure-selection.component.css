@@ -12,3 +12,12 @@
 .btn-icon{
     width: auto;
 }
+
+.inline h5, .inline p{
+    display: inline;
+    vertical-align:middle;
+}
+
+.bold{
+    font-weight:600;
+}

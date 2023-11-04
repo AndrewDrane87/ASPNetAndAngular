@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace API.Entities.Adventure
 {
@@ -37,6 +38,8 @@ namespace API.Entities.Adventure
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        [JsonIgnore]
+        public Location Location { get; set; }
         public List<NPC> NPCs { get; set; }
         public List<ConnectedLocationDto> ConnectedLocations { get; set; }
         public List<ContainerDto> Containers { get; set; }

@@ -34,7 +34,7 @@ export class CreateAdventureFormComponent implements OnInit {
       .subscribe({
         next: (value) => {
           this.toastr.success('Adventure Created successfully');
-          this.adventureService.adventures?.push(value);
+          this.adventureService.adminAdventures?.push(value);
           this.resetForm();
         },
         error: (error) => {

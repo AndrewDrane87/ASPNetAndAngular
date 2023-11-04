@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { initialState } from 'ngx-bootstrap/timepicker/reducer/timepicker.reducer';
-import { Interaction } from 'src/app/_models/Adventure';
+import { AdminInteraction } from 'src/app/_models/Adventure';
 
 @Component({
   selector: 'app-information-modal',
@@ -9,13 +9,13 @@ import { Interaction } from 'src/app/_models/Adventure';
   styleUrls: ['./interaction-modal.component.css']
 })
 export class InteractionModalComponent {
-public interaction: Interaction | undefined;
+public interaction: AdminInteraction | undefined;
 
   constructor(public bsModalRef: BsModalRef){
     
   }
   
-  public setInteraction(i : Interaction){
+  public setInteraction(i : AdminInteraction){
     this.interaction = i;
   }
 

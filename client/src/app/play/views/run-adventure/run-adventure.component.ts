@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import {
-  Adventure,
-  AdventureLocation,
-  Container,
-  Interaction,
+  AdminAdventure,
+  AdminAdventureLocation,
+  AdminContainer,
+  AdminInteraction,
 } from 'src/app/_models/Adventure';
 import { DialogueResponse, NPC } from 'src/app/_models/npc';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
@@ -18,6 +18,7 @@ import { InformationModalComponent } from '../../modals/information-modal/inform
 import { Observable, config, take } from 'rxjs';
 import { ChallengeModalComponent } from '../../modals/challenge-modal/challenge-modal.component';
 import { TriggerService } from 'src/app/_services/trigger.service';
+import { Adventure, AdventureLocation } from 'src/app/_models/AdventureSave';
 
 @Component({
   selector: 'app-run-adventure',
@@ -30,7 +31,7 @@ export class RunAdventureComponent implements OnInit {
   location: AdventureLocation | undefined;
   newLocation: AdventureLocation | undefined;
   npc: NPC | undefined;
-  container: Container | undefined;
+  container: AdminContainer | undefined;
   currentView = 'location';
   public bsModalRef: BsModalRef | undefined;
 
@@ -58,7 +59,7 @@ export class RunAdventureComponent implements OnInit {
         this.adventure = data['adventure'];
         console.log(this.adventure);
         this.locationService
-          .getPlayerLocation(this.adventure!.startingLocation.id)
+          .getPlayerLocation(this.adventure!.currentLocation.locationId)
           .subscribe({
             next: (result) => {
               this.location = result;
@@ -129,7 +130,7 @@ export class RunAdventureComponent implements OnInit {
     this.currentView = 'location';
   }
 
-  containerSelected(event: Container) {
+  containerSelected(event: AdminContainer) {
     this.currentView = 'container';
     this.locationService.getContainerById(event.id).subscribe({
       next: (result) => {
@@ -141,7 +142,7 @@ export class RunAdventureComponent implements OnInit {
     });
   }
 
-  interactionSelected(event: Interaction) {
+  interactionSelected(event: AdminInteraction) {
     console.log(event);
     this.modalRef = this.modalService.show(InteractionModalComponent);
     this.modalRef.content.setInteraction(event);

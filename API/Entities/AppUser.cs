@@ -1,4 +1,5 @@
-﻿using API.Extensions;
+﻿using API.Entities.Adventure;
+using API.Extensions;
 using Microsoft.AspNetCore.Identity;
 
 namespace API.Entities;
@@ -21,6 +22,7 @@ public class AppUser : IdentityUser<int>
     public List<Message> MessagesSent { get; set; }
     public List<Message> MessagesReceived { get; set; }
     public ICollection<PlayerCharacter> MyCharacters {get;set;}
+    public List<AdventureSave> AdventureSaves { get; set; }
     public ICollection<AppUserRole> UserRoles { get; set; }
 }
 

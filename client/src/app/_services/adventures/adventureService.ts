@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Adventure, AdventureLocation } from 'src/app/_models/Adventure';
+import { AdminAdventure, AdminAdventureLocation } from 'src/app/_models/Adventure';
+import { Adventure, AdventureLocation } from 'src/app/_models/AdventureSave';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -8,8 +9,11 @@ import { environment } from 'src/environments/environment';
 })
 export class AdventureService {
   baseUrl = environment.apiUrl;
-  adventures: Adventure[] = [];
-  adminAdventure: Adventure | undefined;
+  adminAdventures: AdminAdventure[] = [];
+  adminAdventure: AdminAdventure | undefined;
+  playerAdventures: Adventure[] =[];
+  playerAdventure: Adventure | undefined;
+
   constructor(private http: HttpClient) {}
 
   loadAdventures() {
@@ -17,15 +21,20 @@ export class AdventureService {
     return this.http.get<Adventure[]>(url);
   }
 
-  createAdventure(adventure: Adventure) {
+  loadAdminAdventures() {
+    var url = this.baseUrl + 'adventures/get-available';
+    return this.http.get<AdminAdventure[]>(url);
+  }
+
+  createAdventure(adventure: AdminAdventure) {
     var url = this.baseUrl + 'adventures/create-adventure';
-    return this.http.post<Adventure>(url, adventure);
+    return this.http.post<AdminAdventure>(url, adventure);
   }
 
   getAdventureAdmin(adventureId: number) {
     var url = this.baseUrl + `admin/get-adventure?id=${adventureId}`;
-    return new Promise<Adventure>((resolve, reject) => {
-      this.http.get<Adventure>(url).subscribe({
+    return new Promise<AdminAdventure>((resolve, reject) => {
+      this.http.get<AdminAdventure>(url).subscribe({
         next: (result) => {
           if (result) {
             this.adminAdventure = result;
@@ -36,16 +45,30 @@ export class AdventureService {
     });
   }
 
-  deleteAdventure(adventure: Adventure) {
+  getAdventurePlayer(adventureId: number) {
+    var url = this.baseUrl + `adventures/get-adventure-save?id=${adventureId}`;
+    return new Promise<Adventure>((resolve, reject) => {
+      this.http.get<Adventure>(url).subscribe({
+        next: (result) => {
+          if (result) {
+            this.playerAdventure = result;
+            resolve(result);
+          }
+        },
+      });
+    });
+  }
+
+  deleteAdventure(adventure: AdminAdventure) {
     var url = this.baseUrl + 'adventures/delete?id=' + adventure.id;
 
     return new Promise((resolve, reject) => {
       this.http.delete(url).subscribe({
         next: (result) => {
           console.log(result);
-          const index = this.adventures!.indexOf(adventure, 0);
+          const index = this.adminAdventures!.indexOf(adventure, 0);
           if (index > -1) {
-            this.adventures!.splice(index, 1);
+            this.adminAdventures!.splice(index, 1);
           }
           resolve(true);
         },
@@ -57,7 +80,7 @@ export class AdventureService {
     });
   }
 
-  createLocation(location: AdventureLocation) {
+  createLocation(location: AdminAdventureLocation) {
     if (this.adminAdventure !== undefined) {
       var url =
         this.baseUrl +
@@ -65,8 +88,8 @@ export class AdventureService {
         this.adminAdventure.id;
 
       return new Promise((resolve, reject) => {
-        this.http.post<AdventureLocation>(url, location).subscribe({
-          next: (result: AdventureLocation) => {
+        this.http.post<AdminAdventureLocation>(url, location).subscribe({
+          next: (result: AdminAdventureLocation) => {
             // const indexA = this.adventures!.indexOf(this.adminAdventure!, 0);
             // if (this.adventures[indexA].locations === null)
             //   this.adventures[indexA].locations = [];
@@ -86,14 +109,15 @@ export class AdventureService {
       resolve(false);
     });
   }
-  createLocationLink(fromLocation: AdventureLocation, toLocation: AdventureLocation, linkMode: string){
+  
+  createLocationLink(fromLocation: AdminAdventureLocation, toLocation: AdminAdventureLocation, linkMode: string){
     var url = this.baseUrl + `adventures/link-location?fromLocation=${fromLocation.id}&toLocation=${toLocation.id}&mode=${linkMode}`
     return this.http.post(url,
       {}
       );
   }
 
-  deleteLocation(location: AdventureLocation) {
+  deleteLocation(location: AdminAdventureLocation) {
     if (this.adminAdventure !== undefined) {
       var url =
         this.baseUrl +
@@ -115,8 +139,11 @@ export class AdventureService {
         });
       });
     }
+
     return new Promise((resolve, reject) => {
       resolve(false);
     });
   }
+
+  createAdventureSave(){}
 }

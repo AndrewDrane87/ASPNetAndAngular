@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { AdventureLocation } from 'src/app/_models/Adventure';
+import { AdminAdventureLocation } from 'src/app/_models/Adventure';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 
 @Component({
@@ -10,9 +10,9 @@ import { AdventureService } from 'src/app/_services/adventures/adventureService'
   styleUrls: ['./create-location-link.component.css'],
 })
 export class CreateLocationLinkComponent implements OnInit {
-  locations: AdventureLocation[] = [];
-  fromLocation: AdventureLocation | undefined;
-  toLocation: AdventureLocation | undefined;
+  locations: AdminAdventureLocation[] = [];
+  fromLocation: AdminAdventureLocation | undefined;
+  toLocation: AdminAdventureLocation | undefined;
   linkMode = 'Two-Way';
 
   constructor(
@@ -24,11 +24,11 @@ export class CreateLocationLinkComponent implements OnInit {
     this.locations = this.adventureService.adminAdventure!.locations;
   }
 
-  setFromLocation(l: AdventureLocation) {
+  setFromLocation(l: AdminAdventureLocation) {
     this.fromLocation = l;
   }
 
-  setToLocation(l: AdventureLocation) {
+  setToLocation(l: AdminAdventureLocation) {
     this.toLocation = l;
   }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Adventure } from 'src/app/_models/Adventure';
+import { AdminAdventure } from 'src/app/_models/Adventure';
+import { Adventure } from 'src/app/_models/AdventureSave';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 
 @Component({
@@ -14,17 +15,17 @@ export class AdventureSelectionComponent implements OnInit{
     private router : Router){}
 
   ngOnInit(): void {
-    if (this.adventureService.adventures.length === 0) {
+    if (this.adventureService.playerAdventures.length === 0) {
       this.adventureService.loadAdventures().subscribe({
         next: (values) => {
           console.log(values);
-          this.adventureService.adventures = values;
+          this.adventureService.playerAdventures = values;
         },
       });
     }
   }
 
   selectAdventure(adventure: Adventure){
-    this.router.navigate(['adventure/' + adventure.id]);
+    this.router.navigate(['player/adventure/' + adventure.id]);
   }
 }

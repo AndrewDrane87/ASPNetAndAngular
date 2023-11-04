@@ -31,7 +31,8 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<Interaction> Interactions { get; set; }
     public DbSet<ActionTrigger> Triggers { get; set; }
     public DbSet<Enemy> EnemyCollection { get; set; }
-
+    public DbSet<AdventureSave> AdventureSaves { get; set; }
+    public DbSet<LocationSave> LocationSaves { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -85,7 +86,14 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
             .WithMany(i => i.Items)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.Entity<AdventureSave>()
+            .HasMany(a => a.LocationSaves)
+            .WithOne(l => l.AdventureSave)
+            .OnDelete(DeleteBehavior.Cascade);
 
-
+        builder.Entity<AdventureSave>()
+            .HasMany(a => a.PlayerCharacters)
+            .WithOne(pc => pc.AdventureSave)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

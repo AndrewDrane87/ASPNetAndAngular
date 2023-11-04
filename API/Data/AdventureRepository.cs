@@ -26,9 +26,17 @@ namespace API.Data
             return adventure;
         }
 
-        public async Task<List<Adventure>> GetAvailableAdventures()
+
+
+        public async Task<List<AdventureSaveDto>> GetAvailableAdventures(int userId)
         {
-            return await context.Adventures.Include(l => l.Locations).Include(a => a.StartingLocation).ToListAsync();
+            var user = await context.Users
+                .Include(u => u.AdventureSaves).ThenInclude(a => a.Adventure)
+                .Include(u => u.AdventureSaves).ThenInclude(a => a.PlayerCharacters)
+                .Include(u => u.AdventureSaves).ThenInclude(a => a.LocationSaves).ThenInclude(ls => ls.Location)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            return AdventureSaveDto.ConvertList(user.AdventureSaves);
         }
 
         public async Task<Adventure> GetAdventureForAdmin(int id)
@@ -53,7 +61,7 @@ namespace API.Data
         {
             Location location = await context.Locations.Where(l => l.Id == id)
                 .Include(n => n.NPCs)
-                .Include(c => c.Containers).ThenInclude(i => i.Items).ThenInclude(i => i.Item).ThenInclude(p=> p.Photo)
+                .Include(c => c.Containers).ThenInclude(i => i.Items).ThenInclude(i => i.Item).ThenInclude(p => p.Photo)
                 .Include(i => i.Interactions)
                 .Include(t => t.Triggers)
                 .FirstOrDefaultAsync();
@@ -73,15 +81,53 @@ namespace API.Data
                 Containers = containers,
                 Interactions = location.Interactions,
                 Triggers = location.Triggers,
+                Location = location,
             };
 
             return locationDto;
         }
 
-        public async Task<LocationDto> GetPlayerLocation(int id)
+        public async Task<LocationSaveDto> GetPlayerLocation(int locationId, int adventureSaveId)
         {
-            return await GetLocationById(id);
+            var adventure = await context.AdventureSaves
+                    .Include(a => a.LocationSaves)
+                    .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
+            if (adventure == null) return null;
+
+            var locationSave = await context.LocationSaves
+                .Include(s => s.Location)
+                .FirstOrDefaultAsync(l => l.LocationId == locationId && l.AdventureSaveId == adventureSaveId);
+
+            if (locationSave == null)
+            {
+                var newLocation = await GetLocationById(locationId);
+                if (newLocation == null) return null;
+
+                foreach (LocationSave ls in adventure.LocationSaves)
+                    ls.IsCurrentLocation = false;
+
+                LocationSave newSave = new LocationSave
+                {
+                    Location = newLocation.Location,
+                    IsCurrentLocation = true
+                };
+                adventure.LocationSaves.Add(newSave);
+                await context.SaveChangesAsync();
+
+                return LocationSaveDto.Convert(newSave, newLocation);
+
+            }
+            foreach (LocationSave ls in adventure.LocationSaves)
+                ls.IsCurrentLocation = false;
+            
+            locationSave.IsCurrentLocation = true;
+            await context.SaveChangesAsync();
+
+            //If its not null, return it to the user
+            return LocationSaveDto.Convert(locationSave, await GetLocationById(locationSave.LocationId));
         }
+
+
 
         public async Task<ContainerDto> GetContainer(int id)
         {
@@ -116,16 +162,16 @@ namespace API.Data
                 from.ConnectedToLocations.Add(new LocationLink
                 {
                     FromId = from.Id,
-                    ToId= to.Id,
+                    ToId = to.Id,
                 });
                 await context.SaveChangesAsync();
 
                 if (mode.ToLower() == "two-way")
                 {
-                    
+
                     await LinkLocation(toLocation, fromLocation);
                 }
-                
+
                 return from;
             }
             return null;
@@ -219,7 +265,7 @@ namespace API.Data
         public async Task<bool> DeleteInteraction(int id)
         {
             var interaction = await context.Interactions.FirstOrDefaultAsync(i => i.Id == id);
-            if(interaction == null) return false;
+            if (interaction == null) return false;
 
             var location = await context.Locations.Include(l => l.Interactions).FirstOrDefaultAsync(l => l.Interactions.Contains(interaction));
             if (location != null)
@@ -227,8 +273,112 @@ namespace API.Data
 
             context.Interactions.Remove(interaction);
             return true;
-            
+
         }
+        #endregion
+
+        #region Adventure Saves
+
+        public async Task<AdventureSaveDto> CreateAdventureSave(NewAdventureSave newSave, int userId)
+        {
+            var adventure = await context.Adventures
+                .Include(a => a.StartingLocation)
+                .FirstOrDefaultAsync(a => a.Id == newSave.AdventureId);
+            if (adventure == null) { return null; }
+
+            //Get starting location, and add to list of location saves
+            var location = await context.Locations
+                .FirstOrDefaultAsync(l => l.Id == adventure.StartingLocation.Id);
+            if (location == null) return null;
+
+            LocationSave locationSave = new LocationSave
+            {
+                Location = location,
+                IsCurrentLocation = true,
+            };
+
+            AdventureSave save = new AdventureSave
+            {
+                SaveDescription = newSave.SaveDescription,
+                Adventure = adventure,
+            };
+
+            save.LocationSaves = new List<LocationSave> { locationSave };
+
+            var user = await context.Users
+                .Include(a => a.AdventureSaves)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null) return null;
+
+            user.AdventureSaves.Add(save);
+
+            AdventureSaveDto dto = AdventureSaveDto.Convert(save);
+            dto.CurrentLocation = LocationSaveDto.Convert(locationSave);
+
+            return dto;
+        }
+
+        public async Task<bool> DeleteAdventureSave(int id)
+        {
+            var adventureSave = await context.AdventureSaves
+                .Include(l => l.LocationSaves)
+                .FirstOrDefaultAsync(a => a.Id == id);
+            if (adventureSave == null) return false;
+
+            context.AdventureSaves.Remove(adventureSave);
+            return true;
+        }
+
+        public async Task<AdventureSaveDto> GetAdventureSave(int id)
+        {
+            var save = await context.AdventureSaves
+                .Include(a => a.PlayerCharacters)
+                .Include(a => a.Adventure)
+                .Include(a => a.LocationSaves).ThenInclude(l => l.Location)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (save == null) return null;
+            AdventureSaveDto dto = AdventureSaveDto.Convert(save);
+            return dto;
+        }
+
+        public async Task<bool> AddPlayerCharacterToAdventure(int playerCharacterId, int adventureSaveId)
+        {
+            var pc = await context.PlayerCharacters.FirstOrDefaultAsync(p => p.Id == playerCharacterId);
+            if (pc == null) return false;
+
+            var save = await context.AdventureSaves
+                .Include(a => a.PlayerCharacters)
+                .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
+            if (save == null) return false;
+
+            save.PlayerCharacters.Add(pc);
+            return true;
+        }
+
+        public async Task<AdventureSaveDto> RemovePlayerCharacterFromAdventure(int playerCharacterId, int adventureSaveId)
+        {
+            var pc = await context.PlayerCharacters.FirstOrDefaultAsync(p => p.Id == playerCharacterId);
+            if (pc == null) return null;
+
+            var save = await context.AdventureSaves
+                .Include(a => a.PlayerCharacters)
+                .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
+            if (save == null) return null;
+
+            save.PlayerCharacters.Remove(pc);
+            await context.SaveChangesAsync();
+            return await GetAdventureSave(adventureSaveId);
+        }
+
+        public async Task<LocationSave> SavePlayerLocation(int id)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Location Saves
+
         #endregion
     }
 }

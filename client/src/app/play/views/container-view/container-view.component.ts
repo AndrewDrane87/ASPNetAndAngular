@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Container } from 'src/app/_models/Adventure';
+import { AdminContainer } from 'src/app/_models/Adventure';
 
 @Component({
   selector: 'app-container-view',
@@ -7,7 +7,7 @@ import { Container } from 'src/app/_models/Adventure';
   styleUrls: ['./container-view.component.css'],
 })
 export class ContainerViewComponent {
-  @Input() container: Container | undefined;
+  @Input() container: AdminContainer | undefined;
   @Output() backToLocationEvent = new EventEmitter();
 
   backToLocation() {
