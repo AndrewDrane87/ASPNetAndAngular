@@ -1,7 +1,6 @@
 ﻿
 using API.Data;
-using API.DTOs;
-using API.DTOs.Items;
+using API.Entities;
 using API.Helpers;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;

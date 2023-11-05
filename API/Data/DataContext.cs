@@ -1,5 +1,4 @@
 ﻿using API.Entities;
-using API.Entities.Adventure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +32,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<Enemy> EnemyCollection { get; set; }
     public DbSet<AdventureSave> AdventureSaves { get; set; }
     public DbSet<LocationSave> LocationSaves { get; set; }
+    public DbSet<ActionTriggerSave> ActionTriggerSaves { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -94,6 +94,11 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
         builder.Entity<AdventureSave>()
             .HasMany(a => a.PlayerCharacters)
             .WithOne(pc => pc.AdventureSave)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<LocationSave>()
+            .HasMany(l => l.Triggers)
+            .WithOne(t => t.LocationSave)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

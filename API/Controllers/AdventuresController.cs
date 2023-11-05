@@ -1,5 +1,4 @@
-﻿using API.DTOs.Adventure;
-using API.Entities.Adventure;
+﻿using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -278,10 +277,33 @@ namespace API.Controllers
         [HttpPut("remove-pc")]
         public async Task<ActionResult> RemovePlayerCharacterFromAdventureSave(int playerCharacterId, int adventureSaveId)
         {
-            var save = await uow.AdventureRepository.RemovePlayerCharacterFromAdventure(playerCharacterId,adventureSaveId);
+            var save = await uow.AdventureRepository.RemovePlayerCharacterFromAdventure(playerCharacterId, adventureSaveId);
             if (save == null) return BadRequest("failed to remove PC");
 
             return Ok(save);
+        }
+
+
+        [HttpPut("update-trigger-save")]
+        public async Task<ActionResult> UpdateTriggerSave(int triggerSaveId, bool isComplete, string result)
+        {
+            if (await uow.AdventureRepository.UpdateTriggerSave(triggerSaveId, isComplete, result))
+            {
+                if (await uow.Complete())
+                    return Ok();
+            }
+            return BadRequest("Failed to update trigger save");
+        }
+
+        [HttpPut("reset")]
+        public async Task<ActionResult> Reset()
+        {
+            await uow.AdventureRepository.ResetSaves();
+
+            if (await uow.Complete())
+                return Ok();
+
+            return BadRequest("Failed to reset");
         }
         #endregion
     }

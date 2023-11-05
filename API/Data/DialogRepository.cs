@@ -1,5 +1,4 @@
-﻿using API.DTOs.Adventure;
-using API.Entities.Adventure;
+﻿using API.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

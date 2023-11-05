@@ -1,6 +1,6 @@
 ﻿using API.DTOs.Items;
 
-namespace API.DTOs
+namespace API.Entities
 {
     public class PlayerCharacterDto
     {

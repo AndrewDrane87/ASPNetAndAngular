@@ -1,4 +1,4 @@
-﻿using API.Data;
+﻿using API.Entities;
 
 namespace API;
 

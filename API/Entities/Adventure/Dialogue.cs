@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace API.Entities.Adventure
+namespace API.Entities
 {
     public class Dialogue
     {

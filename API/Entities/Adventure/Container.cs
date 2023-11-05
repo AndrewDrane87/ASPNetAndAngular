@@ -1,4 +1,4 @@
-﻿namespace API.Entities.Adventure
+﻿namespace API.Entities
 {
     public class Container
     {

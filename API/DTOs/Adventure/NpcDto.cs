@@ -1,4 +1,0 @@
-﻿namespace API.DTOs.Adventure
-{
-   
-}

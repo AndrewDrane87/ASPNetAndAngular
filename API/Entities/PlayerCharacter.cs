@@ -1,12 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using API.Entities;
-using API.Entities.Adventure;
 
-namespace API;
-
+namespace API.Entities;
 
 public class PlayerCharacter
 {

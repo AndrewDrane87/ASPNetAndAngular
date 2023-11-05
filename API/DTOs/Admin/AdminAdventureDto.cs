@@ -1,4 +1,4 @@
-﻿using API.Entities.Adventure;
+﻿using API.Entities;
 
 namespace API.DTOs.Admin
 {

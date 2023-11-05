@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\DatingServiceFiles\" />
+    <Folder Include="Entities\zDelete_DatingServiceFiles\" />
   </ItemGroup>
 
 </Project>

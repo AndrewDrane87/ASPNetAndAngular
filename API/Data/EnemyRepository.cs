@@ -1,4 +1,4 @@
-﻿using API.Entities.Adventure;
+﻿using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data

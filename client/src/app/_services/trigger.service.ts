@@ -5,6 +5,8 @@ import { InformationModalComponent } from '../play/modals/information-modal/info
 import { ChallengeModalComponent } from '../play/modals/challenge-modal/challenge-modal.component';
 import { ActionTrigger } from '../_models/actionTrigger';
 import { ToastrService } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -15,10 +17,12 @@ export class TriggerService {
     backdrop: false,
     ignoreBackdropClick: true,
   };
+  baseUrl = environment.apiUrl;
 
   triggerArray: ActionTrigger[] = [];
   complete = new EventEmitter();
   constructor(
+    private http: HttpClient,
     private modalService: BsModalService,
     private toastr: ToastrService
   ) {}
@@ -43,7 +47,9 @@ export class TriggerService {
         case 'information':
           this.showInformationModal(t!.actionData)!.subscribe({
             next: () => {
-              this.processTrigger(currentIndex + 1, eventType);
+              this.http.put(this.baseUrl + `adventures/update-trigger-save?triggerSaveId=${t.id}&isComplete=true&result='na'`,{}).subscribe({next:()=>{
+                this.processTrigger(currentIndex + 1, eventType);
+              }});
             },
           });
           break;
@@ -55,8 +61,10 @@ export class TriggerService {
                 t!.resultData,
                 this.bsModalRef!.content.result
               ).subscribe({
-                next: (message) => {
-                  this.processTrigger(currentIndex + 1, eventType);
+                next: (challengeResult) => {
+                  this.http.put(this.baseUrl + `adventures/update-trigger-save?triggerSaveId=${t.id}&isComplete=true&result=${challengeResult}`,{}).subscribe({next:()=>{
+                    this.processTrigger(currentIndex + 1, eventType);
+                  }});
                 },
               });
             },
@@ -67,6 +75,7 @@ export class TriggerService {
           this.processTrigger(currentIndex + 1, eventType);
           break;
       }
+
     } else {
       this.processTrigger(currentIndex + 1, eventType);
     }

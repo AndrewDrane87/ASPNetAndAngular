@@ -1,6 +1,4 @@
-﻿using API.Data;
-using API.DTOs.Adventure;
-using API.Entities.Adventure;
+﻿using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers

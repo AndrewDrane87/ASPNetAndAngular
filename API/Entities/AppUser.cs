@@ -1,4 +1,4 @@
-﻿using API.Entities.Adventure;
+﻿using API.Entities;
 using API.Extensions;
 using Microsoft.AspNetCore.Identity;
 

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace API.Entities.Adventure
+namespace API.Entities
 {
     public class Location
     {

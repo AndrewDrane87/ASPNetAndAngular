@@ -1,6 +1,5 @@
 ﻿using API.DTOs.Admin;
 using API.Entities;
-using API.Entities.Adventure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

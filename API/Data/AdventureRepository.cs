@@ -1,10 +1,6 @@
-﻿using API.DTOs.Admin;
-using API.DTOs.Adventure;
-using API.Entities.Adventure;
+﻿using API.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System.Diagnostics.Eventing.Reader;
 
 namespace API.Data
 {
@@ -96,37 +92,66 @@ namespace API.Data
 
             var locationSave = await context.LocationSaves
                 .Include(s => s.Location)
+                .Include(l => l.Triggers)
                 .FirstOrDefaultAsync(l => l.LocationId == locationId && l.AdventureSaveId == adventureSaveId);
 
+            //If we didnt find the location save it means we have to make one.
             if (locationSave == null)
             {
                 var newLocation = await GetLocationById(locationId);
                 if (newLocation == null) return null;
 
+                LocationSave newSave = CreateNewLocationSave(newLocation);
+                adventure.LocationSaves.Add(newSave);
+
                 foreach (LocationSave ls in adventure.LocationSaves)
                     ls.IsCurrentLocation = false;
 
-                LocationSave newSave = new LocationSave
-                {
-                    Location = newLocation.Location,
-                    IsCurrentLocation = true
-                };
-                adventure.LocationSaves.Add(newSave);
                 await context.SaveChangesAsync();
-
                 return LocationSaveDto.Convert(newSave, newLocation);
-
             }
+            
+            //Set all location saves is current location to false, since we are no longer there 
+            //And need to set the new location as current
             foreach (LocationSave ls in adventure.LocationSaves)
                 ls.IsCurrentLocation = false;
-            
             locationSave.IsCurrentLocation = true;
+            
             await context.SaveChangesAsync();
 
             //If its not null, return it to the user
             return LocationSaveDto.Convert(locationSave, await GetLocationById(locationSave.LocationId));
         }
 
+        public LocationSave CreateNewLocationSave(LocationDto locationDto)
+        {
+            List<ActionTriggerSave> triggerSaves = CreateActionTriggerSavesForLocation(locationDto);
+
+            LocationSave newSave = new LocationSave
+            {
+                Location = locationDto.Location,
+                IsCurrentLocation = true,
+                Triggers = triggerSaves
+            };
+
+            return newSave;
+        }
+
+        public List<ActionTriggerSave> CreateActionTriggerSavesForLocation(LocationDto location)
+        {
+            List<ActionTriggerSave> list = new List<ActionTriggerSave>();
+            foreach (ActionTrigger trigger in location.Triggers)
+            {
+                ActionTriggerSave save = new ActionTriggerSave()
+                {
+                    ActionTrigger = trigger,
+                    Complete = false,
+                };
+                list.Add(save);
+            }
+
+            return list;
+        }
 
 
         public async Task<ContainerDto> GetContainer(int id)
@@ -380,5 +405,23 @@ namespace API.Data
         #region Location Saves
 
         #endregion
+
+        public async Task<bool> UpdateTriggerSave(int triggerSaveId, bool isComplete, string result)
+        {
+            var save = await context.ActionTriggerSaves.FirstOrDefaultAsync(t => t.Id == triggerSaveId);
+            if(save == null) return false;
+
+            save.Complete = isComplete;
+            save.Result = result;
+
+            return true;
+        }
+
+        public async Task ResetSaves()
+        {
+            var triggerSaves = await context.ActionTriggerSaves.ToListAsync();
+            foreach (ActionTriggerSave save in triggerSaves)
+                save.Complete = false;
+        }
     }
 }
