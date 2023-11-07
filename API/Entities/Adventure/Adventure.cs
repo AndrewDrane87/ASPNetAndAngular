@@ -13,7 +13,7 @@
     public class AdventureVariable
     {
         public int Id { get; set; }
-        public string VariableType { get; set; }
-        public string Value { get; set; }
+        public string Name { get; set; }
+        public string InitialValue { get; set; }
     }
 }

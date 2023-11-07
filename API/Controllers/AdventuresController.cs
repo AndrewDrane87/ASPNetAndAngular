@@ -299,11 +299,8 @@ namespace API.Controllers
         public async Task<ActionResult> Reset()
         {
             await uow.AdventureRepository.ResetSaves();
+            return Ok();
 
-            if (await uow.Complete())
-                return Ok();
-
-            return BadRequest("Failed to reset");
         }
         #endregion
     }

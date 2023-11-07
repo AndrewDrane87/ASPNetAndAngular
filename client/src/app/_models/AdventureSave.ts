@@ -23,6 +23,7 @@ export interface AdventureLocation{
     connectedLocations: AdventureLocation[]
     interactions: Interaction[]
     triggers: ActionTrigger[];
+    enemies: Enemy[],
 }
 
 export interface Container{
@@ -39,3 +40,20 @@ export interface Interaction{
     locationId: number;
     triggers: ActionTrigger[];
 }
+
+export interface Enemy{
+    id: number;
+    name: string;
+    photoUrl: string;
+    maxHp: number;
+    currentHp: number;
+    armorValue: number;
+    attack1Name: string;
+    attack1Range: number; 
+    attack1BaseDamage: number;
+    attack2Name:string;
+    attack2Range:number;
+    attack2BaseDamage:number;
+
+}
+

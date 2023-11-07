@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231105184911_AddedLocationVisibility")]
+    partial class AddedLocationVisibility
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,6 +358,25 @@ namespace API.Data.migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("API.Entities.Attack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BaseDamage")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Range")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Attack");
+                });
+
             modelBuilder.Entity("API.Entities.Container", b =>
                 {
                     b.Property<int>("Id")
@@ -455,24 +477,6 @@ namespace API.Data.migrations
                     b.Property<int>("ArmorValue")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Attack1BaseDamage")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Attack1Name")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Attack1Range")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Attack2BaseDamage")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Attack2Name")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Attack2Range")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("LocationId")
                         .HasColumnType("integer");
 
@@ -488,39 +492,20 @@ namespace API.Data.migrations
                     b.Property<int?>("PhotoId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("RangedAttackId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
+                    b.HasIndex("MeleeAttackId");
+
                     b.HasIndex("PhotoId");
 
+                    b.HasIndex("RangedAttackId");
+
                     b.ToTable("EnemyCollection");
-                });
-
-            modelBuilder.Entity("API.Entities.EnemySave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CurrentHp")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("EnemyId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("LocationSaveId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnemyId");
-
-                    b.HasIndex("LocationSaveId");
-
-                    b.ToTable("EnemySave");
                 });
 
             modelBuilder.Entity("API.Entities.Interaction", b =>
@@ -1112,26 +1097,23 @@ namespace API.Data.migrations
                         .WithMany("Enemies")
                         .HasForeignKey("LocationId");
 
+                    b.HasOne("API.Entities.Attack", "MeleeAttack")
+                        .WithMany()
+                        .HasForeignKey("MeleeAttackId");
+
                     b.HasOne("API.Entities.Photo", "Photo")
                         .WithMany()
                         .HasForeignKey("PhotoId");
 
-                    b.Navigation("Photo");
-                });
-
-            modelBuilder.Entity("API.Entities.EnemySave", b =>
-                {
-                    b.HasOne("API.Entities.Enemy", "Enemy")
+                    b.HasOne("API.Entities.Attack", "RangedAttack")
                         .WithMany()
-                        .HasForeignKey("EnemyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RangedAttackId");
 
-                    b.HasOne("API.Entities.LocationSave", null)
-                        .WithMany("Enemies")
-                        .HasForeignKey("LocationSaveId");
+                    b.Navigation("MeleeAttack");
 
-                    b.Navigation("Enemy");
+                    b.Navigation("Photo");
+
+                    b.Navigation("RangedAttack");
                 });
 
             modelBuilder.Entity("API.Entities.Interaction", b =>
@@ -1412,8 +1394,6 @@ namespace API.Data.migrations
 
             modelBuilder.Entity("API.Entities.LocationSave", b =>
                 {
-                    b.Navigation("Enemies");
-
                     b.Navigation("Triggers");
                 });
 

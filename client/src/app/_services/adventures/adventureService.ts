@@ -146,4 +146,8 @@ export class AdventureService {
   }
 
   createAdventureSave(){}
+
+  reset(){
+    return this.http.put(this.baseUrl + 'adventures/reset',{});
+  }
 }

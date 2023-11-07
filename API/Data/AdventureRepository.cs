@@ -1,6 +1,8 @@
 ﻿using API.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.ObjectPool;
 
 namespace API.Data
 {
@@ -78,6 +80,7 @@ namespace API.Data
                 Interactions = location.Interactions,
                 Triggers = location.Triggers,
                 Location = location,
+                VisibilityRequirements = location.VisibilityRequirements,
             };
 
             return locationDto;
@@ -86,52 +89,82 @@ namespace API.Data
         public async Task<LocationSaveDto> GetPlayerLocation(int locationId, int adventureSaveId)
         {
             var adventure = await context.AdventureSaves
-                    .Include(a => a.LocationSaves)
+                    .Include(a => a.LocationSaves).ThenInclude(l => l.Enemies)
                     .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
             if (adventure == null) return null;
 
-            var locationSave = await context.LocationSaves
-                .Include(s => s.Location)
-                .Include(l => l.Triggers)
-                .FirstOrDefaultAsync(l => l.LocationId == locationId && l.AdventureSaveId == adventureSaveId);
-
-            //If we didnt find the location save it means we have to make one.
-            if (locationSave == null)
-            {
-                var newLocation = await GetLocationById(locationId);
-                if (newLocation == null) return null;
-
-                LocationSave newSave = CreateNewLocationSave(newLocation);
-                adventure.LocationSaves.Add(newSave);
-
-                foreach (LocationSave ls in adventure.LocationSaves)
-                    ls.IsCurrentLocation = false;
-
-                await context.SaveChangesAsync();
-                return LocationSaveDto.Convert(newSave, newLocation);
-            }
+            var locationSave = await checkForRequiredLocationSaves(locationId, adventure);
             
+
             //Set all location saves is current location to false, since we are no longer there 
             //And need to set the new location as current
             foreach (LocationSave ls in adventure.LocationSaves)
                 ls.IsCurrentLocation = false;
+
             locationSave.IsCurrentLocation = true;
             
+            var enemySaves = await CheckForEnemySaves(locationSave, adventure);
+            locationSave.Enemies = enemySaves;
+
             await context.SaveChangesAsync();
 
-            //If its not null, return it to the user
-            return LocationSaveDto.Convert(locationSave, await GetLocationById(locationSave.LocationId));
+            LocationSaveDto dto = LocationSaveDto.Convert(locationSave, await GetLocationById(locationSave.LocationId));
+
+            List<ConnectedLocationDto> filteredConnectedLocations = new List<ConnectedLocationDto>();
+            foreach (var connectedLocationDto in dto.ConnectedLocations)
+                if (await CheckVisibility(connectedLocationDto.VisibilityRequirements, adventure.Id))
+                    filteredConnectedLocations.Add(connectedLocationDto);
+            dto.ConnectedLocations = filteredConnectedLocations;
+
+            return dto;
         }
 
-        public LocationSave CreateNewLocationSave(LocationDto locationDto)
+        public async Task<LocationSave> checkForRequiredLocationSaves(int locationId, AdventureSave adventure)
         {
-            List<ActionTriggerSave> triggerSaves = CreateActionTriggerSavesForLocation(locationDto);
+            //Check to see if a save exists for this location.
+            var locationSave = await context.LocationSaves
+                .Include(s => s.Location)
+                .Include(l => l.Triggers)
+                .FirstOrDefaultAsync(l => l.LocationId == locationId && l.AdventureSaveId == adventure.Id);
+
+            //If we didnt find the location save it means we have to make one.
+            if (locationSave == null)
+            {
+                locationSave = await CreateNewLocationSave(locationId);
+                adventure.LocationSaves.Add(locationSave);
+            }
+
+            foreach (var connectedLocation in await buildConnectedLocationList(locationId))
+            {
+                //Check to see if a save exists for this location.
+                var connectedLocationSave = await context.LocationSaves
+                    .Include(s => s.Location)
+                    .FirstOrDefaultAsync(l => l.LocationId == connectedLocation.Id && l.AdventureSaveId == adventure.Id);
+
+                //If we didnt find the location save it means we have to make one.
+                if (connectedLocationSave == null)
+                {
+                    connectedLocationSave = await CreateNewLocationSave(connectedLocation.Id);
+                    adventure.LocationSaves.Add(connectedLocationSave);
+                }
+            }
+
+            return locationSave;
+        }
+
+        public async Task<LocationSave> CreateNewLocationSave(int locationId)
+        {
+            var newLocation = await GetLocationById(locationId);
+            if (newLocation == null) return null;
+
+            List<ActionTriggerSave> triggerSaves = CreateActionTriggerSavesForLocation(newLocation);
 
             LocationSave newSave = new LocationSave
             {
-                Location = locationDto.Location,
+                Location = newLocation.Location,
                 IsCurrentLocation = true,
-                Triggers = triggerSaves
+                Triggers = triggerSaves,
+                VisibilityRequirement = newLocation.VisibilityRequirements
             };
 
             return newSave;
@@ -232,7 +265,8 @@ namespace API.Data
                 {
                     Id = to.Id,
                     Name = to.Name,
-                    Description = to.Description
+                    Description = to.Description,
+                    VisibilityRequirements = to.VisibilityRequirements,
                 });
             }
 
@@ -402,26 +436,152 @@ namespace API.Data
         }
         #endregion
 
-        #region Location Saves
-
-        #endregion
-
         public async Task<bool> UpdateTriggerSave(int triggerSaveId, bool isComplete, string result)
         {
-            var save = await context.ActionTriggerSaves.FirstOrDefaultAsync(t => t.Id == triggerSaveId);
-            if(save == null) return false;
+            var save = await context.ActionTriggerSaves
+                .Include(t => t.ActionTrigger)
+                .Include(l => l.LocationSave)
+                .FirstOrDefaultAsync(t => t.Id == triggerSaveId);
+            if (save == null) return false;
 
+            //These are additional actions that can be built into the trigger.
+            if (save.ActionTrigger.ResultData != null)
+            {
+                foreach (string s in save.ActionTrigger.ResultData.Split('|'))
+                {
+                    switch (s.Split(':')[0].ToLower())
+                    {
+                        case "setvariable": await SetVariableValue(s, save.LocationSave.AdventureSaveId, result); break;
+                    }
+                }
+            }
+            
             save.Complete = isComplete;
             save.Result = result;
 
             return true;
         }
 
+
+        public async Task<bool> CheckVisibility(string visibilityRequirement, int adventureSaveId)
+        {
+            if (visibilityRequirement == null) return true;
+            if (visibilityRequirement.Length == 0) return true;
+            /*
+             [variableName]:[value]
+             */
+
+            string[] values = visibilityRequirement.Split(':');
+            string variableName = values[0];
+            string variableValue = values[1];
+
+            var adventure = await context.AdventureSaves
+                .Include(a => a.Variables).ThenInclude(v => v.AdventureVariable)
+                .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
+
+            var variable = adventure.Variables.FirstOrDefault(v => v.AdventureVariable.Name == variableName);
+            //If we dont find the variable in the save collection we need to create it first
+            if (variable == null)
+                variable = await CreateVariableSave(adventure, variableName);
+
+            return variable.Value == variableValue;
+        }
+
+        public async Task<AdventureVariableSave> SetVariableValue(string variableData, int adventureSaveId, string result)
+        {
+            /* Example Result data formats
+             * Assume its a boolean and we are setting it to true. Length 2
+             * setVariable:VariableName
+             * new value included in the data. Length 3
+             * setVariable:VariableName:variableValue
+             * Coming from a success fail check. Length 4
+             * setVariable:VariableName:VariableValueOnSuccess:VariableValueOnFail
+             */
+
+            string[] strings = variableData.Split(":");
+            var adventureSave = await context.AdventureSaves
+                .Include(v => v.Variables).ThenInclude(v => v.AdventureVariable)
+                .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
+
+            var variable = adventureSave.Variables.FirstOrDefault(v => v.AdventureVariable.Name == strings[1]);
+
+            if (variable == null) variable = await CreateVariableSave(adventureSave, strings[1]);
+
+            switch (strings.Length)
+            {
+                case 2: break;
+                case 3: break;
+                case 4: variable.Value = result == "Success" ? strings[2] : strings[3]; break;
+            }
+            return variable;
+        }
+
+        public async Task<AdventureVariableSave> CreateVariableSave(AdventureSave adventure, string variableName)
+        {
+            //Grab the base adventure object so we can get its variable list.
+            var baseAdventure = await context.Adventures
+                .Include(a => a.Variables)
+                .FirstOrDefaultAsync(a => a.Id == adventure.AdventureId);
+
+            //Get the variable from the base object
+            var baseVariable = baseAdventure.Variables.FirstOrDefault(v => v.Name == variableName);
+
+            //Create a new save and add it to our save collection
+            var variable = new AdventureVariableSave { Value = baseVariable.InitialValue, AdventureVariable = baseVariable };
+            adventure.Variables.Add(variable);
+            await context.SaveChangesAsync();
+            return variable;
+        }
+
+        public async Task<List<EnemySave>> CheckForEnemySaves(LocationSave locationSave, AdventureSave adventureSave)
+        {
+            
+
+            var baseLocation = await context.Locations
+                .Include(l => l.Enemies).ThenInclude(e => e.Photo)
+                .FirstOrDefaultAsync(l => l.Id == locationSave.LocationId);
+
+            if (baseLocation.Enemies.Count == locationSave.Enemies.Count)
+                return locationSave.Enemies;
+
+            List<EnemySave> enemySaves = new List<EnemySave>();
+            foreach(Enemy e in baseLocation.Enemies)
+            {
+                EnemySave save = new EnemySave
+                {
+                    EnemyId = e.Id,
+                    Enemy = e,
+                    CurrentHp = e.MaxHp
+                };
+                enemySaves.Add(save);
+            }
+            return enemySaves;
+        }
+
+
         public async Task ResetSaves()
         {
+            //Reset trigger saves
             var triggerSaves = await context.ActionTriggerSaves.ToListAsync();
             foreach (ActionTriggerSave save in triggerSaves)
                 save.Complete = false;
+
+            //Reset Variables
+            var adventure = await context.AdventureSaves
+                .Include(a => a.Variables)
+                .Include(a => a.LocationSaves)
+                .FirstOrDefaultAsync(a => a.Id == 1);
+
+            adventure.Variables.Clear();
+
+            //Reset the current location
+            var baseAdventure = await context.Adventures.Include(a => a.StartingLocation).FirstOrDefaultAsync(a => a.Id == adventure.AdventureId);
+            foreach (var location in adventure.LocationSaves)
+                location.IsCurrentLocation = false;
+            var startingLocationId = baseAdventure.StartingLocation.Id;
+            adventure.LocationSaves.FirstOrDefault(l => l.LocationId == startingLocationId).IsCurrentLocation = true;
+
+            await context.SaveChangesAsync();
         }
     }
 }

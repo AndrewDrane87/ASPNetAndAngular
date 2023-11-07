@@ -3,34 +3,40 @@
 
   <div *ngIf="location.connectedLocations.length > 0">
     <h3>Locations</h3>
-    <div *ngFor="let l of location?.connectedLocations">
-      <div class="col-3">
+    <div class="row">
+      <div *ngFor="let l of location?.connectedLocations" class="col-3">
         <div class="card m-1 text-center" (click)="locationSelected(l)">
-          <p>{{ l.name }}</p>
+          <p>
+            <strong>{{ l.name }}</strong>
+          </p>
           <p class="description">"{{ l.description }}""</p>
         </div>
       </div>
     </div>
   </div>
 
-    <div class="mt-3" *ngIf="location.npCs.length > 0">
-      <h3>NPC's</h3>
-      <div *ngFor="let npc of location?.npCs">
-        <div class="col-3">
-          <div class="card m-1 text-center" (click)="npcSelected(npc)">
-            <p>{{ npc.name }}</p>
-            <p class="description">"{{ npc.caption }}""</p>
-          </div>
+  <div class="mt-3" *ngIf="location.npCs.length > 0">
+    <h3>NPC's</h3>
+    <div class="row">
+      <div *ngFor="let npc of location?.npCs" class="col-3">
+        <div class="card m-1 text-center" (click)="npcSelected(npc)">
+          <p>
+            <strong>{{ npc.name }}</strong>
+          </p>
+          <p class="description">"{{ npc.caption }}""</p>
         </div>
       </div>
     </div>
+  </div>
 
   <div class="mt-3" *ngIf="location.containers.length > 0">
     <h3>Containers</h3>
-    <div *ngFor="let c of location.containers">
-      <div class="col-3">
+    <div class="row">
+      <div *ngFor="let c of location.containers" class="col-3">
         <div class="card m-1 text-center" (click)="containerSelected(c)">
-          <p>{{ c.name }}</p>
+          <p>
+            <strong>{{ c.name }}</strong>
+          </p>
           <p class="description">"{{ c.description }}""</p>
         </div>
       </div>
@@ -39,10 +45,51 @@
 
   <div class="mt-3" *ngIf="location.interactions.length > 0">
     <h3>Interactions</h3>
-    <div *ngFor="let i of location.interactions">
-      <div class="col-3">
+    <div class="row">
+      <div *ngFor="let i of location.interactions" class="col-3">
         <div class="card m-1 text-center" (click)="interactionSelected(i)">
-          <p>{{ i.name }}</p>
+          <p>
+            <strong>{{ i.name }}</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3" *ngIf="location.enemies.length > 0">
+    <h3>Enemies</h3>
+    <div class="row">
+      <div *ngFor="let i of location.enemies" class="col-6">
+        <div class="card enemy-card m-1 text-center">
+          <h5 class="mt-0 mb-0">
+            {{ i.name }}
+          </h5>
+          <p class="mt-0 mb-0">
+            <strong>HP: </strong>{{ i.currentHp }}/{{ i.maxHp }}
+          </p>
+
+          <div class="row">
+            <div class="col-2">
+              <img class="card-thumbnail" src="{{ i.photoUrl }}" />
+            </div>
+            <div class="col-10">
+              
+              <table style="width: 100%;">
+                <tbody>
+                  <tr *ngIf="i.attack1BaseDamage > 0">
+                    <td><strong>Attack 1: </strong>{{ i.attack1Name }}</td>
+                    <td><strong>Damage: </strong>{{ i.attack1BaseDamage }}</td>
+                    <td><strong>Range: </strong>{{ i.attack1Range }}</td>
+                  </tr>
+                  <tr *ngIf="i.attack2BaseDamage > 0">
+                    <td><strong>Attack 2: </strong>{{ i.attack2Name }}</td>
+                    <td><strong>Damage: </strong>{{ i.attack2BaseDamage }}</td>
+                    <td><strong>Range: </strong>{{ i.attack2Range }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

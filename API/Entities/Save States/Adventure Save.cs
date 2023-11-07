@@ -14,16 +14,17 @@ namespace API.Entities
         public List<PlayerCharacter> PlayerCharacters { get; set; }
 
         public List<LocationSave> LocationSaves { get; set; }
+        public List<AdventureVariableSave> Variables { get; set; }
+    }
 
-        public static AdventureSaveDto Convert(AdventureSave entity)
-        {
-            return new AdventureSaveDto
-            {
-                Id = entity.Id,
-                SaveDescription = entity.SaveDescription,
-            };
-        }
+    public class AdventureVariableSave
+    {
+        public int Id { get; set; }
 
+        [ForeignKey("AdventureVariable")]
+        public int AdventureVariableId { get; set; }
+        public AdventureVariable AdventureVariable { get; set; }
+        public string Value { get; set; }
     }
 
     /// <summary>

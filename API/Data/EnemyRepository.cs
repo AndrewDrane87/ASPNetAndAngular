@@ -28,8 +28,6 @@ namespace API.Data
         {
             var enemy = await context.EnemyCollection
                 .Include(e=> e.Photo)
-                .Include(e=>e.MeleeAttack)
-                .Include(e=>e.RangedAttack)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (enemy == null) return null;
@@ -40,8 +38,6 @@ namespace API.Data
         {
             var location = await context.Locations
                 .Include(l => l.Enemies).ThenInclude(e => e.Photo)
-                .Include(l => l.Enemies).ThenInclude(e => e.MeleeAttack)
-                .Include(l => l.Enemies).ThenInclude(e => e.RangedAttack)
                 .FirstOrDefaultAsync(l => l.Id == locationId);
 
             if(location == null) return null;

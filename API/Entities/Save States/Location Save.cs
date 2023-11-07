@@ -17,7 +17,9 @@ namespace API.Entities
         public Location Location { get; set; }
         public bool IsCurrentLocation { get; set; }
         public List<ActionTriggerSave> Triggers { get; set; }
-
+        public string VisibilityRequirement { get; set; }
+        public List<EnemySave> Enemies { get; set; }
+        
         /*
          * Need to be mapped
          */
@@ -27,9 +29,6 @@ namespace API.Entities
         public List<Interaction> Interactions { get; set; }
         [NotMapped]
         public List<Container> Containers { get; set; }
-        
-        [NotMapped]
-        public List<Enemy> Enemies { get; set; }
         #endregion
 
         #region Not Mapped
