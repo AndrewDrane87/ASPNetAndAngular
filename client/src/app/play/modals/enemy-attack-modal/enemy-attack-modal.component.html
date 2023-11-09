@@ -1,0 +1,47 @@
+<div *ngIf="enemy" style="padding: 1rem">
+  <h3>{{ enemy.name }}</h3>
+  <h5>Strategy:</h5>
+  <p>Strategy: {{ enemy.attackStrategy }}</p>
+
+  <h5>Attacks</h5>
+
+  <div class="container">
+    <div class="row">
+      <div *ngIf="enemy.attack1BaseDamage > 0" class="col-6 attack-div">
+        <div
+          class="card attack-div"
+          (click)="calculateDamage(enemy.attack1BaseDamage)"
+        >
+          <p class="m-0">
+            <strong>{{ enemy.attack1Name }}</strong>
+          </p>
+          <p class="m-0">Range: {{ enemy.attack1Range }}</p>
+          <p class="m-0">Damage: {{ enemy.attack1BaseDamage }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="enemy.attack2BaseDamage > 0" class="col-6 attack-div">
+        <div
+          class="card attack-div"
+          (click)="calculateDamage(enemy.attack2BaseDamage)"
+        >
+          <p class="m-0">
+            <strong>{{ enemy.attack2Name }}</strong>
+          </p>
+          <p class="m-0">Range: {{ enemy.attack2Range }}</p>
+          <p class="m-0">Damage: {{ enemy.attack2BaseDamage }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mt-2">
+    <strong>
+      Total Damage:
+      {{ canComplete ? totalDamage : "Click an attack to calculate damage" }}
+    </strong>
+  </p>
+
+  <button [hidden]="!canComplete" class="btn btn-primary" (click)="complete()">
+    Complete
+  </button>
+</div>

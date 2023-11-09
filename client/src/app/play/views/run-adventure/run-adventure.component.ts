@@ -18,7 +18,13 @@ import { InformationModalComponent } from '../../modals/information-modal/inform
 import { Observable, config, take } from 'rxjs';
 import { ChallengeModalComponent } from '../../modals/challenge-modal/challenge-modal.component';
 import { TriggerService } from 'src/app/_services/trigger.service';
-import { Adventure, AdventureLocation } from 'src/app/_models/AdventureSave';
+import {
+  Adventure,
+  AdventureLocation,
+  Enemy,
+} from 'src/app/_models/AdventureSave';
+import { MonsterCombatComponent } from '../../modals/monster-combat/monster-combat.component';
+import { EnemyAttackModalComponent } from '../../modals/enemy-attack-modal/enemy-attack-modal.component';
 
 @Component({
   selector: 'app-run-adventure',
@@ -153,5 +159,40 @@ export class RunAdventureComponent implements OnInit {
         console.log(result);
       }
     });
+  }
+
+  enemySelected(event: Enemy) {
+    console.log(event);
+    this.bsModalRef = this.bsModalService.show(MonsterCombatComponent);
+    this.bsModalRef.content.enemy = event;
+    this.bsModalRef.onHidden?.subscribe({
+      next: () => {
+        if (this.bsModalRef?.content.result) {
+          this.loadLocation(this.location!.locationId);
+        }
+      },
+    });
+  }
+
+  enemyIndex = 0;
+  enemyAttack() {
+    if (this.location?.enemies) {
+      if (this.location?.enemies.length > this.enemyIndex) {
+        let modalConfig = {
+          backdrop: false,
+          ignoreBackdropClick: true,
+        };
+        this.bsModalRef = this.bsModalService.show(EnemyAttackModalComponent, modalConfig);
+        this.bsModalRef!.content.enemy = this.location?.enemies[this.enemyIndex];
+        this.bsModalRef.onHidden?.subscribe({
+          next: () => {
+            this.enemyIndex++;
+            this.enemyAttack();
+          },
+        });
+      } else {
+        this.enemyIndex = 0;
+      }
+    }
   }
 }

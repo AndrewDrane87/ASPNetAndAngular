@@ -8,7 +8,8 @@
         public Photo Photo { get; set; }
         public int MaxHp { get; set; }
         public int ArmorValue { get; set; }
-        public int? MeleeAttackId { get; set; }
+        public int MovementRange { get; set; }
+        public string AttackStrategy { get; set; }
         public string Attack1Name { get; set; }
         public int Attack1Range { get; set; }
         public int Attack1BaseDamage { get; set; }

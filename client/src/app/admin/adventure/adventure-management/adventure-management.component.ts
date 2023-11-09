@@ -6,6 +6,7 @@ import { CreateNameDescriptionComponent } from '../../modals/create-name-descrip
 import { CreateLocationLinkComponent } from '../../modals/create-location-link/create-location-link.component';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Route, Router } from '@angular/router';
+import { AdventureAdminService } from 'src/app/_services/adventure-admin.service';
 
 @Component({
   selector: 'app-adventure-management',
@@ -17,7 +18,7 @@ export class AdventureManagementComponent implements OnInit {
   constructor(
     private modalRef: BsModalRef,
     private modalService: BsModalService,
-    private adventureService: AdventureService,
+    private adventureService: AdventureAdminService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router

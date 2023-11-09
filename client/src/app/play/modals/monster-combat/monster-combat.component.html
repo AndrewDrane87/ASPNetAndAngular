@@ -1,0 +1,56 @@
+<div *ngIf="enemy" style="padding: 1rem;">
+  <div class="text-center">
+    <h3>{{enemy.name}}</h3>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6 text-center">
+        <img
+          src="https://worldbuilderblog.me/wp-content/uploads/2016/04/screen-shot-2016-04-26-at-2-35-12-pm.png"
+        />
+      </div>
+      <div class="col-6 text-left">
+        <p>HP: {{enemy.currentHp-damageAfterArmor}}/{{enemy.maxHp}}</p>
+        <p>Armor: {{enemy.armorValue}}</p>
+        <p>Resitances: None</p>
+        <p>Weaknesses: None</p>
+      </div>
+      
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-10" style="vertical-align: middle">
+        <input type="number" [defaultValue]="0" [(ngModel)]="damage" />
+      </div>
+      <div class="col-2" style="vertical-align: middle">
+        <button
+          class="btn btn-primary damage-counter mb-1"
+          (click)="increment(5)"
+        >
+          +5
+        </button>
+        <button
+          class="btn btn-primary damage-counter mb-1"
+          (click)="increment(1)"
+        >
+          +1
+        </button>
+        <button
+          class="btn btn-primary damage-counter mb-1"
+          (click)="increment(-1)"
+        >
+          -1
+        </button>
+        <button
+          class="btn btn-primary damage-counter mb-1"
+          (click)="increment(-5)"
+        >
+          -5
+        </button>
+      </div>
+      <button class="btn btn-danger" (click)="dealDamage()">
+        Deal Damage
+      </button>
+    </div>
+  </div>

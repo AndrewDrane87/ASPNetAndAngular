@@ -33,6 +33,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<AdventureSave> AdventureSaves { get; set; }
     public DbSet<LocationSave> LocationSaves { get; set; }
     public DbSet<ActionTriggerSave> ActionTriggerSaves { get; set; }
+    public DbSet<EnemySave> EnemySaves { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

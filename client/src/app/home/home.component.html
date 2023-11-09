@@ -1,6 +1,9 @@
 <div class="container mt-5">
     <div style="text-align: center;" *ngIf="!registerMode">
-    <h1>Lets Play!</h1>
+<app-monster-combat></app-monster-combat>
+
+
+        <h1>Lets Play!</h1>
     <p class="lead">All you need to do is sign up!</p>
     <div class="class-center">
         <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Register</button>

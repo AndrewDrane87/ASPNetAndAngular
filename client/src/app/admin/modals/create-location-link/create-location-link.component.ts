@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { AdminAdventureLocation } from 'src/app/_models/Adventure';
+import { AdventureAdminService } from 'src/app/_services/adventure-admin.service';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 
 @Component({
@@ -16,7 +17,7 @@ export class CreateLocationLinkComponent implements OnInit {
   linkMode = 'Two-Way';
 
   constructor(
-    private adventureService: AdventureService,
+    private adventureService: AdventureAdminService,
     private toastr: ToastrService,
     private bsModalRef: BsModalRef
   ) {}

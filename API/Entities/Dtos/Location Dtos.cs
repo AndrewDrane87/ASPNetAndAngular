@@ -57,6 +57,12 @@ namespace API.Entities
         {
             if (save.Location == null) return null;
 
+            List<EnemySave> livingEnemies = new List<EnemySave>();
+            foreach(EnemySave e in save.Enemies)
+            {
+                if (e.CurrentHp > 0)
+                    livingEnemies.Add(e);
+            }
             LocationSaveDto dto = new LocationSaveDto
             {
                 Id = save.Id,
@@ -68,7 +74,7 @@ namespace API.Entities
                 Containers = locationDto.Containers,
                 Interactions = locationDto.Interactions,
                 Triggers = ActionTriggerSaveDto.CreateList(save.Triggers),
-                Enemies = EnemySaveDto.ConvertList(save.Enemies)
+                Enemies = EnemySaveDto.ConvertList(livingEnemies)
             };
 
             return dto;

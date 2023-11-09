@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { AdventureAdminService } from 'src/app/_services/adventure-admin.service';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
 
 @Component({
@@ -13,7 +14,7 @@ export class CreateAdventureFormComponent implements OnInit {
   validationErrors: string[] | undefined;
 
   constructor(
-    private adventureService: AdventureService,
+    private adventureService: AdventureAdminService,
     private toastr: ToastrService,
     private fb: FormBuilder
   ) {}

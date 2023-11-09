@@ -48,12 +48,13 @@ export interface Enemy{
     maxHp: number;
     currentHp: number;
     armorValue: number;
+    movementRange: number;
+    attackStrategy: string;
     attack1Name: string;
     attack1Range: number; 
     attack1BaseDamage: number;
     attack2Name:string;
     attack2Range:number;
     attack2BaseDamage:number;
-
 }
 

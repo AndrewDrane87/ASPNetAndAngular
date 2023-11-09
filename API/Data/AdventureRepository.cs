@@ -94,7 +94,7 @@ namespace API.Data
             if (adventure == null) return null;
 
             var locationSave = await checkForRequiredLocationSaves(locationId, adventure);
-            
+
 
             //Set all location saves is current location to false, since we are no longer there 
             //And need to set the new location as current
@@ -102,7 +102,7 @@ namespace API.Data
                 ls.IsCurrentLocation = false;
 
             locationSave.IsCurrentLocation = true;
-            
+
             var enemySaves = await CheckForEnemySaves(locationSave, adventure);
             locationSave.Enemies = enemySaves;
 
@@ -455,7 +455,7 @@ namespace API.Data
                     }
                 }
             }
-            
+
             save.Complete = isComplete;
             save.Result = result;
 
@@ -535,29 +535,42 @@ namespace API.Data
 
         public async Task<List<EnemySave>> CheckForEnemySaves(LocationSave locationSave, AdventureSave adventureSave)
         {
-            
+
 
             var baseLocation = await context.Locations
                 .Include(l => l.Enemies).ThenInclude(e => e.Photo)
                 .FirstOrDefaultAsync(l => l.Id == locationSave.LocationId);
 
-            if (baseLocation.Enemies.Count == locationSave.Enemies.Count)
-                return locationSave.Enemies;
-
             List<EnemySave> enemySaves = new List<EnemySave>();
-            foreach(Enemy e in baseLocation.Enemies)
+            foreach (Enemy e in baseLocation.Enemies)
             {
-                EnemySave save = new EnemySave
+                var enemySave = locationSave.Enemies.FirstOrDefault(save => save.EnemyId == e.Id);
+                if (enemySave == null)
                 {
-                    EnemyId = e.Id,
-                    Enemy = e,
-                    CurrentHp = e.MaxHp
-                };
-                enemySaves.Add(save);
+                    enemySave = new EnemySave
+                    {
+                        EnemyId = e.Id,
+                        Enemy = e,
+                        CurrentHp = e.MaxHp
+                    };
+                }
+                enemySaves.Add(enemySave);
             }
+
             return enemySaves;
         }
 
+        public async Task<bool> DealDamage(int damageAmount, int enemyId)
+        {
+            if (damageAmount < 0)
+                damageAmount = 0;
+
+            var enemySave = await context.EnemySaves.FirstOrDefaultAsync(e => e.Id == enemyId);
+            if (enemySave == null) return false;
+
+            enemySave.CurrentHp -= damageAmount;
+            return true;
+        }
 
         public async Task ResetSaves()
         {

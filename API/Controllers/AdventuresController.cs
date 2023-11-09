@@ -295,6 +295,23 @@ namespace API.Controllers
             return BadRequest("Failed to update trigger save");
         }
 
+        public class dealDamge
+        {
+            public int damageAmount { get; set; }
+            public int enemyId { get; set; }
+        }
+
+        [HttpPut("deal-damage")]
+        public async Task<ActionResult> DealDamage([FromBody] dealDamge damage)
+        {
+            bool result = await uow.AdventureRepository.DealDamage(damage.damageAmount, damage.enemyId);
+            if (!result) return BadRequest("Could not find enemy save");
+            if (await uow.Complete())
+                return Ok();
+
+            return BadRequest("Failed to deal damage");
+        }
+
         [HttpPut("reset")]
         public async Task<ActionResult> Reset()
         {
