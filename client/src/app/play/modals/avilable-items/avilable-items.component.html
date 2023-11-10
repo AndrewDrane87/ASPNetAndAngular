@@ -1,0 +1,32 @@
+<div class="container text-center">
+  <div *ngIf="items.length > 0">
+    <table>
+      <thead>
+        <td style="width: 10%"></td>
+        <td style="width: 15%">Name</td>
+        <td style="width: 15%">Item Type</td>
+        <td style="width: 15%">Attack Value</td>
+        <td style="width: 15%">Armor Value</td>
+        <td style="width: 20%">Modifiers</td>
+        <td style="width: 10%">Required Level</td>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td><img src="{{ item.photoUrl }}" alt="" /></td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.itemType }}</td>
+          <td>{{ item.attackValue }}</td>
+          <td>{{ item.armorValue }}</td>
+          <td>{{ item.modifiers }}</td>
+          <td>{{ item.requiredLevel }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="items.length === 0" class="container text-center">
+    <h5>There are no items available in the location.</h5>
+  </div>
+
+  <button class="btn btn-dark" (click)="close()">Close</button>
+</div>

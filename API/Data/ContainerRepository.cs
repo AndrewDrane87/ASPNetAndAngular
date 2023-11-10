@@ -29,22 +29,21 @@ namespace API.Data
             l.Containers.Add(c);
             return c;
         }
-        
+
         public async Task<List<ContainerDto>> GetContainers(int locationId)
         {
             var location = await context.Locations.Where(l => l.Id == locationId)
-                .Include(l =>l.Containers)
-                .ThenInclude(container => container.Items)
-                .ThenInclude(c => c.Item)
-                .ThenInclude(p => p.Photo)
+                .Include(l => l.Containers)
+                .ThenInclude(container => container.Items).ThenInclude(i => i.Item)
+                .ThenInclude(item => item.Photo)
                 .FirstOrDefaultAsync();
 
             List<ContainerDto> containers = new List<ContainerDto>();
-            
-            foreach(Container container in location.Containers)
+
+            foreach (Container container in location.Containers)
             {
                 List<ItemDto> items = new List<ItemDto>();
-                foreach (ContainerItem i in container.Items)
+                foreach (ItemContainerLink i in container.Items)
                     items.Add(ItemDto.Convert(i.Item));
 
                 ContainerDto c = new ContainerDto
@@ -65,18 +64,17 @@ namespace API.Data
         {
             var itemToAdd = await context.ItemCollection.Where(i => i.Id == itemId).FirstOrDefaultAsync();
             var container = await context.ContainerCollection.Where(c => c.Id == containerId)
-                .Include(i=> i.Items)
-                .ThenInclude(c => c.Item)
+                .Include(i => i.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync();
 
-            if(itemToAdd == null || container == null) return null;
+            if (itemToAdd == null || container == null) return null;
 
-            container.Items.Add(new ContainerItem { Container = container, ItemId = itemToAdd.Id });
+            container.Items.Add(new ItemContainerLink { Item = itemToAdd, Container = container });
 
             List<ItemDto> items = new List<ItemDto>();
-            foreach(ContainerItem i  in container.Items)
+            foreach (ItemContainerLink link in container.Items)
             {
-                Item item = i.Item;
+                Item item = link.Item;
                 items.Add(new ItemDto
                 {
                     Id = item.Id,
@@ -105,18 +103,17 @@ namespace API.Data
         public async Task<ContainerDto> DeleteItemFromContainer(int containerId, int itemId)
         {
             var container = await context.ContainerCollection.Where(c => c.Id == containerId)
-                .Include(i => i.Items)
-                .ThenInclude(c => c.Item)
+                .Include(i => i.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync();
 
-            var itemLink = container.Items.Where(i => i.ItemId == itemId).FirstOrDefault();
+            var itemLink = container.Items.Where(i => i.Id == itemId).FirstOrDefault();
 
-            if(container == null || itemLink == null) return null;
+            if (container == null || itemLink == null) return null;
 
             container.Items.Remove(itemLink);
 
             List<ItemDto> items = new List<ItemDto>();
-            foreach (ContainerItem i in container.Items)
+            foreach (ItemContainerLink i in container.Items)
                 items.Add(ItemDto.Convert(i.Item));
 
             ContainerDto c = new ContainerDto
@@ -141,6 +138,6 @@ namespace API.Data
 
         }
 
-        
+
     }
 }

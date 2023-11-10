@@ -14,6 +14,7 @@ import {
   Boots,
   HandItem,
   Helmet,
+  PlayerCharacter,
 } from '../../_models/playerCharacters/playerCharacter';
 import { Item } from 'src/app/_models/item';
 
@@ -201,29 +202,29 @@ export class ItemService {
     });
   }
 
-  getAvailableHelmets(locationId: number) {
+  getAvailableHelmets(character: PlayerCharacter) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=helmets&location=${locationId}`;
+      `playercharacters/get-available-items?type=helmets&characterId=${character.id}`;
     return this.http.get<Item[]>(url);
   }
 
-  getAvailableHandItems(locationId: number) {
+  getAvailableHandItems(character: PlayerCharacter) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=hand-items&location=${locationId}`;
+      `playercharacters/get-available-items?type=hand-items&characterId=${character.id}`;
     return this.http.get<Item[]>(url);
   }
-  getAvailableArmor(locationId: number) {
+  getAvailableArmor(character: PlayerCharacter) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=armor&location=${locationId}`;
+      `playercharacters/get-available-items?type=armor&characterId=${character.id}`;
     return this.http.get<Item[]>(url);
   }
-  getAvailableBoots(locationId: number) {
+  getAvailableBoots(character: PlayerCharacter) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=boots&location=${locationId}`;
+      `playercharacters/get-available-items?type=boots&characterId=${character.id}`;
     return this.http.get<Item[]>(url);
   }
 

@@ -56,5 +56,6 @@ export interface Enemy{
     attack2Name:string;
     attack2Range:number;
     attack2BaseDamage:number;
+    ModifierDiceSides: number;
 }
 

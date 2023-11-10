@@ -57,6 +57,7 @@ export class CharacterDisplayComponent implements OnInit {
 
   itemSelector(itemType: string) {
     this.modalRef = this.modalService.show(ItemSelectorComponent);
+    this.modalRef.content.character = this.character;
     this.modalRef.content.setItemType(itemType);
     return this.modalRef.onHidden!.subscribe((result) => {
       console.log(result);

@@ -72,14 +72,15 @@ public class PlayerCharactersController : BaseApiController
 
 
     [HttpGet("get-available-items")]
-    public async Task<ActionResult<List<Item>>> GetAvailableHandItems([FromQuery] string type, [FromQuery] string location)
+    public async Task<ActionResult<List<Item>>> GetAvailableHandItems([FromQuery] string type, [FromQuery] int characterId)
     {
+        
         switch (type)
         {
-            case "helmets": return Ok(await uow.ItemRepository.GetItems("helmet"));
-            case "hand-items": return Ok(await uow.ItemRepository.GetItems(""));
-            case "armor": return Ok(await uow.ItemRepository.GetItems("armor"));
-            case "boots": return Ok(await uow.ItemRepository.GetItems("boot"));
+            case "helmets": return Ok(await uow.AdventureRepository.GetItems(characterId, "helmet"));
+            case "hand-items": return Ok(await uow.AdventureRepository.GetItems(characterId, "hand"));
+            case "armor": return Ok(await uow.AdventureRepository.GetItems(characterId, "armor"));
+            case "boots": return Ok(await uow.AdventureRepository.GetItems(characterId, "boot"));
             default: return BadRequest("You must specify an item type");
         }
 

@@ -1,0 +1,14 @@
+.container{
+    padding: 10px;
+}
+
+img{
+    max-width: 50px;
+    max-height: 50px;
+}
+
+thead td{
+    font-weight: bold;
+}
+
+tr:nth-child(odd){background-color: #f2f2f2;}

@@ -3,6 +3,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import {
   HandItem,
   Helmet,
+  PlayerCharacter,
 } from 'src/app/_models/playerCharacters/playerCharacter';
 import { ItemService } from 'src/app/_services/items/item.service';
 
@@ -14,6 +15,7 @@ import { ItemService } from 'src/app/_services/items/item.service';
 export class ItemSelectorComponent implements OnInit {
   availableItems: any[] | undefined;
   result = false;
+  character: PlayerCharacter | undefined;
   selectedItem: any | undefined;
 
   constructor(
@@ -27,27 +29,27 @@ export class ItemSelectorComponent implements OnInit {
     switch (type) {
       case 'helmets':
         this.itemService
-          .getAvailableHelmets(-1)
+          .getAvailableHelmets(this.character!)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'leftHand':
           this.itemService
-          .getAvailableHandItems(-1)
+          .getAvailableHandItems(this.character!)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'rightHand':
           this.itemService
-          .getAvailableHandItems(-1)
+          .getAvailableHandItems(this.character!)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'armor':
           this.itemService
-          .getAvailableArmor(-1)
+          .getAvailableArmor(this.character!)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'boots':
           this.itemService
-          .getAvailableBoots(-1)
+          .getAvailableBoots(this.character!)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
     }

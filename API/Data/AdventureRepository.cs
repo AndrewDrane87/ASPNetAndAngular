@@ -90,6 +90,7 @@ namespace API.Data
         {
             var adventure = await context.AdventureSaves
                     .Include(a => a.LocationSaves).ThenInclude(l => l.Enemies)
+                    .Include(a => a.LocationSaves).ThenInclude(l => l.Containers)
                     .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
             if (adventure == null) return null;
 
@@ -103,8 +104,8 @@ namespace API.Data
 
             locationSave.IsCurrentLocation = true;
 
-            var enemySaves = await CheckForEnemySaves(locationSave, adventure);
-            locationSave.Enemies = enemySaves;
+            locationSave.Enemies = await CheckForEnemySaves(locationSave, adventure);
+            locationSave.Containers = await CheckForContainerSaves(locationSave, adventure);
 
             await context.SaveChangesAsync();
 
@@ -192,8 +193,49 @@ namespace API.Data
             var container = await context.ContainerCollection
                 .Include(c => c.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync(x => x.Id == id);
+
             return ContainerDto.Convert(container);
         }
+
+        public async Task<ContainerSaveDto> GetPlayerContainer(int containerSaveId)
+        {
+            var save = await context.ContainerSaves
+                .Include(c => c.Items).ThenInclude(items => items.Item).ThenInclude(i => i.Photo)
+                .FirstOrDefaultAsync(c => c.Id == containerSaveId);
+            save.Items = await CheckForItemSaves(save);
+
+            save.Complete = true;
+
+            await context.SaveChangesAsync();
+
+            return ContainerSaveDto.Convert(save);
+        }
+
+        public async Task<List<ItemSave>> CheckForItemSaves(ContainerSave containerSave)
+        {
+            var baseContainer = await context.ContainerCollection
+                .Include(c => c.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
+                .FirstOrDefaultAsync(c => c.Id == containerSave.ContainerId);
+
+            List<ItemSave> saves = new List<ItemSave>();
+            foreach (ItemContainerLink i in baseContainer.Items)
+            {
+                var itemSave = containerSave.Items.FirstOrDefault(save => save.ItemId == i.ItemId);
+                if (itemSave == null)
+                {
+                    itemSave = new ItemSave
+                    {
+                        Item = i.Item,
+                        ContainerSave = containerSave,
+                    };
+                }
+                saves.Add(itemSave);
+            }
+
+            return saves;
+        }
+
+
 
         public async Task<Location> CreateLocation(NewLocationDto newLocation, int adventureId)
         {
@@ -279,7 +321,7 @@ namespace API.Data
             foreach (Container c in containers)
             {
                 List<ItemDto> items = new List<ItemDto>();
-                foreach (ContainerItem i in c.Items)
+                foreach (ItemContainerLink i in c.Items)
                     items.Add(ItemDto.Convert(i.Item));
 
                 ContainerDto containerDto = new ContainerDto
@@ -572,6 +614,71 @@ namespace API.Data
             return true;
         }
 
+        public async Task<List<ContainerSave>> CheckForContainerSaves(LocationSave locationSave, AdventureSave adventureSave)
+        {
+
+
+            var baseLocation = await context.Locations
+                .Include(l => l.Containers).ThenInclude(c => c.Items)
+                .Include(l => l.Containers).ThenInclude(c => c.Triggers)
+                .FirstOrDefaultAsync(l => l.Id == locationSave.LocationId);
+
+            List<ContainerSave> saves = new List<ContainerSave>();
+            foreach (Container c in baseLocation.Containers)
+            {
+                var containerSave = locationSave.Containers.FirstOrDefault(save => save.ContainerId == c.Id);
+                if (containerSave == null)
+                {
+                    containerSave = new ContainerSave
+                    {
+                        ContainerId = c.Id,
+                        Container = c,
+                        Complete = false
+                    };
+                }
+                saves.Add(containerSave);
+            }
+
+            return saves;
+        }
+
+        public async Task<List<ItemSaveDto>> GetAvailableItems(int LocationSaveId)
+        {
+            var locationSave = await context.LocationSaves
+                .Include(l => l.Containers).ThenInclude(c => c.Items).ThenInclude(items => items.Item).ThenInclude(i => i.Photo)
+                .FirstOrDefaultAsync(l => l.Id == LocationSaveId);
+
+            List<ItemSave> items = new List<ItemSave>();
+            foreach (ContainerSave container in locationSave.Containers.Where(c => c.Complete))
+            {
+                foreach (ItemSave item in container.Items)
+                    items.Add(item);
+            }
+
+            return ItemSaveDto.ConvertList(items);
+        }
+
+        public async Task<List<ItemSaveDto>> GetItems(int characterId, string itemType = "any")
+        {
+            var pc = await context.PlayerCharacters.FirstOrDefaultAsync(p => p.Id == characterId);
+            var adventureSave = await context.AdventureSaves.FirstOrDefaultAsync(a => a.Id == pc.AdventureSaveId);
+            var locationSave = await context.LocationSaves.FirstOrDefaultAsync(l => l.AdventureSaveId == adventureSave.Id && l.IsCurrentLocation);
+
+            if (pc == null || adventureSave == null || locationSave == null)
+                return null;
+
+            List<ItemSaveDto> items = await GetAvailableItems(locationSave.Id);
+            if (itemType == "any")
+                return items.OrderBy(i => i.ItemType).ToList();
+
+            if (itemType == "hand")
+                return items.Where(i => i.ItemType == "sword" || i.ItemType == "shield").OrderBy(i => i.ItemType).ToList();
+
+
+            return items.Where(i => i.ItemType == itemType).OrderBy(i => i.ItemType).ToList();
+
+        }
+
         public async Task ResetSaves()
         {
             //Reset trigger saves
@@ -582,15 +689,21 @@ namespace API.Data
             //Reset Variables
             var adventure = await context.AdventureSaves
                 .Include(a => a.Variables)
-                .Include(a => a.LocationSaves)
+                .Include(a => a.LocationSaves).ThenInclude(l => l.Containers)
                 .FirstOrDefaultAsync(a => a.Id == 1);
 
             adventure.Variables.Clear();
 
             //Reset the current location
-            var baseAdventure = await context.Adventures.Include(a => a.StartingLocation).FirstOrDefaultAsync(a => a.Id == adventure.AdventureId);
+            var baseAdventure = await context.Adventures
+                .Include(a => a.StartingLocation)
+                .FirstOrDefaultAsync(a => a.Id == adventure.AdventureId);
             foreach (var location in adventure.LocationSaves)
+            {
                 location.IsCurrentLocation = false;
+                location.Containers.Clear();
+            }
+
             var startingLocationId = baseAdventure.StartingLocation.Id;
             adventure.LocationSaves.FirstOrDefault(l => l.LocationId == startingLocationId).IsCurrentLocation = true;
 

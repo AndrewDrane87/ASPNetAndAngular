@@ -69,6 +69,7 @@ import { InformationModalComponent } from './play/modals/information-modal/infor
 import { DamageCalculatorComponent } from './admin/damage-calculator/damage-calculator.component';
 import { MonsterCombatComponent } from './play/modals/monster-combat/monster-combat.component';
 import { EnemyAttackModalComponent } from './play/modals/enemy-attack-modal/enemy-attack-modal.component';
+import { AvilableItemsComponent } from './play/modals/avilable-items/avilable-items.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { EnemyAttackModalComponent } from './play/modals/enemy-attack-modal/enem
     DamageCalculatorComponent,
     MonsterCombatComponent,
     EnemyAttackModalComponent,
+    AvilableItemsComponent,
   ],
   imports: [
     BrowserModule,

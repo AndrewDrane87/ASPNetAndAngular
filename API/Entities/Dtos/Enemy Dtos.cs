@@ -15,7 +15,7 @@ namespace API.Entities
         public string Attack2Name { get; set; }
         public int Attack2Range { get; set; }
         public int Attack2BaseDamage { get; set; }
-
+        public int ModifierDiceSides { get; set; }
         public static EnemyDto Convert(Enemy enemy)
         {
             return new EnemyDto
@@ -31,7 +31,7 @@ namespace API.Entities
                 Attack2Name = enemy.Attack2Name,
                 Attack2Range = enemy.Attack2Range,
                 Attack2BaseDamage = enemy.Attack2BaseDamage,
-
+                ModifierDiceSides = enemy.ModifierDiceSides
             };
         }
     }
@@ -52,7 +52,7 @@ namespace API.Entities
         public string Attack2Name { get; set; }
         public int Attack2Range { get; set; }
         public int Attack2BaseDamage { get; set; }
-
+        public int ModifierDiceSides { get; set; } = 4;
         public static EnemySaveDto Convert(EnemySave save)
         {
             return new EnemySaveDto
@@ -71,6 +71,7 @@ namespace API.Entities
                 Attack2Name = save.Enemy.Attack2Name,
                 Attack2Range = save.Enemy.Attack2Range,
                 Attack2BaseDamage = save.Enemy.Attack2BaseDamage,
+                ModifierDiceSides = save.Enemy.ModifierDiceSides
             };
         }
 

@@ -25,6 +25,8 @@ namespace API.Entities
         public int ToId { get; set; }
     }
 
+    
+
     public class Interaction
     {
         public int Id { get; set; }

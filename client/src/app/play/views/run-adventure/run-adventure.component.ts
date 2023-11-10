@@ -21,10 +21,12 @@ import { TriggerService } from 'src/app/_services/trigger.service';
 import {
   Adventure,
   AdventureLocation,
+  Container,
   Enemy,
 } from 'src/app/_models/AdventureSave';
 import { MonsterCombatComponent } from '../../modals/monster-combat/monster-combat.component';
 import { EnemyAttackModalComponent } from '../../modals/enemy-attack-modal/enemy-attack-modal.component';
+import { AvilableItemsComponent } from '../../modals/avilable-items/avilable-items.component';
 
 @Component({
   selector: 'app-run-adventure',
@@ -136,9 +138,9 @@ export class RunAdventureComponent implements OnInit {
     this.currentView = 'location';
   }
 
-  containerSelected(event: AdminContainer) {
+  containerSelected(event: Container) {
     this.currentView = 'container';
-    this.locationService.getContainerById(event.id).subscribe({
+    this.locationService.getPlayerContainer(event.id).subscribe({
       next: (result) => {
         this.container = result;
       },
@@ -195,4 +197,6 @@ export class RunAdventureComponent implements OnInit {
       }
     }
   }
+
+  
 }

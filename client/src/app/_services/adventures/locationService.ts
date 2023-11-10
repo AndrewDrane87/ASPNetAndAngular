@@ -4,7 +4,8 @@ import { AdminAdventure, AdminAdventureLocation, AdminContainer } from 'src/app/
 import { Dialogue, NPC } from 'src/app/_models/npc';
 import { environment } from 'src/environments/environment';
 import { AdventureService } from './adventureService';
-import { AdventureLocation } from 'src/app/_models/AdventureSave';
+import { AdventureLocation, Container } from 'src/app/_models/AdventureSave';
+import { Item } from 'src/app/_models/item';
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +51,13 @@ adminLocation : AdminAdventureLocation |undefined;
     return this.http.get<AdminContainer>(url);
   }
 
-  
+  getPlayerContainer(id: number){
+    var url = this.baseUrl + `adventures/get-player-container?containerSaveId=${id}`
+    return this.http.get<Container>(url);
+  }
+
+  getAvailableItems(locationSaveId: number){
+    var url = this.baseUrl + `adventures/get-available-items?locationSaveId=${locationSaveId}`
+    return this.http.get<Item[]>(url);
+  }
 }

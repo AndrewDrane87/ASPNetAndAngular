@@ -1,5 +1,9 @@
+
 <div *ngIf="location">
-  <h1>{{ location.name }}</h1>
+  <div class="row">
+    <h1 class="col-10">{{ location.name }}</h1>
+    <button class="btn btn-dark col-2" (click)="getAvailableItems()">Show Available Items</button>    
+  </div>
 
   <div *ngIf="location.connectedLocations.length > 0">
     <h3>Locations</h3>
@@ -58,7 +62,9 @@
 
   <div class="mt-3" *ngIf="location.enemies.length > 0">
     <h3>Enemies</h3>
-    <button class="btn btn-danger ms-1" (click)="enemyAttack()">Enemy Attack Phase</button>
+    <button class="btn btn-danger ms-1" (click)="enemyAttack()">
+      Enemy Attack Phase
+    </button>
     <div class="row">
       <div *ngFor="let i of location.enemies" class="col-6">
         <div class="card enemy-card m-1 text-center" (click)="enemySelected(i)">
@@ -74,8 +80,7 @@
               <img class="card-thumbnail" src="{{ i.photoUrl }}" />
             </div>
             <div class="col-10">
-              
-              <table style="width: 100%;">
+              <table style="width: 100%">
                 <tbody>
                   <tr *ngIf="i.attack1BaseDamage > 0">
                     <td><strong>Attack 1: </strong>{{ i.attack1Name }}</td>

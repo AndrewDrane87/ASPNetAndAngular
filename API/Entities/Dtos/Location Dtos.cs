@@ -33,11 +33,11 @@ namespace API.Entities
         public int LocationId { get; set; }
         public List<NPC> NPCs { get; set; }
         public List<ConnectedLocationDto> ConnectedLocations { get; set; }
-        public List<ContainerDto> Containers { get; set; }
+        public List<ContainerSaveDto> Containers { get; set; }
         public List<Interaction> Interactions { get; set; }
         public List<ActionTriggerSaveDto> Triggers { get; set; }
         public List<EnemySaveDto> Enemies { get; set; }
-
+        public List<Item> AvailableItems { get; set; }
         public static LocationSaveDto Convert(LocationSave save)
         {
             if (save.Location == null) return null;
@@ -63,6 +63,7 @@ namespace API.Entities
                 if (e.CurrentHp > 0)
                     livingEnemies.Add(e);
             }
+
             LocationSaveDto dto = new LocationSaveDto
             {
                 Id = save.Id,
@@ -71,10 +72,10 @@ namespace API.Entities
                 LocationId = save.LocationId,
                 NPCs = locationDto.NPCs,
                 ConnectedLocations = locationDto.ConnectedLocations,
-                Containers = locationDto.Containers,
+                Containers = ContainerSaveDto.ConvertList(save.Containers),
                 Interactions = locationDto.Interactions,
                 Triggers = ActionTriggerSaveDto.CreateList(save.Triggers),
-                Enemies = EnemySaveDto.ConvertList(livingEnemies)
+                Enemies = EnemySaveDto.ConvertList(livingEnemies),
             };
 
             return dto;

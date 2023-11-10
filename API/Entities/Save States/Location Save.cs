@@ -19,7 +19,7 @@ namespace API.Entities
         public List<ActionTriggerSave> Triggers { get; set; }
         public string VisibilityRequirement { get; set; }
         public List<EnemySave> Enemies { get; set; }
-        
+        public List<ContainerSave> Containers { get; set; }
         /*
          * Need to be mapped
          */
@@ -27,8 +27,6 @@ namespace API.Entities
         public List<NPC> NPCs { get; set; }
         [NotMapped]
         public List<Interaction> Interactions { get; set; }
-        [NotMapped]
-        public List<Container> Containers { get; set; }
         #endregion
 
         #region Not Mapped
@@ -43,5 +41,16 @@ namespace API.Entities
         #endregion
 
 
+    }
+
+    public class AvailableItemLink
+    {
+        public int Id { get; set; }
+        [ForeignKey("Item")]
+        public int ItemId { get; set; }
+        [ForeignKey("LocationSave")]
+        public int LocationSaveId { get; set; }
+        public Item Item { get; set; }
+        public LocationSave LocationSave { get; set; }
     }
 }

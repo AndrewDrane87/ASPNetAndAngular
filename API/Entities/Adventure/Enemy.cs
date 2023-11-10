@@ -16,5 +16,6 @@
         public string Attack2Name { get; set; }
         public int Attack2Range { get; set; }
         public int Attack2BaseDamage { get; set; }
+        public int ModifierDiceSides { get; set; } = 4;
     }
 }

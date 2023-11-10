@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.DTOs.Items;
+using API.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 

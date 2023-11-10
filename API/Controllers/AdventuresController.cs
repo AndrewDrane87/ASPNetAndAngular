@@ -139,6 +139,15 @@ namespace API.Controllers
             return BadRequest("Something went wrong");
         }
 
+        [HttpGet("get-player-container")]
+        public async Task<ActionResult<ContainerSaveDto>> GetPlayerContainer([FromQuery] int containerSaveId)
+        {
+            var container = await uow.AdventureRepository.GetPlayerContainer(containerSaveId);
+            if (container == null) return NoContent();
+
+            return container;
+        }
+
         [HttpGet("get-containers")]
         public async Task<ActionResult<List<ContainerDto>>> GetContainers([FromQuery] int locationId)
         {
@@ -310,6 +319,13 @@ namespace API.Controllers
                 return Ok();
 
             return BadRequest("Failed to deal damage");
+        }
+
+        [HttpGet("get-available-items")]
+        public async Task<ActionResult<List<ItemSaveDto>>> GetAvailableItems(int locationSaveId)
+        {
+            var items = await uow.AdventureRepository.GetAvailableItems(locationSaveId);
+            return Ok(items);
         }
 
         [HttpPut("reset")]

@@ -1,4 +1,4 @@
-﻿using API.DTOs.Items;
+﻿using API.Entities;
 
 namespace API.Helpers
 {

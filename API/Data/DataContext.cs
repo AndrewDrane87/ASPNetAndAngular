@@ -34,6 +34,8 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<LocationSave> LocationSaves { get; set; }
     public DbSet<ActionTriggerSave> ActionTriggerSaves { get; set; }
     public DbSet<EnemySave> EnemySaves { get; set; }
+    public DbSet<ContainerSave> ContainerSaves { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -82,11 +84,6 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
             .WithMany(l => l.ConnectedToLocations)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<ContainerItem>()
-            .HasOne(e => e.Container)
-            .WithMany(i => i.Items)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.Entity<AdventureSave>()
             .HasMany(a => a.LocationSaves)
             .WithOne(l => l.AdventureSave)
@@ -100,6 +97,11 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
         builder.Entity<LocationSave>()
             .HasMany(l => l.Triggers)
             .WithOne(t => t.LocationSave)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<LocationSave>()
+            .HasMany(l => l.Containers)
+            .WithOne(c => c.LocationSave)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

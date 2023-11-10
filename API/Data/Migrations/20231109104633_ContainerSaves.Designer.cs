@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231109104633_ContainerSaves")]
+    partial class ContainerSaves
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -379,6 +382,29 @@ namespace API.Data.migrations
                     b.ToTable("ContainerCollection");
                 });
 
+            modelBuilder.Entity("API.Entities.ContainerItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContainerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContainerId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ContainerItem");
+                });
+
             modelBuilder.Entity("API.Entities.ContainerSave", b =>
                 {
                     b.Property<int>("Id")
@@ -554,91 +580,6 @@ namespace API.Data.migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Interactions");
-                });
-
-            modelBuilder.Entity("API.Entities.Item", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ArmorValue")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AttackValue")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("DamageType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ItemType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Modifiers")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("PhotoId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RequiredLevel")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PhotoId");
-
-                    b.ToTable("ItemCollection");
-                });
-
-            modelBuilder.Entity("API.Entities.ItemContainerLink", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ContainerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContainerId");
-
-                    b.HasIndex("ItemId");
-
-                    b.ToTable("ItemContainerLink");
-                });
-
-            modelBuilder.Entity("API.Entities.ItemSave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ContainerSaveId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContainerSaveId");
-
-                    b.HasIndex("ItemId");
-
-                    b.ToTable("ItemSave");
                 });
 
             modelBuilder.Entity("API.Entities.Location", b =>
@@ -838,6 +779,45 @@ namespace API.Data.migrations
                     b.HasKey("Name");
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("API.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArmorValue")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AttackValue")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DamageType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ItemType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Modifiers")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequiredLevel")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("ItemCollection");
                 });
 
             modelBuilder.Entity("API.ItemPhoto", b =>
@@ -1126,6 +1106,25 @@ namespace API.Data.migrations
                         .HasForeignKey("LocationId");
                 });
 
+            modelBuilder.Entity("API.Entities.ContainerItem", b =>
+                {
+                    b.HasOne("API.Entities.Container", "Container")
+                        .WithMany("Items")
+                        .HasForeignKey("ContainerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Container");
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("API.Entities.ContainerSave", b =>
                 {
                     b.HasOne("API.Entities.Container", "Container")
@@ -1192,53 +1191,6 @@ namespace API.Data.migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("API.Entities.Item", b =>
-                {
-                    b.HasOne("API.ItemPhoto", "Photo")
-                        .WithMany()
-                        .HasForeignKey("PhotoId");
-
-                    b.Navigation("Photo");
-                });
-
-            modelBuilder.Entity("API.Entities.ItemContainerLink", b =>
-                {
-                    b.HasOne("API.Entities.Container", "Container")
-                        .WithMany("Items")
-                        .HasForeignKey("ContainerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Container");
-
-                    b.Navigation("Item");
-                });
-
-            modelBuilder.Entity("API.Entities.ItemSave", b =>
-                {
-                    b.HasOne("API.Entities.ContainerSave", "ContainerSave")
-                        .WithMany("Items")
-                        .HasForeignKey("ContainerSaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ContainerSave");
-
-                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("API.Entities.Location", b =>
@@ -1316,23 +1268,23 @@ namespace API.Data.migrations
                         .WithMany("MyCharacters")
                         .HasForeignKey("AppUserId");
 
-                    b.HasOne("API.Entities.Item", "Body")
+                    b.HasOne("API.Item", "Body")
                         .WithMany()
                         .HasForeignKey("BodyId");
 
-                    b.HasOne("API.Entities.Item", "Feet")
+                    b.HasOne("API.Item", "Feet")
                         .WithMany()
                         .HasForeignKey("FeetId");
 
-                    b.HasOne("API.Entities.Item", "Helmet")
+                    b.HasOne("API.Item", "Helmet")
                         .WithMany()
                         .HasForeignKey("HelmetId");
 
-                    b.HasOne("API.Entities.Item", "LeftHand")
+                    b.HasOne("API.Item", "LeftHand")
                         .WithMany()
                         .HasForeignKey("LeftHandId");
 
-                    b.HasOne("API.Entities.Item", "RightHand")
+                    b.HasOne("API.Item", "RightHand")
                         .WithMany()
                         .HasForeignKey("RightHandId");
 
@@ -1347,6 +1299,15 @@ namespace API.Data.migrations
                     b.Navigation("LeftHand");
 
                     b.Navigation("RightHand");
+                });
+
+            modelBuilder.Entity("API.Item", b =>
+                {
+                    b.HasOne("API.ItemPhoto", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
+
+                    b.Navigation("Photo");
                 });
 
             modelBuilder.Entity("API.Message", b =>
@@ -1468,11 +1429,6 @@ namespace API.Data.migrations
                     b.Navigation("Items");
 
                     b.Navigation("Triggers");
-                });
-
-            modelBuilder.Entity("API.Entities.ContainerSave", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("API.Entities.Dialogue", b =>
