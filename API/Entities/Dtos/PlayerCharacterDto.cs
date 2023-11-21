@@ -8,16 +8,16 @@ namespace API.Entities
         public string Name { get; set; }
         public string PhotoUrl { get; set; }
 #nullable enable
-        public ItemDto? Helmet { get; set; }
+        public ItemSaveDto? Helmet { get; set; }
 #nullable enable
-        public ItemDto? LeftHand { get; set; }
+        public ItemSaveDto? LeftHand { get; set; }
 #nullable enable
-        public ItemDto? RightHand { get; set; }
+        public ItemSaveDto? RightHand { get; set; }
 #nullable enable
-        public ItemDto? Body { get; set; }
+        public ItemSaveDto? Body { get; set; }
 #nullable enable
-        public ItemDto? Feet { get; set; }
-        //public ItemBase[] BackPack { get; set; } = new ItemBase[10];
+        public ItemSaveDto? Feet { get; set; }
+        public ItemSaveDto[] BackPack { get; set; } = new ItemSaveDto[0];
 
         public static PlayerCharacterDto Convert(PlayerCharacter pc)
         {
@@ -26,7 +26,6 @@ namespace API.Entities
 
         public static List<PlayerCharacterDto> ConvertList(List<PlayerCharacter> playerCharacters)
         {
-
             List<PlayerCharacterDto> list = new List<PlayerCharacterDto>();
             if (playerCharacters != null)
                 foreach (PlayerCharacter pc in playerCharacters)

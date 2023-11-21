@@ -7,6 +7,7 @@ namespace API.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ShortDescription { get; set; }
         public string Description { get; set; }
         public List<NPC> NPCs { get; set; }
         public List<LocationLink> ConnectedToLocations { get; set; }
@@ -14,8 +15,9 @@ namespace API.Entities
         public List<Interaction> Interactions { get; set; }
         public List<Container> Containers { get; set; }
         public List<ActionTrigger> Triggers { get; set; }
-        public List<Enemy> Enemies { get; set; }
+        public List<EnemyLocationLink> EnemyLocationLinks { get; set; }
         public string VisibilityRequirements { get; set; }
+        public int? RoomNumber { get; set; }
     }
 
     public class LocationLink
@@ -25,7 +27,19 @@ namespace API.Entities
         public int ToId { get; set; }
     }
 
-    
+    public class EnemyLocationLink
+    {
+        public int Id { get; set; }
+
+        [ForeignKey("Location")]
+        public int LocationId { get; set; }
+        public Location Location { get; set; }
+
+        [ForeignKey("Enemy")]
+        public int EnemyId { get; set; }
+        public Enemy Enemy { get; set; }
+        public int RequiredPlayerCount { get; set; }
+    }
 
     public class Interaction
     {

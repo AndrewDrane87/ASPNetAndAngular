@@ -1,0 +1,96 @@
+<div class="m-2" *ngIf="item">
+  <h2>{{ item.name }}</h2>
+
+  <div class="card">
+    <div class="row no-padding m-0">
+      <p  *ngIf="item.attackValue > 0">
+        <strong>Base Attack: </strong>{{ item.attackValue }}
+      </p>
+      <p  *ngIf="item.armorValue > 0">
+        <strong>Armor Value: </strong>{{ item.armorValue }}
+      </p>
+
+      <p  *ngIf="item.statModifiers.length > 0">
+        <strong>Stat Modifiers:</strong>
+        {{
+          item.statModifiers.replace(":", ": ").replace("|", ", ") | titlecase
+        }}
+      </p>
+
+      <p *ngIf="disableAttack && item.damageModifiers.length > 0">
+        <strong>Damage Modifiers:</strong>
+        {{
+          item.damageModifiers.replace(":", ": ").replace("|", ", ") | titlecase
+        }}
+      </p>
+
+      <p *ngIf="item.resistanceModifiers.length > 0">
+        <strong>Resistance Modifiers:</strong>
+        {{
+          item.resistanceModifiers.replace(":", ": ").replace("|", ", ")
+            | titlecase
+        }}
+      </p>
+
+      <p ><strong>Value: </strong> {{ item.value }} bucks</p>
+    </div>
+  </div>
+
+  <div class="m-0 mt-2 no-padding card" *ngIf="item.use && item.use.length > 0">
+    <div class="row m-0 no-padding">
+      <div class="col-10 no-padding">
+        <h6 class="m-0 pad-0">
+          Usage ({{ item.currentStackSize }}/{{ item.maxStackSize }})
+        </h6>
+        <div *ngFor="let i of item.use.split('|')">
+          <p >
+            <strong>{{ i.split(":")[0] | titlecase }}</strong
+            >: {{ i.split(":")[1] }}
+          </p>
+        </div>
+      </div>
+
+      <div class="col-2 no-padding">
+        <button class="btn btn-dark" (click)="use()">Use</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="item.attackValue > 0 && disableAttack === false" class="mt-2">
+    <h3>Attack!!!</h3>
+    <div class="container">
+      <div class="row">
+        <div class="col-4">
+          <h5 class="mb-0">Roll a d{{ item.diceSides }}</h5>
+          <input
+            matInput
+            [(ngModel)]="diceValue"
+            (input)="updateDamage()"
+            type="number"
+            max="{{ item.diceSides }}"
+            min="1"
+            onfocus="this.select()"
+          />
+        </div>
+
+        <div class="col-4 text-center">
+          <h5 class="mb-0">Damage to deal</h5>
+          <div>
+            <p style="font-size: 4rem">{{ damageValue }}</p>
+          </div>
+        </div>
+
+        <div class="col-4 text-center">
+          <h5 class="mb-0">Damage Modifiers</h5>
+          <div *ngIf="item.damageModifiers.length > 0" class="mt-3">
+            <div *ngFor="let mod of item.damageModifiers.split('|')">
+              <p>
+                {{ mod.replace(":", ": ") | titlecase }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

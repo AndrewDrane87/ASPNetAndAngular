@@ -35,4 +35,8 @@ export class PlayerCharactersService {
     console.log('Values: ' + values);
     return this.http.post(this.baseUrl + 'playercharacters/create-player-character', values);
   }
+
+  useItem(playerCharacterId: number, itemId: number){
+    return this.http.put(this.baseUrl + `playercharacters/use-item?playerCharacterId=${playerCharacterId}&itemId=${itemId}`,{});
+  }
 }

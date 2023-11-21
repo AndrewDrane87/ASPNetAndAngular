@@ -59,6 +59,12 @@ public class AdminController : BaseApiController
     [HttpGet("photos-to-moderate")]
     public ActionResult GetPhotosForModeration() { return Ok("Admins or moderators can see this"); }
 
+    [HttpGet("get-available")]
+    public async Task<ActionResult<List<AdminAdventureDto>>> GetAdventures()
+    {
+        return await uow.AdventureRepository.AdminGetAdventures();
+    }
+
     [HttpGet("get-adventure")]
     public async Task<ActionResult<AdminAdventureDto>> GetAdventure([FromQuery] int id)
     {

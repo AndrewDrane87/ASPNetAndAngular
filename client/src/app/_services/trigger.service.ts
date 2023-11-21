@@ -33,15 +33,14 @@ export class TriggerService {
   }
 
   processTrigger(currentIndex: number, eventType: string) {
-    // console.log(`Checking Triggers - currentIndex: ${currentIndex}`);
+    console.log(`Checking Triggers - currentIndex: ${currentIndex}`);
     if (currentIndex >= this.triggerArray.length) {
       this.complete.emit();
       return;
     }
     
     let t = this.triggerArray[currentIndex];
-    // console.log(`t.eventType=${t!.eventType}; eventType=${eventType}`);
-
+    console.log(`t.eventType=${t!.eventType}; eventType=${eventType}`);
     if (t!.eventType === eventType) {
       switch (t!.actionType) {
         case 'information':

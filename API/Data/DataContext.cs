@@ -13,7 +13,6 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     {
     }
 
-    public DbSet<UserLike> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }
@@ -26,6 +25,12 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<NPC> NPCCollection { get; set; }
     public DbSet<Dialogue> DialogueCollection { get; set; }
     public DbSet<DialogueResponse> ResponseCollection { get; set; }
+    public DbSet<DialogueResponseLink> DialogueResponseLinkCollection { get; set; }
+
+    public DbSet<DialogueNode> DialogueNodes { get; set; }
+    public DbSet<DialogueLink> DialogueLinks { get; set; }
+
+
     public DbSet<Container> ContainerCollection { get; set; }
     public DbSet<Interaction> Interactions { get; set; }
     public DbSet<ActionTrigger> Triggers { get; set; }
@@ -35,7 +40,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<ActionTriggerSave> ActionTriggerSaves { get; set; }
     public DbSet<EnemySave> EnemySaves { get; set; }
     public DbSet<ContainerSave> ContainerSaves { get; set; }
-
+    public DbSet<ItemSave> ItemSaves { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -52,31 +57,6 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
         .WithOne(u => u.Role)
         .HasForeignKey(ur => ur.RoleId)
         .IsRequired();
-
-        builder.Entity<UserLike>()
-        .HasKey(k => new { k.SourceUserId, k.TargetUserId });
-
-        builder.Entity<UserLike>()
-        .HasOne(s => s.SourceUser)
-        .WithMany(l => l.LikedUsers)
-        .HasForeignKey(s => s.SourceUserId)
-        .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<UserLike>()
-        .HasOne(s => s.TargetUser)
-        .WithMany(l => l.LikedByUsers)
-        .HasForeignKey(s => s.TargetUserId)
-        .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<Message>()
-        .HasOne(u => u.Recipient)
-        .WithMany(m => m.MessagesReceived)
-        .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<Message>()
-        .HasOne(u => u.Sender)
-        .WithMany(m => m.MessagesSent)
-        .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<LocationLink>().HasKey(e => new { e.FromId, e.ToId });
         builder.Entity<LocationLink>()
@@ -102,6 +82,16 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
         builder.Entity<LocationSave>()
             .HasMany(l => l.Containers)
             .WithOne(c => c.LocationSave)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<DialogueResponseLink>()
+            .HasOne(d => d.ChildDialogue)
+            .WithMany(r => r.ParentResponses);
+
+        builder.Entity<DialogueLink>().HasKey(e => new { e.FromDialogueId, e.ToDialogueId });
+        builder.Entity<DialogueLink>()
+            .HasOne(link => link.FromDialogue)
+            .WithMany(d => d.ToDialogueLinks)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -1,8 +1,25 @@
-<div>
-  <h4>{{ ItemName }}</h4>
-  <div class="card-img-wrapper">
-    <img class="img-thumbnail" src="{{ PhotoUrl }}" alt="" />
+<div *ngIf="item">
+  <div class="container">
+    <div class="row">
+      <div class="col-10 no-padding">
+        <h6>{{ item.name }}</h6>
+      </div>
+
+      <div class="col-2 no-padding">
+        <button class="btn btn-dark btn-icon" (click)="selectRequest()">
+          <i class="fa fa-wrench"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6 no-padding" (click)="attack()">
+        <img class="img-thumbnail" src="{{ item.photoUrl }}" alt="" />
+      </div>
+      <div class="col-6 no-padding">
+        <p *ngIf="item.attackValue > 0">Attack Value: {{ item.attackValue }}</p>
+        <p *ngIf="item.armorValue > 0">Armor Value: {{ item.armorValue }}</p>
+      </div>
+    </div>
   </div>
-  <p *ngIf="AttackValue > 0">Attack Value: {{ AttackValue }}</p>  
-  <p *ngIf="ArmorValue > 0">Armor Value: {{ ArmorValue }}</p>
 </div>

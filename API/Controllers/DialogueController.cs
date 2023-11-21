@@ -28,11 +28,7 @@ namespace API.Controllers
             var d = await uow.DialogRepository.CreateChildDialogue(dialogue, responseId);
             if (d == null) return BadRequest("Could not find response to tie dialogue to");
 
-            //if (await uow.Complete())
-                return Ok(d);
-
-            return BadRequest("Failed to create dialogue");
-
+            return Ok(d);
         }
 
         [HttpPost("create-response")]
@@ -65,6 +61,7 @@ namespace API.Controllers
             return Ok(dialogue);
         }
 
+        /*
         [HttpGet("get-previous-dialogue")]
         public async Task<ActionResult<DialogueDto>> GetPreviousDialogue([FromQuery] int dialogueId)
         {
@@ -74,6 +71,7 @@ namespace API.Controllers
             return d;
 
         }
+        */
 
         [HttpDelete("delete-response")]
         public async Task<ActionResult<DialogueDto>> DeleteResponse([FromQuery] int responseId)
@@ -87,6 +85,6 @@ namespace API.Controllers
 
             return BadRequest("Could not delete response");
 
+        }
     }
-}
 }

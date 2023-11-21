@@ -1,11 +1,11 @@
 <div class="container">
-  <div>
-    <div class="btn-group" dropdown>
+  <div class="row mt-1">
+    <div class="btn-group col-12" dropdown>
       <button
         id="button-animated"
         dropdownToggle
         type="button"
-        class="btn btn-primary dropdown-toggle"
+        class="btn btn-dark dropdown-toggle"
         aria-controls="dropdown-animated"
       >
         {{
@@ -14,6 +14,7 @@
             : fromLocation.name
         }}<span class="caret"></span>
       </button>
+
       <ul
         id="dropdown-animated"
         *dropdownMenu
@@ -22,19 +23,25 @@
         aria-labelledby="button-animated"
       >
         <li role="menuitem" *ngFor="let l of locations">
-          <p *ngIf="l.name !== toLocation?.name" (click)="setFromLocation(l)">{{ l.name }}</p>
+          <p
+          class="m-0 ms-1 me-1"
+            *ngIf="l.name !== toLocation?.name"
+            (click)="setFromLocation(l)"
+          >
+            {{ l.roomNumber > 0 ? l.roomNumber + " - " : null }}{{ l.name }}
+          </p>
         </li>
       </ul>
     </div>
   </div>
 
-  <div>
-    <div class="btn-group" dropdown>
+  <div class="row mt-1">
+    <div class="btn-group col-12" dropdown>
       <button
         id="button-animated"
         dropdownToggle
         type="button"
-        class="btn btn-primary dropdown-toggle"
+        class="btn btn-dark dropdown-toggle"
         aria-controls="dropdown-animated"
       >
         {{
@@ -45,28 +52,54 @@
       <ul
         id="dropdown-animated"
         *dropdownMenu
-        class="dropdown-menu"
+        class="dropdown-menu ms-1 me-1"
         role="menu"
         aria-labelledby="button-animated"
       >
         <li role="menuitem" *ngFor="let l of locations">
-          <p *ngIf="l.name !== fromLocation?.name" (click)="setToLocation(l)">{{ l.name }}</p>
+          <p
+            class="m-0 ms-1 me-1"
+            *ngIf="l.name !== fromLocation?.name"
+            (click)="setToLocation(l)"
+          >
+            {{ l.roomNumber > 0 ? l.roomNumber + " - " : null }}{{ l.name }}
+          </p>
         </li>
       </ul>
     </div>
   </div>
 
-  <div class="btn-group">
-    <label class="btn btn-primary" [(ngModel)]="linkMode"
-           btnRadio="Two-Way" tabindex="0" role="button">Two-Way</label>
-    <label class="btn btn-primary" [(ngModel)]="linkMode"
-           btnRadio="One-Way" tabindex="0" role="button">One-Way</label>
+  <div class="row">
+    <div class="btn-group">
+      <div class="col-6 no-padding">
+        <label
+          class="btn btn-dark"
+          [(ngModel)]="linkMode"
+          btnRadio="Two-Way"
+          tabindex="0"
+          role="button"
+          >Two-Way</label
+        >
+      </div>
+      <div class="col-6 no-padding">
+        <label
+          class="btn btn-dark"
+          [(ngModel)]="linkMode"
+          btnRadio="One-Way"
+          tabindex="0"
+          role="button"
+          >One-Way</label
+        >
+      </div>
+    </div>
   </div>
 
-
-
-  <div>
-    <button [disabled]="!toLocation || !fromLocation" class="btn btn-primary" (click)="submit()">
+  <div class="mb-1">
+    <button
+      [disabled]="!toLocation || !fromLocation"
+      class="btn btn-dark"
+      (click)="submit()"
+    >
       Submit
     </button>
   </div>

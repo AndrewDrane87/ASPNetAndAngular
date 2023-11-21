@@ -27,7 +27,9 @@ public class ItemRepository
             Photo = photo,
             AttackValue = dto.AttackValue,
             ArmorValue = dto.ArmorValue,
-            Modifiers = dto.Modifiers,
+            StatModifiers = dto.Modifiers,
+            DamageModifiers = dto.Modifiers,
+            ResistanceModifiers = dto.Modifiers,
             ItemType = dto.ItemType.ToLower()
         };
 
@@ -71,11 +73,12 @@ public class ItemRepository
     public async Task<BasicItemCollection> GetBasicItems()
     {
         BasicItemCollection items = new BasicItemCollection();
+        
         items.Helmet = await context.ItemCollection.Where(i => i.ItemType == "helmet" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
-        items.Sword = await context.ItemCollection.Where(i => i.ItemType == "sword" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
+        items.Sword = await context.ItemCollection.Where(i => i.ItemType == "sword" && i.AttackValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
         items.Shield = await context.ItemCollection.Where(i => i.ItemType == "shield" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
         items.Armor = await context.ItemCollection.Where(i => i.ItemType == "armor" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
-        items.Boots = await context.ItemCollection.Where(i => i.ItemType == "boots" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
+        items.Boots = await context.ItemCollection.Where(i => i.ItemType == "boot" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
 
         return items;
     }

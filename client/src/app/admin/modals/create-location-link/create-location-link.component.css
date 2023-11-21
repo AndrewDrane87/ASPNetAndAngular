@@ -1,3 +1,7 @@
 p:hover{
     cursor: pointer;
 }
+
+.dropdown-menu { max-height: 50; overflow-y: auto; min-width: 100% !important; background-attachment: local, local, scroll, scroll; }
+
+.dropdown-item { white-space: normal; }

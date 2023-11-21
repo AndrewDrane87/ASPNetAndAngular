@@ -1,30 +1,52 @@
-
 <div *ngIf="location">
   <div class="row">
-    <h1 class="col-10">{{ location.name }}</h1>
-    <button class="btn btn-dark col-2" (click)="getAvailableItems()">Show Available Items</button>    
+    <div class="col-10 no-padding">
+      <h4>
+        {{ location.name }}
+        {{
+          location.roomNumber > 0
+            ? "[Room - " + location.roomNumber + "]"
+            : null
+        }}
+      </h4>
+      <p class="m-1">{{ location.shortDescription }}</p>
+      <p class="m-1">{{ location.description }}</p>
+    </div>
+    <div class="col-2 no-padding">
+      <button class="btn btn-dark" (click)="getAvailableItems()">
+        Show Available Items
+      </button>
+    </div>
   </div>
 
   <div *ngIf="location.connectedLocations.length > 0">
-    <h3>Locations</h3>
+    <h5 class="m-0 mt-2">Connected Locations</h5>
     <div class="row">
-      <div *ngFor="let l of location?.connectedLocations" class="col-3">
+      <div
+        *ngFor="let l of location?.connectedLocations"
+        class="col-3 no-padding"
+      >
         <div class="card m-1 text-center" (click)="locationSelected(l)">
-          <p>
+          <p class="m-0">
             <strong>{{ l.name }}</strong>
+            {{
+              l.roomNumber > 0
+                ? "[Room - " + l.roomNumber + "]"
+                : null
+            }}
           </p>
-          <p class="description">"{{ l.description }}""</p>
+          <p class="description m-0">"{{ l.shortDescription }}"</p>
         </div>
       </div>
     </div>
   </div>
 
   <div class="mt-3" *ngIf="location.npCs.length > 0">
-    <h3>NPC's</h3>
+    <h5 class="m-0 mt-2">NPC's</h5>
     <div class="row">
-      <div *ngFor="let npc of location?.npCs" class="col-3">
+      <div *ngFor="let npc of location?.npCs" class="col-3 no-padding">
         <div class="card m-1 text-center" (click)="npcSelected(npc)">
-          <p>
+          <p class="m-0">
             <strong>{{ npc.name }}</strong>
           </p>
           <p class="description">"{{ npc.caption }}""</p>
@@ -34,11 +56,11 @@
   </div>
 
   <div class="mt-3" *ngIf="location.containers.length > 0">
-    <h3>Containers</h3>
+    <h5>Containers</h5>
     <div class="row">
-      <div *ngFor="let c of location.containers" class="col-3">
+      <div *ngFor="let c of location.containers" class="col-3 no-padding">
         <div class="card m-1 text-center" (click)="containerSelected(c)">
-          <p>
+          <p class="m-0">
             <strong>{{ c.name }}</strong>
           </p>
           <p class="description">"{{ c.description }}""</p>
@@ -48,9 +70,9 @@
   </div>
 
   <div class="mt-3" *ngIf="location.interactions.length > 0">
-    <h3>Interactions</h3>
+    <h5>Interactions</h5>
     <div class="row">
-      <div *ngFor="let i of location.interactions" class="col-3">
+      <div *ngFor="let i of location.interactions" class="col-3 no-padding">
         <div class="card m-1 text-center" (click)="interactionSelected(i)">
           <p>
             <strong>{{ i.name }}</strong>
@@ -61,25 +83,28 @@
   </div>
 
   <div class="mt-3" *ngIf="location.enemies.length > 0">
-    <h3>Enemies</h3>
+    <h5>Enemies</h5>
     <button class="btn btn-danger ms-1" (click)="enemyAttack()">
       Enemy Attack Phase
     </button>
     <div class="row">
-      <div *ngFor="let i of location.enemies" class="col-6">
-        <div class="card enemy-card m-1 text-center" (click)="enemySelected(i)">
-          <h5 class="mt-0 mb-0">
-            {{ i.name }}
-          </h5>
-          <p class="mt-0 mb-0">
-            <strong>HP: </strong>{{ i.currentHp }}/{{ i.maxHp }}
-          </p>
-
-          <div class="row">
-            <div class="col-2">
+      <div *ngFor="let i of location.enemies" class="col-3 no-padding">
+        <div class="card m-1 text-center" (click)="enemySelected(i)">
+          <div class="row m-0">
+            <div class="col-2 no-padding">
               <img class="card-thumbnail" src="{{ i.photoUrl }}" />
             </div>
-            <div class="col-10">
+
+            <div class="col-10 no-padding">
+              <h5 class="mt-0 mb-0">
+                {{ i.name }}
+              </h5>
+              <p class="mt-0 mb-0">
+                <strong>HP: </strong>{{ i.currentHp }}/{{ i.maxHp }}
+              </p>
+            </div>
+          </div>
+          <!-- <div class="col-10">
               <table style="width: 100%">
                 <tbody>
                   <tr *ngIf="i.attack1BaseDamage > 0">
@@ -94,8 +119,7 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
-          </div>
+            </div> -->
         </div>
       </div>
     </div>

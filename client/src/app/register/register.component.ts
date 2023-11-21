@@ -38,11 +38,7 @@ export class RegisterComponent {
   initializeForm() {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
-      gender: ['male'],
       knownAs: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
-      city: ['', Validators.required],
-      country: ['', Validators.required],
       password: [
         '',
         [Validators.required, Validators.minLength(4), Validators.maxLength(8)],
@@ -67,14 +63,11 @@ export class RegisterComponent {
   }
 
   register() {
-    const dob = this.getDateOnly(
-      this.registerForm.controls['dateOfBirth'].value
-    );
-    const values = { ...this.registerForm.value, dateOfBirth: dob };
+    const values = { ...this.registerForm.value};
 
     this.accountService.register(values).subscribe({
       next: () => {
-        this.router.navigateByUrl('/members');
+        this.router.navigateByUrl('/playercharacters');
       },
       error: (error) => {
         this.validationErrors = error;

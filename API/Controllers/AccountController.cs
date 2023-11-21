@@ -41,14 +41,13 @@ public class AccountController : BaseApiController
         if (!result.Succeeded) return BadRequest(result.Errors);
 
         var roleResult = await userManager.AddToRoleAsync(user, "Member");
-        if (roleResult.Succeeded) return BadRequest(result.Errors);
+        if (!roleResult.Succeeded) return BadRequest(result.Errors);
 
         return new UserDto
         {
             Username = user.UserName,
             Token = await _tokenService.CreateToken(user),
             KnownAs = user.KnownAs,
-            Gender = user.Gender
         };
     }
 
@@ -63,8 +62,7 @@ public class AccountController : BaseApiController
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
         var user = await userManager.Users
-        .Include(p => p.Photos)
-        .SingleOrDefaultAsync(x => x.UserName == loginDto.Username);
+        .SingleOrDefaultAsync(x => x.UserName.ToLower() == loginDto.Username.ToLower());
 
         if (user == null) return Unauthorized("Invalid username");
 
@@ -80,10 +78,7 @@ public class AccountController : BaseApiController
         };
         if (userDto.Username.ToLower() != "admin")
         {
-            var photo = user.Photos.FirstOrDefault(x => x.IsMain);
-            userDto.PhotoUrl = photo == null ? string.Empty : photo.Url;
             userDto.KnownAs = user.KnownAs;
-            userDto.Gender = user.Gender;
         }
         return userDto;
     }

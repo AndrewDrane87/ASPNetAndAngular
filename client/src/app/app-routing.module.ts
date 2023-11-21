@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { MemberListComponent } from './members/member-list/member-list.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { MessagesComponent } from './messages/messages/messages.component';
 import { authGuard } from './_guards/auth.guard';
@@ -32,13 +31,13 @@ const routes: Routes = [
   { path: 'errors', component: TestErrorComponent },
   { path: 'not-found', component: NotFoundComponent },
   { path: 'server-error', component: ServerErrorComponent },
+  { path: 'register', component: RegisterComponent},
   {
     path: '',
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard],
     children: [
       {path: 'playercharacters', component: MyCharactersComponent},
-      {path: 'members', component: MemberListComponent},
       { path: 'members/:username', component: MemberDetailComponent, resolve:{member: memberDetailedResolver} },
       { path: 'member/edit', component: MemberEditComponent, canDeactivate:[preventUnsavedChangesGuard] },
       { path: 'messages', component: MessagesComponent },
@@ -48,7 +47,7 @@ const routes: Routes = [
       { path: 'admin/dialogue/:Id', component: DialogueManagementComponent, resolve:{dialogue: dialogueManagementResolver} },
       { path: 'admin/adventure/:adventureId', component: AdventureManagementComponent, resolve:{adventure: adventureManagementResolver} },
       { path: 'play', component: AdventureSelectionComponent},
-      { path: 'register', component: RegisterComponent},
+      
       { path: 'damagecalculator', component: DamageCalculatorComponent},
       { path: 'admin/adventure/:adventureId', component: RunAdventureComponent, resolve:{adventure: adventureManagementResolver} },
       { path: 'player/adventure/:adventureId', component: RunAdventureComponent, resolve:{adventure: playerAdventureResolver} },

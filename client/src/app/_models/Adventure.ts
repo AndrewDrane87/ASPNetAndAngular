@@ -1,3 +1,4 @@
+import { Enemy } from "./AdventureSave";
 import { ActionTrigger } from "./actionTrigger";
 import { Item } from "./item";
 import { NPC } from "./npc";
@@ -8,6 +9,7 @@ export interface AdminAdventure{
     description : string;
     startingLocation : AdminAdventureLocation;
     locations: AdminAdventureLocation[];
+    variables: AdminAdventureVariable;
 
 }
 
@@ -20,6 +22,16 @@ export interface AdminAdventureLocation{
     connectedLocations: AdminAdventureLocation[]
     interactions: AdminInteraction[]
     triggers: ActionTrigger[];
+    enemies: Enemy;
+    visibilityRequirements: string;
+    roomNumber: number;
+}
+
+export interface NewLocation{
+    name: string;
+    shortDescription: string;
+    description : string;
+    roomNumber: number;
 }
 
 export interface AdminContainer{
@@ -27,6 +39,12 @@ export interface AdminContainer{
     name: string;
     description: string;
     items: Item[];
+}
+
+export interface AdminAdventureVariable{
+    id: number;
+    name: string;
+    initialValue: string;
 }
 
 export interface AdminInteraction{

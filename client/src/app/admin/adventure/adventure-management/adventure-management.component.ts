@@ -7,6 +7,7 @@ import { CreateLocationLinkComponent } from '../../modals/create-location-link/c
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { AdventureAdminService } from 'src/app/_services/adventure-admin.service';
+import { CreateLocationFormComponent } from '../create-location-form/create-location-form.component';
 
 @Component({
   selector: 'app-adventure-management',
@@ -44,14 +45,14 @@ export class AdventureManagementComponent implements OnInit {
   }
 
   createLocation(adventure: AdminAdventure) {
-    this.modalRef = this.modalService.show(CreateNameDescriptionComponent);
+    this.modalRef = this.modalService.show(CreateLocationFormComponent);
     this.modalRef.content.header = 'Create location';
     return this.modalRef.onHidden!.subscribe(() => {
       if (this.modalRef?.content.result === true) {
         var l = this.modalRef.content.value as AdminAdventureLocation;
         this.adventureService.createLocation(l);
         this.router.navigate(['admin/adventure/' + adventure.id]);
-        console.log(l);
+        
       }
     });
   }

@@ -1,51 +1,59 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#" routerLink="/" routerLinkActive="active"
-      >Mythos</a
-    >
+<nav
+  class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"
+  style="max-height: 5rem; padding-top: 0rem; padding-bottom: 0rem"
+>
+  <a class="navbar-brand ms-2" href="#" routerLink="/" routerLinkActive="active"
+    >[Code Name Mythos]</a
+  >
 
-    <ul
-      class="navbar-nav me-auto mb-2 mb-md-0"
-      *ngIf="accountService.currentUser$ | async"
-    >
-      <ng-container *ngIf="accountService.currentUser$ | async">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/playercharacters" routerLinkActive="active"
-            >My Characters</a
-          >
-        </li>
-        
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/play" routerLinkActive="active"
-            >Play!</a
-          >
-        </li>
+  <ul
+    class="navbar-nav me-auto mb-2 mb-md-0"
+    *ngIf="accountService.currentUser$ | async"
+  >
+    <ng-container *ngIf="accountService.currentUser$ | async">
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          routerLink="/playercharacters"
+          routerLinkActive="active"
+          >My Characters</a
+        >
+      </li>
 
-        <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
-          <a class="nav-link" routerLink="/admin" routerLinkActive="active"
-            >Admin</a
-          >
-        </li>
-      </ng-container>
-    </ul>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/play" routerLinkActive="active"
+          >Play!</a
+        >
+      </li>
 
-    <div
-      class="dropdown"
-      *ngIf="accountService.currentUser$ | async as user"
-      dropdown
+      <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
+        <a class="nav-link" routerLink="/admin" routerLinkActive="active"
+          >Admin</a
+        >
+      </li>
+    </ng-container>
+  </ul>
+
+  <div
+    class="dropdown me-2"
+    *ngIf="accountService.currentUser$ | async as user"
+    dropdown
+  >
+    <a
+      dropdownToggle
+      class="dropdown-toggle text-light text-decoration-none ms-2"
+      >Welcome {{ user.knownAs | titlecase }}</a
     >
-    <img src="{{user.photoUrl || './assets/user.png'}}" alt="user photo">
-      <a dropdownToggle class="dropdown-toggle text-light text-decoration-none ms-2" >Welcome {{ user.knownAs }}</a >
-      <div class="dropdown-menu" *dropdownMenu>
-        <a class="dropdown-item" routerLink="/member/edit">Edit Profile</a>
-        <a class="dropdown-item" (click)="logout()">Logout</a>
-      </div>
+    <div class="dropdown-menu" *dropdownMenu>
+      <a class="dropdown-item" routerLink="/member/edit">Edit Profile</a>
+      <a class="dropdown-item" (click)="logout()">Logout</a>
     </div>
+  </div>
 
+  <div *ngIf="!(accountService.currentUser$ | async)" style="margin-left: auto;">
     <form
-      *ngIf="!(accountService.currentUser$ | async)"
       #loginForm="ngForm"
-      class="d-flex"
+      class="d-flex pad-2"
       (ngSubmit)="login()"
       autocomplete="off"
     >
@@ -63,9 +71,10 @@
         [(ngModel)]="model.password"
         name="password"
       />
-      <button class="btn btn-success" type="submit">Login</button>
-      <button class="btn btn-success ms-1" type="button" (click)="register()">Register</button>
+      <button class="btn btn-dark" type="submit">Login</button>
+      <button class="btn btn-dark ms-1" type="button" (click)="register()">
+        Register
+      </button>
     </form>
-    <button class=" ms-2 btn btn-danger" (click)="resetSaves()">Reset</button>
   </div>
 </nav>

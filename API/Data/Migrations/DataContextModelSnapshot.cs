@@ -52,7 +52,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("GroupName");
 
-                    b.ToTable("Connections");
+                    b.ToTable("Connections", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.ActionTrigger", b =>
@@ -97,7 +97,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Triggers");
+                    b.ToTable("Triggers", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.ActionTriggerSave", b =>
@@ -126,7 +126,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("ActionTriggerSaves");
+                    b.ToTable("ActionTriggerSaves", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.Adventure", b =>
@@ -150,7 +150,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("StartingLocationId");
 
-                    b.ToTable("Adventures");
+                    b.ToTable("Adventures", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.AdventureSave", b =>
@@ -167,6 +167,9 @@ namespace API.Data.migrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CurrentLocationId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("SaveDescription")
                         .HasColumnType("text");
 
@@ -176,7 +179,9 @@ namespace API.Data.migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("AdventureSaves");
+                    b.HasIndex("CurrentLocationId");
+
+                    b.ToTable("AdventureSaves", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.AdventureVariable", b =>
@@ -200,7 +205,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("AdventureId");
 
-                    b.ToTable("AdventureVariable");
+                    b.ToTable("AdventureVariable", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.AdventureVariableSave", b =>
@@ -226,7 +231,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("AdventureVariableId");
 
-                    b.ToTable("AdventureVariableSave");
+                    b.ToTable("AdventureVariableSave", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.AppRole", b =>
@@ -269,21 +274,12 @@ namespace API.Data.migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("City")
-                        .HasColumnType("text");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<string>("Country")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -291,15 +287,6 @@ namespace API.Data.migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("Gender")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Interests")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Introduction")
-                        .HasColumnType("text");
 
                     b.Property<string>("KnownAs")
                         .HasColumnType("text");
@@ -312,9 +299,6 @@ namespace API.Data.migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LookingFor")
-                        .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -376,7 +360,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("ContainerCollection");
+                    b.ToTable("ContainerCollection", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.ContainerSave", b =>
@@ -393,7 +377,7 @@ namespace API.Data.migrations
                     b.Property<int>("ContainerId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("LocationSaveId")
+                    b.Property<int>("LocationSaveId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -402,7 +386,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationSaveId");
 
-                    b.ToTable("ContainerSaves");
+                    b.ToTable("ContainerSaves", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.Dialogue", b =>
@@ -413,17 +397,12 @@ namespace API.Data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ParentResponseId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentResponseId");
-
-                    b.ToTable("DialogueCollection");
+                    b.ToTable("DialogueCollection", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.DialogueResponse", b =>
@@ -434,7 +413,10 @@ namespace API.Data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("DialogueId")
+                    b.Property<int?>("DialogueResponseLinkId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ParentDialogueId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Text")
@@ -442,9 +424,34 @@ namespace API.Data.migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DialogueId");
+                    b.HasIndex("DialogueResponseLinkId");
 
-                    b.ToTable("ResponseCollection");
+                    b.HasIndex("ParentDialogueId");
+
+                    b.ToTable("ResponseCollection", (string)null);
+                });
+
+            modelBuilder.Entity("API.Entities.DialogueResponseLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ChildDialogueId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ResponseId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChildDialogueId");
+
+                    b.HasIndex("ResponseId");
+
+                    b.ToTable("DialogueResponseLinkCollection", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.Enemy", b =>
@@ -479,9 +486,6 @@ namespace API.Data.migrations
                     b.Property<string>("AttackStrategy")
                         .HasColumnType("text");
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("MaxHp")
                         .HasColumnType("integer");
 
@@ -499,11 +503,35 @@ namespace API.Data.migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
-
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("EnemyCollection");
+                    b.ToTable("EnemyCollection", (string)null);
+                });
+
+            modelBuilder.Entity("API.Entities.EnemyLocationLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EnemyId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequiredPlayerCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnemyId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("EnemyLocationLink", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.EnemySave", b =>
@@ -520,6 +548,9 @@ namespace API.Data.migrations
                     b.Property<int>("EnemyId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("EnemyLocationLinkId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("LocationSaveId")
                         .HasColumnType("integer");
 
@@ -527,9 +558,11 @@ namespace API.Data.migrations
 
                     b.HasIndex("EnemyId");
 
+                    b.HasIndex("EnemyLocationLinkId");
+
                     b.HasIndex("LocationSaveId");
 
-                    b.ToTable("EnemySaves");
+                    b.ToTable("EnemySaves", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.Interaction", b =>
@@ -553,7 +586,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Interactions");
+                    b.ToTable("Interactions", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.Item", b =>
@@ -570,13 +603,13 @@ namespace API.Data.migrations
                     b.Property<int>("AttackValue")
                         .HasColumnType("integer");
 
+                    b.Property<string>("DamageModifiers")
+                        .HasColumnType("text");
+
                     b.Property<string>("DamageType")
                         .HasColumnType("text");
 
                     b.Property<string>("ItemType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Modifiers")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -588,11 +621,26 @@ namespace API.Data.migrations
                     b.Property<int>("RequiredLevel")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ResistanceModifiers")
+                        .HasColumnType("text");
+
+                    b.Property<int>("StackSize")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("StatModifiers")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Use")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("ItemCollection");
+                    b.ToTable("ItemCollection", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.ItemContainerLink", b =>
@@ -615,7 +663,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemContainerLink");
+                    b.ToTable("ItemContainerLink", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.ItemSave", b =>
@@ -626,10 +674,22 @@ namespace API.Data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ContainerSaveId")
+                    b.Property<int?>("ContainerSaveId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CurrentStackSize")
                         .HasColumnType("integer");
 
                     b.Property<int>("ItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LocationSaveId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PlayerCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StorageIndex")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -638,7 +698,11 @@ namespace API.Data.migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemSave");
+                    b.HasIndex("LocationSaveId");
+
+                    b.HasIndex("PlayerCharacterId");
+
+                    b.ToTable("ItemSaves", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.Location", b =>
@@ -658,6 +722,12 @@ namespace API.Data.migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int?>("RoomNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("text");
+
                     b.Property<string>("VisibilityRequirements")
                         .HasColumnType("text");
 
@@ -665,7 +735,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("AdventureId");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.LocationLink", b =>
@@ -688,7 +758,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("LocationLink");
+                    b.ToTable("LocationLink", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.LocationSave", b =>
@@ -717,7 +787,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("LocationSaves");
+                    b.ToTable("LocationSaves", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.NPC", b =>
@@ -746,7 +816,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("NPCCollection");
+                    b.ToTable("NPCCollection", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.Photo", b =>
@@ -773,7 +843,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photos", (string)null);
                 });
 
             modelBuilder.Entity("API.Entities.PlayerCharacter", b =>
@@ -790,16 +860,16 @@ namespace API.Data.migrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("BodyId")
+                    b.Property<int?>("BodyItemSaveId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("FeetId")
+                    b.Property<int?>("FeetItemSaveId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("HelmetId")
+                    b.Property<int?>("HelmetItemSaveId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("LeftHandId")
+                    b.Property<int?>("LeftHandItemSaveId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -808,7 +878,7 @@ namespace API.Data.migrations
                     b.Property<string>("PhotoUrl")
                         .HasColumnType("text");
 
-                    b.Property<int?>("RightHandId")
+                    b.Property<int?>("RightHandItemSaveId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -817,17 +887,17 @@ namespace API.Data.migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("BodyId");
+                    b.HasIndex("BodyItemSaveId");
 
-                    b.HasIndex("FeetId");
+                    b.HasIndex("FeetItemSaveId");
 
-                    b.HasIndex("HelmetId");
+                    b.HasIndex("HelmetItemSaveId");
 
-                    b.HasIndex("LeftHandId");
+                    b.HasIndex("LeftHandItemSaveId");
 
-                    b.HasIndex("RightHandId");
+                    b.HasIndex("RightHandItemSaveId");
 
-                    b.ToTable("PlayerCharacters");
+                    b.ToTable("PlayerCharacters", (string)null);
                 });
 
             modelBuilder.Entity("API.Group", b =>
@@ -837,7 +907,7 @@ namespace API.Data.migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("API.ItemPhoto", b =>
@@ -859,7 +929,7 @@ namespace API.Data.migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemPhotos");
+                    b.ToTable("ItemPhotos", (string)null);
                 });
 
             modelBuilder.Entity("API.Message", b =>
@@ -903,22 +973,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("API.UserLike", b =>
-                {
-                    b.Property<int>("SourceUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TargetUserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SourceUserId", "TargetUserId");
-
-                    b.HasIndex("TargetUserId");
-
-                    b.ToTable("Likes");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1094,7 +1149,13 @@ namespace API.Data.migrations
                         .WithMany("AdventureSaves")
                         .HasForeignKey("AppUserId");
 
+                    b.HasOne("API.Entities.LocationSave", "CurrentLocation")
+                        .WithMany()
+                        .HasForeignKey("CurrentLocationId");
+
                     b.Navigation("Adventure");
+
+                    b.Navigation("CurrentLocation");
                 });
 
             modelBuilder.Entity("API.Entities.AdventureVariable", b =>
@@ -1134,40 +1195,73 @@ namespace API.Data.migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.LocationSave", null)
+                    b.HasOne("API.Entities.LocationSave", "LocationSave")
                         .WithMany("Containers")
-                        .HasForeignKey("LocationSaveId");
+                        .HasForeignKey("LocationSaveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Container");
-                });
 
-            modelBuilder.Entity("API.Entities.Dialogue", b =>
-                {
-                    b.HasOne("API.Entities.DialogueResponse", "ParentResponse")
-                        .WithMany()
-                        .HasForeignKey("ParentResponseId");
-
-                    b.Navigation("ParentResponse");
+                    b.Navigation("LocationSave");
                 });
 
             modelBuilder.Entity("API.Entities.DialogueResponse", b =>
                 {
-                    b.HasOne("API.Entities.Dialogue", null)
+                    b.HasOne("API.Entities.DialogueResponseLink", "ChildDialogueLink")
+                        .WithMany()
+                        .HasForeignKey("DialogueResponseLinkId");
+
+                    b.HasOne("API.Entities.Dialogue", "ParentDialogue")
                         .WithMany("ChildResponses")
-                        .HasForeignKey("DialogueId");
+                        .HasForeignKey("ParentDialogueId");
+
+                    b.Navigation("ChildDialogueLink");
+
+                    b.Navigation("ParentDialogue");
+                });
+
+            modelBuilder.Entity("API.Entities.DialogueResponseLink", b =>
+                {
+                    b.HasOne("API.Entities.Dialogue", "ChildDialogue")
+                        .WithMany("ParentResponses")
+                        .HasForeignKey("ChildDialogueId");
+
+                    b.HasOne("API.Entities.DialogueResponse", "Response")
+                        .WithMany()
+                        .HasForeignKey("ResponseId");
+
+                    b.Navigation("ChildDialogue");
+
+                    b.Navigation("Response");
                 });
 
             modelBuilder.Entity("API.Entities.Enemy", b =>
                 {
-                    b.HasOne("API.Entities.Location", null)
-                        .WithMany("Enemies")
-                        .HasForeignKey("LocationId");
-
                     b.HasOne("API.Entities.Photo", "Photo")
                         .WithMany()
                         .HasForeignKey("PhotoId");
 
                     b.Navigation("Photo");
+                });
+
+            modelBuilder.Entity("API.Entities.EnemyLocationLink", b =>
+                {
+                    b.HasOne("API.Entities.Enemy", "Enemy")
+                        .WithMany()
+                        .HasForeignKey("EnemyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Location", "Location")
+                        .WithMany("EnemyLocationLinks")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enemy");
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("API.Entities.EnemySave", b =>
@@ -1178,11 +1272,19 @@ namespace API.Data.migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Entities.EnemyLocationLink", "EnemyLocationLink")
+                        .WithMany()
+                        .HasForeignKey("EnemyLocationLinkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("API.Entities.LocationSave", null)
                         .WithMany("Enemies")
                         .HasForeignKey("LocationSaveId");
 
                     b.Navigation("Enemy");
+
+                    b.Navigation("EnemyLocationLink");
                 });
 
             modelBuilder.Entity("API.Entities.Interaction", b =>
@@ -1226,9 +1328,7 @@ namespace API.Data.migrations
                 {
                     b.HasOne("API.Entities.ContainerSave", "ContainerSave")
                         .WithMany("Items")
-                        .HasForeignKey("ContainerSaveId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContainerSaveId");
 
                     b.HasOne("API.Entities.Item", "Item")
                         .WithMany()
@@ -1236,9 +1336,19 @@ namespace API.Data.migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Entities.LocationSave", "LocationSave")
+                        .WithMany("Items")
+                        .HasForeignKey("LocationSaveId");
+
+                    b.HasOne("API.Entities.PlayerCharacter", null)
+                        .WithMany("BackPack")
+                        .HasForeignKey("PlayerCharacterId");
+
                     b.Navigation("ContainerSave");
 
                     b.Navigation("Item");
+
+                    b.Navigation("LocationSave");
                 });
 
             modelBuilder.Entity("API.Entities.Location", b =>
@@ -1297,7 +1407,7 @@ namespace API.Data.migrations
             modelBuilder.Entity("API.Entities.Photo", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "AppUser")
-                        .WithMany("Photos")
+                        .WithMany()
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1316,25 +1426,25 @@ namespace API.Data.migrations
                         .WithMany("MyCharacters")
                         .HasForeignKey("AppUserId");
 
-                    b.HasOne("API.Entities.Item", "Body")
+                    b.HasOne("API.Entities.ItemSave", "Body")
                         .WithMany()
-                        .HasForeignKey("BodyId");
+                        .HasForeignKey("BodyItemSaveId");
 
-                    b.HasOne("API.Entities.Item", "Feet")
+                    b.HasOne("API.Entities.ItemSave", "Feet")
                         .WithMany()
-                        .HasForeignKey("FeetId");
+                        .HasForeignKey("FeetItemSaveId");
 
-                    b.HasOne("API.Entities.Item", "Helmet")
+                    b.HasOne("API.Entities.ItemSave", "Helmet")
                         .WithMany()
-                        .HasForeignKey("HelmetId");
+                        .HasForeignKey("HelmetItemSaveId");
 
-                    b.HasOne("API.Entities.Item", "LeftHand")
+                    b.HasOne("API.Entities.ItemSave", "LeftHand")
                         .WithMany()
-                        .HasForeignKey("LeftHandId");
+                        .HasForeignKey("LeftHandItemSaveId");
 
-                    b.HasOne("API.Entities.Item", "RightHand")
+                    b.HasOne("API.Entities.ItemSave", "RightHand")
                         .WithMany()
-                        .HasForeignKey("RightHandId");
+                        .HasForeignKey("RightHandItemSaveId");
 
                     b.Navigation("AdventureSave");
 
@@ -1352,39 +1462,20 @@ namespace API.Data.migrations
             modelBuilder.Entity("API.Message", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "Recipient")
-                        .WithMany("MessagesReceived")
+                        .WithMany()
                         .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Entities.AppUser", "Sender")
-                        .WithMany("MessagesSent")
+                        .WithMany()
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Recipient");
 
                     b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("API.UserLike", b =>
-                {
-                    b.HasOne("API.Entities.AppUser", "SourceUser")
-                        .WithMany("LikedUsers")
-                        .HasForeignKey("SourceUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.AppUser", "TargetUser")
-                        .WithMany("LikedByUsers")
-                        .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SourceUser");
-
-                    b.Navigation("TargetUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1448,17 +1539,7 @@ namespace API.Data.migrations
                 {
                     b.Navigation("AdventureSaves");
 
-                    b.Navigation("LikedByUsers");
-
-                    b.Navigation("LikedUsers");
-
-                    b.Navigation("MessagesReceived");
-
-                    b.Navigation("MessagesSent");
-
                     b.Navigation("MyCharacters");
-
-                    b.Navigation("Photos");
 
                     b.Navigation("UserRoles");
                 });
@@ -1479,6 +1560,8 @@ namespace API.Data.migrations
                 {
                     b.Navigation("ChildResponses");
 
+                    b.Navigation("ParentResponses");
+
                     b.Navigation("Triggers");
                 });
 
@@ -1495,7 +1578,7 @@ namespace API.Data.migrations
 
                     b.Navigation("Containers");
 
-                    b.Navigation("Enemies");
+                    b.Navigation("EnemyLocationLinks");
 
                     b.Navigation("Interactions");
 
@@ -1510,7 +1593,14 @@ namespace API.Data.migrations
 
                     b.Navigation("Enemies");
 
+                    b.Navigation("Items");
+
                     b.Navigation("Triggers");
+                });
+
+            modelBuilder.Entity("API.Entities.PlayerCharacter", b =>
+                {
+                    b.Navigation("BackPack");
                 });
 
             modelBuilder.Entity("API.Group", b =>

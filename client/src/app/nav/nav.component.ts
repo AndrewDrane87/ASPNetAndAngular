@@ -39,12 +39,4 @@ export class NavComponent implements OnInit {
   register() {
     this.router.navigateByUrl('/register');
   }
-
-  resetSaves() {
-    this.adventureService.reset()
-      .subscribe({
-        next: () => this.toastr.success('Reset Adventure'),
-        error: (error) => this.toastr.error(error),
-      });
-  }
 }

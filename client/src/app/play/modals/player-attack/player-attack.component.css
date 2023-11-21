@@ -1,0 +1,11 @@
+input{
+    text-align: center;
+    font-size: 4rem;
+    height: 6rem;
+    width: 80%;
+}
+
+p{
+    padding: 2px;
+    margin: 0px;
+}

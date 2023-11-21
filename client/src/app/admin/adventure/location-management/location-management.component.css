@@ -1,14 +1,8 @@
 .element-div{
-    padding: 10px;
     cursor: pointer;
-    position: relative;
 }
 
 .element-div:hover {
     border: 1px solid lightgray;
-    border-radius: 1rem;
-}
-
-.btn-icon{
-    width: auto;
+    border-radius: 0.5rem;
 }

@@ -18,7 +18,6 @@ public class UnitOfWork
 
     public IUserRepository UserRepository => new UserRepository(context, mapper);
     public IMessageRepository MessageRepository => new MessageRepository(context, mapper);
-    public ILikesRepository LikesRepository => new LikesRepository(context);
     public PlayerCharacterRepository PlayerCharacterRepository => new PlayerCharacterRepository(context, mapper);
     public ItemRepository ItemRepository => new ItemRepository(context, mapper);
     public AdventureRepository AdventureRepository => new AdventureRepository(context, mapper);

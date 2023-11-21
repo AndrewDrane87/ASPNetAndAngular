@@ -5,7 +5,6 @@ namespace API.Entities
     public class ContainerSave
     {
         public int Id { get; set; }
-        
         public bool Complete { get; set; }
         public List<ItemSave> Items { get; set; }
 

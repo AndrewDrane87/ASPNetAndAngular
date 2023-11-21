@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import {
-  HandItem,
-  Helmet,
   PlayerCharacter,
 } from 'src/app/_models/playerCharacters/playerCharacter';
 import { ItemService } from 'src/app/_services/items/item.service';
@@ -17,6 +15,7 @@ export class ItemSelectorComponent implements OnInit {
   result = false;
   character: PlayerCharacter | undefined;
   selectedItem: any | undefined;
+  currentItemId = -1;
 
   constructor(
     private itemService: ItemService,
@@ -29,27 +28,33 @@ export class ItemSelectorComponent implements OnInit {
     switch (type) {
       case 'helmets':
         this.itemService
-          .getAvailableHelmets(this.character!)
+          .getAvailableHelmets(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'leftHand':
           this.itemService
-          .getAvailableHandItems(this.character!)
+          .getAvailableHandItems(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'rightHand':
           this.itemService
-          .getAvailableHandItems(this.character!)
+          .getAvailableHandItems(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'armor':
           this.itemService
-          .getAvailableArmor(this.character!)
+          .getAvailableArmor(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
         case 'boots':
           this.itemService
-          .getAvailableBoots(this.character!)
+          .getAvailableBoots(this.character!, this.currentItemId)
+          .subscribe({ next: (results) => {(this.availableItems = results);console.log(results); }});
+          
+        break;
+        case 'backpack':
+          this.itemService
+          .getAvailable(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
     }

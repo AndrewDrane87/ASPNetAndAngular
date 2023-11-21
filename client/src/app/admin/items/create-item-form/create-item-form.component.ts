@@ -17,8 +17,6 @@ import { ImageSelectorComponent } from 'src/app/image-selector/image-selector.co
 import { map } from 'rxjs';
 import { ItemPhoto } from 'src/app/_models/itemPhoto';
 import { ItemService } from 'src/app/_services/items/item.service';
-import { NewHandItem } from 'src/app/_models/newItems/newItems';
-import { HandItem } from 'src/app/_models/playerCharacters/playerCharacter';
 
 @Component({
   selector: 'app-create-item-form',

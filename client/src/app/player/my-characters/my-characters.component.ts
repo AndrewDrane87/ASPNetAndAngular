@@ -12,11 +12,8 @@ export class MyCharactersComponent implements OnInit {
   createMode = false;
   selectedCharacter: PlayerCharacter | undefined;
   displayPlayerCharacter = false;
-  
-  
-  
-  constructor(private playerCharacterService: PlayerCharactersService) {
-    }
+
+  constructor(private playerCharacterService: PlayerCharactersService) {}
   ngOnInit(): void {
     this.loadPlayerCharacters();
   }
@@ -25,6 +22,7 @@ export class MyCharactersComponent implements OnInit {
     this.playerCharacterService.getPlayerCharacters().subscribe({
       next: (characters) => {
         this.myCharacters = characters;
+        this.playerSelected(this.myCharacters[0].id);
       },
     });
   }
@@ -34,14 +32,20 @@ export class MyCharactersComponent implements OnInit {
       next: (character) => {
         if (character) {
           this.selectedCharacter = character;
+          for (let i = 0; i < 10; i++) {
+            if (this.selectedCharacter.backPack === undefined) {
+              this.selectedCharacter.backPack = [];
+            }
+            if (i >= this.selectedCharacter.backPack?.length)
+              this.selectedCharacter.backPack?.push(undefined);
+          }
+
           this.displayPlayerCharacter = true;
           console.log(character);
         }
       },
     });
   }
-
-  
 
   createCharacter() {
     console.log('create new pressed');
@@ -57,7 +61,7 @@ export class MyCharactersComponent implements OnInit {
     this.loadPlayerCharacters();
   }
 
-  backToCharacterSelection(){
+  backToCharacterSelection() {
     this.displayPlayerCharacter = false;
   }
 }

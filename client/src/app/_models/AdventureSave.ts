@@ -17,6 +17,7 @@ export interface AdventureLocation{
     id: number;
     locationId: number;
     name: string;
+    shortDescription: string;
     description : string;
     npCs: NPC[],
     containers: Container[]
@@ -24,6 +25,7 @@ export interface AdventureLocation{
     interactions: Interaction[]
     triggers: ActionTrigger[];
     enemies: Enemy[],
+    roomNumber: number;
 }
 
 export interface Container{

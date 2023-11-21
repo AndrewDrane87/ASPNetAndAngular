@@ -83,7 +83,9 @@ namespace API.Data
                     PhotoUrl = item.Photo.Url,
                     AttackValue = item.AttackValue,
                     ArmorValue = item.ArmorValue,
-                    Modifiers = item.Modifiers,
+                    StatModifiers = item.StatModifiers,
+                    DamageModifiers = item.DamageModifiers,
+                    ResistanceModifiers = item.ResistanceModifiers,
                     ItemType = item.ItemType,
                     DamageType = item.DamageType,
                 });

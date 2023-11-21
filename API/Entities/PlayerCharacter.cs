@@ -8,17 +8,29 @@ public class PlayerCharacter
     public int Id { get; set; }
     public string Name { get; set; }
     public string PhotoUrl { get; set; }
-#nullable enable 
-    public Item? Helmet { get; set; }
 #nullable enable
-    public Item? LeftHand { get; set; }
-#nullable enable
-    public Item? RightHand { get; set; }
-#nullable enable
-    public Item? Body { get; set; }
-#nullable enable
-    public Item? Feet { get; set; }
-    //public ItemBase[] BackPack { get; set; } = new ItemBase[10];
+
+    [ForeignKey("Helmet")]
+    public int? HelmetItemSaveId { get; set; }
+    public ItemSave Helmet { get; set; }
+
+    [ForeignKey("LeftHand")]
+    public int? LeftHandItemSaveId { get; set; }
+    public ItemSave LeftHand { get; set; }
+
+    [ForeignKey("RightHand")]
+    public int? RightHandItemSaveId { get; set; }
+    public ItemSave RightHand { get; set; }
+
+    [ForeignKey("Body")]
+    public int? BodyItemSaveId { get; set; }
+    public ItemSave Body { get; set; }
+
+    [ForeignKey("Feet")]
+    public int? FeetItemSaveId { get; set; }
+    public ItemSave Feet { get; set; }
+
+    public List<ItemSave> BackPack { get; set; }
 
     [ForeignKey("AdventureSave")]
     public int? AdventureSaveId { get; set; }

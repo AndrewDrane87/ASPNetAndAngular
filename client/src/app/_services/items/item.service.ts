@@ -9,13 +9,7 @@ import {
   NewHandItem,
   NewHelmet,
 } from '../../_models/newItems/newItems';
-import {
-  Armor,
-  Boots,
-  HandItem,
-  Helmet,
-  PlayerCharacter,
-} from '../../_models/playerCharacters/playerCharacter';
+import { PlayerCharacter } from '../../_models/playerCharacters/playerCharacter';
 import { Item } from 'src/app/_models/item';
 
 @Injectable({
@@ -111,7 +105,6 @@ export class ItemService {
   }
 
   createBoots(item: NewBoots) {
-
     var url = this.baseUrl + 'items/create';
     item.itemType = 'boots';
     console.log('Create boots: ' + item);
@@ -202,34 +195,41 @@ export class ItemService {
     });
   }
 
-  getAvailableHelmets(character: PlayerCharacter) {
+  getAvailableHelmets(character: PlayerCharacter, currentItemId: number) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=helmets&characterId=${character.id}`;
+      `playercharacters/get-available-items?type=helmet&characterId=${character.id}&currentItemId=${currentItemId}`;
     return this.http.get<Item[]>(url);
   }
 
-  getAvailableHandItems(character: PlayerCharacter) {
+  getAvailableHandItems(character: PlayerCharacter, currentItemId: number) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=hand-items&characterId=${character.id}`;
+      `playercharacters/get-available-items?type=hand&characterId=${character.id}&currentItemId=${currentItemId}`;
     return this.http.get<Item[]>(url);
   }
-  getAvailableArmor(character: PlayerCharacter) {
+  getAvailableArmor(character: PlayerCharacter, currentItemId: number) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=armor&characterId=${character.id}`;
+      `playercharacters/get-available-items?type=armor&characterId=${character.id}&currentItemId=${currentItemId}`;
     return this.http.get<Item[]>(url);
   }
-  getAvailableBoots(character: PlayerCharacter) {
+  getAvailableBoots(character: PlayerCharacter, currentItemId: number) {
     var url =
       this.baseUrl +
-      `playercharacters/get-available-items?type=boots&characterId=${character.id}`;
+      `playercharacters/get-available-items?type=boot&characterId=${character.id}&currentItemId=${currentItemId}`;
     return this.http.get<Item[]>(url);
   }
 
-  setCharacterItem(itemType: string, itemId: number, charcaterId: number) {
-    var body = { itemType: itemType, itemId: itemId, characterId: charcaterId };
+  getAvailable(character: PlayerCharacter, currentItemId: number) {
+    var url =
+      this.baseUrl +
+      `playercharacters/get-available-items?type=any&characterId=${character.id}&currentItemId=${currentItemId}`;
+    return this.http.get<Item[]>(url);
+  }
+
+  setCharacterItem(itemType: string, itemId: number, charcaterId: number, backpackIndex: number) {
+    var body = { itemType: itemType, itemId: itemId, characterId: charcaterId, backpackIndex :backpackIndex };
     console.log(body);
     var url = this.baseUrl + `playercharacters/set-character-item`;
     return this.http.put(url, body);

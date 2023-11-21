@@ -37,6 +37,7 @@ export class AdventureAdminComponent implements OnInit {
   }
 
   editAdventure(adventure: AdminAdventure) {
+    console.log(adventure.id);
     this.adventureService.adminAdventure = adventure;
     this.router.navigate(['admin/adventure/' + adventure.id]);
   }

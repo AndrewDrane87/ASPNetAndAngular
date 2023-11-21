@@ -1,0 +1,36 @@
+.img-thumbnail{
+    height: 10vw;
+    width: 10vw;
+}
+
+img{
+    border-radius: .25rem;
+    aspect-ratio: 1/1;
+    max-height: 3vw;
+    padding: 0px;
+    vertical-align: top;
+}
+
+.btn{
+    vertical-align: top;
+}
+
+.card{
+    height: 100%;
+}
+
+app-item-card{
+    height: 100%;
+    width: 100%;
+}
+
+.row{
+    margin: 0px;
+}
+
+
+
+.container{
+    margin: 0px;
+    padding: 0px;
+}

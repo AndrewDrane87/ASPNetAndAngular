@@ -20,6 +20,7 @@ namespace API.Entities
         public string VisibilityRequirement { get; set; }
         public List<EnemySave> Enemies { get; set; }
         public List<ContainerSave> Containers { get; set; }
+        public List<ItemSave> Items { get; set; }
         /*
          * Need to be mapped
          */

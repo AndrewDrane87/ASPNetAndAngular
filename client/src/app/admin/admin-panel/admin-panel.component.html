@@ -1,14 +1,15 @@
 <h2>Admin Panel</h2>
 <div class="tab-panel">
   <tabset class="member-tabset">
-    <tab heading="Item Management" *appHasRole="['Admin']">
-      <div class="container">
-        <app-item-manager></app-item-manager>
-      </div>
-    </tab>
+    
     <tab heading="Adventure management" *appHasRole="['Admin']">
       <div class="container">
         <app-adventure-admin></app-adventure-admin>
+      </div>
+    </tab>
+    <tab heading="Item Management" *appHasRole="['Admin']">
+      <div class="container">
+        <app-item-manager></app-item-manager>
       </div>
     </tab>
     <tab heading="User management" *appHasRole="['Admin']">

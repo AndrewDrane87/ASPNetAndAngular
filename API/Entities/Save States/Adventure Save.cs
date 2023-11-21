@@ -13,6 +13,10 @@ namespace API.Entities
 
         public List<PlayerCharacter> PlayerCharacters { get; set; }
 
+        [ForeignKey("CurrentLocation")]
+        public int? CurrentLocationId { get; set; }
+        public LocationSave CurrentLocation { get; set; }
+
         public List<LocationSave> LocationSaves { get; set; }
         public List<AdventureVariableSave> Variables { get; set; }
     }

@@ -13,9 +13,6 @@
         {
             var currentLocation = save.LocationSaves.FirstOrDefault(l => l.IsCurrentLocation);
 
-            if (currentLocation == null)
-                throw new Exception();
-
             return new AdventureSaveDto
             {
                 Id = save.Id,

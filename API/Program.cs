@@ -22,12 +22,14 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
+string[] origins = { "https://localhost:4200", "https://192.168.4.20:4200" };
+
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 app.UseCors(builder => builder.AllowAnyHeader()
 .AllowAnyMethod()
 .AllowCredentials()
-.WithOrigins("https://localhost:4200")
+.WithOrigins(origins)
 );
 
 //Do you have a valid token
@@ -35,10 +37,13 @@ app.UseAuthentication();
 //The token is valid, what are you allowed to do
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
+app.MapFallbackToController("Index", "Fallback");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;

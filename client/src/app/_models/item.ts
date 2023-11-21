@@ -5,7 +5,16 @@ export interface Item{
     photoUrl: string ;
     attackValue: number;
     armorValue: number;
-    modifiers: string;
+    damageModifiers: string;
+    statModifiers: string;
+    resistanceModifiers: string;
     itemType: string;
     damageType: string,
+    diceSides: number,
+    storageIndex: number;
+    value: number;
+    maxStackSize: number;
+    currentStackSize: number;
+    use: string;
+    
 }

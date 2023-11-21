@@ -16,10 +16,18 @@ namespace API.Data
 
         public async Task<EnemyDto> CreateEnemy(Enemy e, int locationId)
         {
-            var location = await context.Locations.Include(l=> l.Enemies).FirstOrDefaultAsync(l => l.Id == locationId);
+            var location = await context.Locations
+                .Include(l => l.EnemyLocationLinks).ThenInclude(link => link.Enemy)
+                .FirstOrDefaultAsync(l => l.Id == locationId);
             if (location == null) return null;
 
-            location.Enemies.Add(e);
+            EnemyLocationLink newLink = new EnemyLocationLink()
+            {
+                Location = location,
+                Enemy = e
+            };
+
+            location.EnemyLocationLinks.Add(newLink);
             await context.SaveChangesAsync();
             return EnemyDto.Convert(e);
         }
@@ -27,7 +35,7 @@ namespace API.Data
         public async Task<EnemyDto> GetEnemyById(int id)
         {
             var enemy = await context.EnemyCollection
-                .Include(e=> e.Photo)
+                .Include(e => e.Photo)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (enemy == null) return null;
@@ -37,14 +45,14 @@ namespace API.Data
         public async Task<List<EnemyDto>> GetEnemiesByLocation(int locationId)
         {
             var location = await context.Locations
-                .Include(l => l.Enemies).ThenInclude(e => e.Photo)
+                .Include(l => l.EnemyLocationLinks).ThenInclude(link => link.Enemy).ThenInclude(e => e.Photo)
                 .FirstOrDefaultAsync(l => l.Id == locationId);
 
-            if(location == null) return null;
+            if (location == null) return null;
 
             List<EnemyDto> enemies = new List<EnemyDto>();
-            foreach(Enemy e in  location.Enemies)
-                enemies.Add(EnemyDto.Convert(e));
+            foreach (EnemyLocationLink link in location.EnemyLocationLinks)
+                enemies.Add(EnemyDto.Convert(link.Enemy));
 
             return enemies;
         }

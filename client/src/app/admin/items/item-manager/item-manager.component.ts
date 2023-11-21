@@ -4,10 +4,6 @@ import { Item } from 'src/app/_models/item';
 import { ItemPhoto } from 'src/app/_models/itemPhoto';
 import { Pagination } from 'src/app/_models/pagination';
 import {
-  Armor,
-  Boots,
-  HandItem,
-  Helmet,
 } from 'src/app/_models/playerCharacters/playerCharacter';
 import { ItemService } from 'src/app/_services/items/item.service';
 

@@ -14,8 +14,8 @@ export class AdventureAdminService {
   constructor(private http: HttpClient) {}
 
   loadAdminAdventures() {
-    var url = this.baseUrl + 'adventures/get-available';
-    return this.http.get<AdminAdventure[]>(url);
+    var url = this.baseUrl + 'admin/get-available';
+        return this.http.get<AdminAdventure[]>(url);
   }
 
   createAdventure(adventure: AdminAdventure) {
@@ -98,7 +98,9 @@ export class AdventureAdminService {
   }
 
   createLocation(location: AdminAdventureLocation) {
+    
     if (this.adminAdventure !== undefined) {
+      console.log('Create Location')
       var url =
         this.baseUrl +
         'adventures/create-location?adventureId=' +
@@ -107,10 +109,7 @@ export class AdventureAdminService {
       return new Promise((resolve, reject) => {
         this.http.post<AdminAdventureLocation>(url, location).subscribe({
           next: (result: AdminAdventureLocation) => {
-            // const indexA = this.adventures!.indexOf(this.adminAdventure!, 0);
-            // if (this.adventures[indexA].locations === null)
-            //   this.adventures[indexA].locations = [];
-            // this.adventures[indexA].locations.push(result);
+            console.log(`Adventure admin service, new location: ` + result);
             
             this.adminAdventure?.locations.push(result);
             resolve(true);

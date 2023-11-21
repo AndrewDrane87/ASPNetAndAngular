@@ -8,7 +8,9 @@ namespace API.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ShortDescription { get; set; }
         public string Description { get; set; }
+        
         [JsonIgnore]
         public Location Location { get; set; }
         public List<NPC> NPCs { get; set; }
@@ -17,18 +19,41 @@ namespace API.Entities
         public List<Interaction> Interactions { get; set; }
         public List<ActionTrigger> Triggers { get; set; }
         public string VisibilityRequirements { get; set; }
+        public int RoomNumber { get; set; }
+
+        public static LocationDto Convert(Location location, List<ConnectedLocationDto> connectedLocations, List<ContainerDto> containers)
+        {
+            return new LocationDto
+            {
+                Id = location.Id,
+                Name = location.Name,
+                ShortDescription = location.ShortDescription,
+                Description = location.Description,
+                ConnectedLocations = connectedLocations,
+                NPCs = location.NPCs,
+                Containers = containers,
+                Interactions = location.Interactions,
+                Triggers = location.Triggers,
+                Location = location,
+                VisibilityRequirements = location.VisibilityRequirements,
+                RoomNumber = location.RoomNumber == null ? -1 : (int)location.RoomNumber,
+            };
+        }
     }
 
     public class NewLocationDto
     {
         public string Name { get; set; }
+        public string ShortDescription { get; set; }
         public string Description { get; set; }
+        public int RoomNumber { get; set; } = -1;
     }
 
     public class LocationSaveDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ShortDescription { get; set; }
         public string Description { get; set; }
         public int LocationId { get; set; }
         public List<NPC> NPCs { get; set; }
@@ -38,6 +63,9 @@ namespace API.Entities
         public List<ActionTriggerSaveDto> Triggers { get; set; }
         public List<EnemySaveDto> Enemies { get; set; }
         public List<Item> AvailableItems { get; set; }
+        public int RoomNumber { get; set; }
+
+
         public static LocationSaveDto Convert(LocationSave save)
         {
             if (save.Location == null) return null;
@@ -46,6 +74,7 @@ namespace API.Entities
             {
                 Id = save.Id,
                 Name = save.Location.Name,
+                ShortDescription = save.Location.ShortDescription,
                 Description = save.Location.Description,
                 LocationId = save.LocationId,
             };
@@ -68,6 +97,7 @@ namespace API.Entities
             {
                 Id = save.Id,
                 Name = save.Location.Name,
+                ShortDescription=save.Location.ShortDescription,
                 Description = save.Location.Description,
                 LocationId = save.LocationId,
                 NPCs = locationDto.NPCs,
@@ -76,6 +106,8 @@ namespace API.Entities
                 Interactions = locationDto.Interactions,
                 Triggers = ActionTriggerSaveDto.CreateList(save.Triggers),
                 Enemies = EnemySaveDto.ConvertList(livingEnemies),
+                RoomNumber = locationDto.RoomNumber,
+                
             };
 
             return dto;
@@ -98,7 +130,25 @@ namespace API.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ShortDescription { get; set; }
         public string Description { get; set; }
         public string VisibilityRequirements { get; set; }
+        public int RoomNumber { get; set; }
+
+        public static ConnectedLocationDto Convert(Location location)
+        {
+            ConnectedLocationDto dto = new ConnectedLocationDto
+            {
+                Id = location.Id,
+                Name = location.Name,
+                ShortDescription = location.ShortDescription,
+                Description = location.Description,
+                VisibilityRequirements = location.VisibilityRequirements,
+                RoomNumber = location.RoomNumber == null ? -1 : (int)location.RoomNumber,
+            };
+
+
+            return dto;
+        }
     }
 }

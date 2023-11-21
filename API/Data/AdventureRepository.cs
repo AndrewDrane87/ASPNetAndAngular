@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using API.DTOs.Admin;
+using API.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,19 @@ namespace API.Data
             this.mapper = mapper;
         }
 
+        #region Admin
+        public async Task<List<AdminAdventureDto>> AdminGetAdventures()
+        {
+            var adventures = await context.Adventures
+                .Include(a => a.Locations)
+                .Include(a => a.StartingLocation)
+                .Include(a => a.Variables)
+                .ToListAsync();
+            return AdminAdventureDto.ConvertList(adventures);
+        }
+
+        #endregion
+
         #region Adventure Crud
         public async Task<Adventure> CreateAdventure(Adventure adventure)
         {
@@ -29,10 +43,16 @@ namespace API.Data
         public async Task<List<AdventureSaveDto>> GetAvailableAdventures(int userId)
         {
             var user = await context.Users
-                .Include(u => u.AdventureSaves).ThenInclude(a => a.Adventure)
+                .Include(u => u.AdventureSaves).ThenInclude(a => a.Adventure).ThenInclude(a => a.StartingLocation)
                 .Include(u => u.AdventureSaves).ThenInclude(a => a.PlayerCharacters)
                 .Include(u => u.AdventureSaves).ThenInclude(a => a.LocationSaves).ThenInclude(ls => ls.Location)
                 .FirstOrDefaultAsync(u => u.Id == userId);
+
+            foreach (AdventureSave save in user.AdventureSaves)
+            {
+                if (save.LocationSaves.Count == 0)
+                    save.LocationSaves.Add(await CreateNewLocationSave(save.Adventure.StartingLocation.Id));
+            }
 
             return AdventureSaveDto.ConvertList(user.AdventureSaves);
         }
@@ -69,27 +89,14 @@ namespace API.Data
             List<ConnectedLocationDto> connectedLocations = await buildConnectedLocationList(id);
             List<ContainerDto> containers = buildContainerList(location.Containers);
 
-            var locationDto = new LocationDto
-            {
-                Id = id,
-                Name = location.Name,
-                Description = location.Description,
-                ConnectedLocations = connectedLocations,
-                NPCs = location.NPCs,
-                Containers = containers,
-                Interactions = location.Interactions,
-                Triggers = location.Triggers,
-                Location = location,
-                VisibilityRequirements = location.VisibilityRequirements,
-            };
-
-            return locationDto;
+            return LocationDto.Convert(location, connectedLocations, containers);
         }
 
         public async Task<LocationSaveDto> GetPlayerLocation(int locationId, int adventureSaveId)
         {
             var adventure = await context.AdventureSaves
                     .Include(a => a.LocationSaves).ThenInclude(l => l.Enemies)
+                    .Include(a => a.PlayerCharacters)
                     .Include(a => a.LocationSaves).ThenInclude(l => l.Containers)
                     .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
             if (adventure == null) return null;
@@ -103,11 +110,10 @@ namespace API.Data
                 ls.IsCurrentLocation = false;
 
             locationSave.IsCurrentLocation = true;
+            adventure.CurrentLocation = locationSave;
 
-            locationSave.Enemies = await CheckForEnemySaves(locationSave, adventure);
-            locationSave.Containers = await CheckForContainerSaves(locationSave, adventure);
-
-            await context.SaveChangesAsync();
+            locationSave = await CheckForEnemySaves(locationSave, adventure);
+            locationSave = await CheckForContainerSaves(locationSave, adventure);
 
             LocationSaveDto dto = LocationSaveDto.Convert(locationSave, await GetLocationById(locationSave.LocationId));
 
@@ -200,13 +206,16 @@ namespace API.Data
         public async Task<ContainerSaveDto> GetPlayerContainer(int containerSaveId)
         {
             var save = await context.ContainerSaves
+                .Include(c => c.Container)
                 .Include(c => c.Items).ThenInclude(items => items.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync(c => c.Id == containerSaveId);
-            save.Items = await CheckForItemSaves(save);
 
-            save.Complete = true;
-
-            await context.SaveChangesAsync();
+            if (save.Complete == false)
+            {
+                save.Items = await CheckForItemSaves(save);
+                save.Complete = true;
+                await context.SaveChangesAsync();
+            }
 
             return ContainerSaveDto.Convert(save);
         }
@@ -226,6 +235,7 @@ namespace API.Data
                     itemSave = new ItemSave
                     {
                         Item = i.Item,
+                        CurrentStackSize = i.Item.StackSize,
                         ContainerSave = containerSave,
                     };
                 }
@@ -239,7 +249,7 @@ namespace API.Data
 
         public async Task<Location> CreateLocation(NewLocationDto newLocation, int adventureId)
         {
-            Location l = new Location { Name = newLocation.Name, Description = newLocation.Description };
+            Location l = new Location { Name = newLocation.Name, ShortDescription = newLocation.ShortDescription, Description = newLocation.Description, RoomNumber = newLocation.RoomNumber };
             var adventure = await context.Adventures.Where(a => a.Id == adventureId).FirstOrDefaultAsync();
 
             if (adventure != null)
@@ -302,14 +312,7 @@ namespace API.Data
             {
                 Location to = await context.Locations.Where(l => l.Id == link.ToId).FirstOrDefaultAsync();
                 if (to == null) return null;
-
-                connectedLocations.Add(new ConnectedLocationDto
-                {
-                    Id = to.Id,
-                    Name = to.Name,
-                    Description = to.Description,
-                    VisibilityRequirements = to.VisibilityRequirements,
-                });
+                connectedLocations.Add(ConnectedLocationDto.Convert(to));
             }
 
             return connectedLocations;
@@ -434,9 +437,13 @@ namespace API.Data
         {
             var save = await context.AdventureSaves
                 .Include(a => a.PlayerCharacters)
-                .Include(a => a.Adventure)
+                .Include(a => a.Adventure).ThenInclude(a => a.StartingLocation)
                 .Include(a => a.LocationSaves).ThenInclude(l => l.Location)
+                .Include(a => a.CurrentLocation).ThenInclude(l => l.Location)
                 .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (save.CurrentLocation == null)
+                await checkForRequiredLocationSaves(save.Adventure.StartingLocation.Id, save);
 
             if (save == null) return null;
             AdventureSaveDto dto = AdventureSaveDto.Convert(save);
@@ -575,31 +582,35 @@ namespace API.Data
             return variable;
         }
 
-        public async Task<List<EnemySave>> CheckForEnemySaves(LocationSave locationSave, AdventureSave adventureSave)
+        public async Task<LocationSave> CheckForEnemySaves(LocationSave locationSave, AdventureSave adventureSave)
         {
 
 
             var baseLocation = await context.Locations
-                .Include(l => l.Enemies).ThenInclude(e => e.Photo)
+                .Include(l => l.EnemyLocationLinks).ThenInclude(link => link.Enemy).ThenInclude(e => e.Photo)
                 .FirstOrDefaultAsync(l => l.Id == locationSave.LocationId);
 
             List<EnemySave> enemySaves = new List<EnemySave>();
-            foreach (Enemy e in baseLocation.Enemies)
+            foreach (EnemyLocationLink link in baseLocation.EnemyLocationLinks)
             {
-                var enemySave = locationSave.Enemies.FirstOrDefault(save => save.EnemyId == e.Id);
+                var enemySave = locationSave.Enemies.FirstOrDefault(save => save.EnemyLocationLinkId == link.Id);
                 if (enemySave == null)
                 {
                     enemySave = new EnemySave
                     {
-                        EnemyId = e.Id,
-                        Enemy = e,
-                        CurrentHp = e.MaxHp
+                        EnemyId = link.Enemy.Id,
+                        Enemy = link.Enemy,
+                        CurrentHp = adventureSave.PlayerCharacters.Count > link.RequiredPlayerCount ? link.Enemy.MaxHp : -1,
+                        EnemyLocationLink = link,
+                        
                     };
                 }
                 enemySaves.Add(enemySave);
             }
+            locationSave.Enemies = enemySaves;
+            await context.SaveChangesAsync();
 
-            return enemySaves;
+            return locationSave;
         }
 
         public async Task<bool> DealDamage(int damageAmount, int enemyId)
@@ -614,10 +625,8 @@ namespace API.Data
             return true;
         }
 
-        public async Task<List<ContainerSave>> CheckForContainerSaves(LocationSave locationSave, AdventureSave adventureSave)
+        public async Task<LocationSave> CheckForContainerSaves(LocationSave locationSave, AdventureSave adventureSave)
         {
-
-
             var baseLocation = await context.Locations
                 .Include(l => l.Containers).ThenInclude(c => c.Items)
                 .Include(l => l.Containers).ThenInclude(c => c.Triggers)
@@ -638,29 +647,34 @@ namespace API.Data
                 }
                 saves.Add(containerSave);
             }
-
-            return saves;
+            locationSave.Containers = saves;
+            await context.SaveChangesAsync();
+            return locationSave;
         }
 
         public async Task<List<ItemSaveDto>> GetAvailableItems(int LocationSaveId)
         {
             var locationSave = await context.LocationSaves
                 .Include(l => l.Containers).ThenInclude(c => c.Items).ThenInclude(items => items.Item).ThenInclude(i => i.Photo)
+                .Include(l => l.Items).ThenInclude(i => i.Item.Photo)
                 .FirstOrDefaultAsync(l => l.Id == LocationSaveId);
 
             List<ItemSave> items = new List<ItemSave>();
             foreach (ContainerSave container in locationSave.Containers.Where(c => c.Complete))
-            {
                 foreach (ItemSave item in container.Items)
                     items.Add(item);
-            }
+
+            foreach (ItemSave i in locationSave.Items)
+                items.Add(i);
 
             return ItemSaveDto.ConvertList(items);
         }
 
-        public async Task<List<ItemSaveDto>> GetItems(int characterId, string itemType = "any")
+        public async Task<List<ItemSaveDto>> GetItems(int characterId, string itemType, int currentItemId = -1)
         {
-            var pc = await context.PlayerCharacters.FirstOrDefaultAsync(p => p.Id == characterId);
+            var pc = await context.PlayerCharacters
+                .Include(p => p.BackPack).ThenInclude(b => b.Item).ThenInclude(i => i.Photo)
+                .FirstOrDefaultAsync(p => p.Id == characterId);
             var adventureSave = await context.AdventureSaves.FirstOrDefaultAsync(a => a.Id == pc.AdventureSaveId);
             var locationSave = await context.LocationSaves.FirstOrDefaultAsync(l => l.AdventureSaveId == adventureSave.Id && l.IsCurrentLocation);
 
@@ -668,6 +682,11 @@ namespace API.Data
                 return null;
 
             List<ItemSaveDto> items = await GetAvailableItems(locationSave.Id);
+
+            //foreach (ItemSave backPackItem in pc.BackPack.Where(i => i.Id != currentItemId))
+            //  if (backPackItem != null)
+            //    items.Add(ItemSaveDto.Convert(backPackItem));
+
             if (itemType == "any")
                 return items.OrderBy(i => i.ItemType).ToList();
 

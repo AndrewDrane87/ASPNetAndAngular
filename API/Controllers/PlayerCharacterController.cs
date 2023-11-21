@@ -1,7 +1,9 @@
 ﻿using API.Controllers;
 using API.DTOs.Items;
 using API.Entities;
+using API.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Eventing.Reader;
 
 namespace API;
 
@@ -24,12 +26,13 @@ public class PlayerCharactersController : BaseApiController
         {
             Name = playerCharacter.Name,
             PhotoUrl = playerCharacter.PhotoUrl,
-            Helmet = c.Helmet,
-            LeftHand = c.Shield,
-            RightHand =c.Sword,
-            Body = c.Armor,
-            Feet = c.Boots,
+
         });
+        newPc.Helmet = new ItemSave { Item = c.Helmet };
+        newPc.LeftHand = new ItemSave { Item = c.Shield };
+        newPc.RightHand = new ItemSave { Item = c.Sword };
+        newPc.Body = new ItemSave { Item = c.Armor };
+        newPc.Feet = new ItemSave { Item = c.Boots };
 
         var user = await uow.UserRepository.GetUserByUserNameAsync(User.GetUsername());
         user.MyCharacters.Add(newPc);
@@ -72,51 +75,44 @@ public class PlayerCharactersController : BaseApiController
 
 
     [HttpGet("get-available-items")]
-    public async Task<ActionResult<List<Item>>> GetAvailableHandItems([FromQuery] string type, [FromQuery] int characterId)
+    public async Task<ActionResult<List<ItemSaveDto>>> GetAvailableItems([FromQuery] string type, [FromQuery] int characterId, [FromQuery] int currentItemId = -1)
     {
-        
+
         switch (type)
         {
-            case "helmets": return Ok(await uow.AdventureRepository.GetItems(characterId, "helmet"));
-            case "hand-items": return Ok(await uow.AdventureRepository.GetItems(characterId, "hand"));
+            case "helmet": return Ok(await uow.AdventureRepository.GetItems(characterId, "helmet"));
+            case "hand": return Ok(await uow.AdventureRepository.GetItems(characterId, "hand"));
             case "armor": return Ok(await uow.AdventureRepository.GetItems(characterId, "armor"));
-            case "boots": return Ok(await uow.AdventureRepository.GetItems(characterId, "boot"));
+            case "boot": return Ok(await uow.AdventureRepository.GetItems(characterId, "boot"));
+            case "any": return Ok(await uow.AdventureRepository.GetItems(characterId,"any", currentItemId));
             default: return BadRequest("You must specify an item type");
         }
-
     }
 
     [HttpPut("set-character-item")]
     public async Task<ActionResult> SetCharacterItem(SetItemDto set)
     {
-        bool status = false;
-        switch (set.ItemType)
+        StatusMessage statusMessage = new StatusMessage() { Status = false};
+        if (set.ItemType == "backpack")
+            statusMessage = await uow.PlayerCharacterRepository.SetBackpack(set.CharacterId, set.ItemId, set.BackpackIndex);
+        else
+            statusMessage = await uow.PlayerCharacterRepository.SetCharacterItem(set.CharacterId, set.ItemId, set.ItemType);
+        
+        if (statusMessage.Status)
         {
-            case "helmets":
-                status = await uow.PlayerCharacterRepository.SetHelmet(set.CharacterId, set.ItemId);
-                break;
-            case "leftHand":
-                status = await uow.PlayerCharacterRepository.SetLeftHand(set.CharacterId, set.ItemId);
-                break;
-            case "rightHand":
-                status = await uow.PlayerCharacterRepository.SetRightHand(set.CharacterId, set.ItemId);
-                break;
-            case "armor":
-                status = await uow.PlayerCharacterRepository.SetArmor(set.CharacterId, set.ItemId);
-                break;
-            case "boots":
-                status = await uow.PlayerCharacterRepository.SetBoots(set.CharacterId, set.ItemId);
-                break;
+            Console.WriteLine("set-character-item: result: OK");
+            return Ok();
         }
-        if (status)
-        {
-            if (await uow.Complete()) {
-                Console.WriteLine("set-character-item: result: OK");
-                return Ok();
-            }
-            
-        }
-
         return BadRequest("Failed to save item selection");
+    }
+
+    [HttpPut("use-item")]
+    public async Task<ActionResult> UseItem([FromQuery] int playerCharacterId, [FromQuery] int ItemId)
+    {
+        var statusMessage = await uow.PlayerCharacterRepository.UseItem(playerCharacterId, ItemId);
+        if(statusMessage.Status)
+            return Ok();
+
+        return BadRequest(statusMessage.Message);
     }
 }

@@ -1,0 +1,19 @@
+<ProjectInfo Version="1">
+  <Signature>24AAE84CEEC9447FFD6F7DA8E015D66607572BAE7285CE96AB1167813FC325B8</Signature>
+  <Content>
+    <Project Guid="df05f6c1-cabe-4c0c-ae08-9cabc528ac03">
+      <DisplayName Value="Sunless Citadel"/>
+      <DetailName Value=""/>
+      <MainProjectGuid Value="d941fed7-71fe-4deb-9360-cb611505e5fe"/>
+      <IconType Value="0"/>
+      <IdProjectIcon Value="00000000-0000-0000-0000-000000000000"/>
+      <ScmProviderGuid Value="0745c2ee-abe3-451b-934e-7f597f56c0d7"/>
+      <ScmConfiguration Value=""/>
+      <CreationTimeStamp Value="638359279077697634"/>
+      <PartitionHash Value="E747B508EB1A997CFC13B9E0D04D605D17DE2CA9F3BA1A4A41511A79615915CF"/>
+      <SaveFileVersion Value="56"/>
+      <ProjectType Value="0"/>
+      <IsOnlineProject Value="False"/>
+    </Project>
+  </Content>
+</ProjectInfo>
