@@ -17,24 +17,24 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }
     public DbSet<PlayerCharacter> PlayerCharacters { get; set; }
-    public DbSet<Item> ItemCollection { get; set; }
+    public DbSet<Item> Items { get; set; }
     public DbSet<ItemPhoto> ItemPhotoCollection { get; set; }
     public DbSet<Adventure> Adventures { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationLink> LocationLink { get; set; }
-    public DbSet<NPC> NPCCollection { get; set; }
-    public DbSet<Dialogue> DialogueCollection { get; set; }
-    public DbSet<DialogueResponse> ResponseCollection { get; set; }
-    public DbSet<DialogueResponseLink> DialogueResponseLinkCollection { get; set; }
+    public DbSet<NPC> NPCs { get; set; }
+    //public DbSet<Dialogue> DialogueCollection { get; set; }
+    //public DbSet<DialogueResponse> ResponseCollection { get; set; }
+    //public DbSet<DialogueResponseLink> DialogueResponseLinkCollection { get; set; }
 
     public DbSet<DialogueNode> DialogueNodes { get; set; }
     public DbSet<DialogueLink> DialogueLinks { get; set; }
 
 
-    public DbSet<Container> ContainerCollection { get; set; }
+    public DbSet<Container> Containers { get; set; }
     public DbSet<Interaction> Interactions { get; set; }
     public DbSet<ActionTrigger> Triggers { get; set; }
-    public DbSet<Enemy> EnemyCollection { get; set; }
+    public DbSet<Enemy> Enemies { get; set; }
     public DbSet<AdventureSave> AdventureSaves { get; set; }
     public DbSet<LocationSave> LocationSaves { get; set; }
     public DbSet<ActionTriggerSave> ActionTriggerSaves { get; set; }
@@ -84,9 +84,11 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
             .WithOne(c => c.LocationSave)
             .OnDelete(DeleteBehavior.Cascade);
 
+        /*
         builder.Entity<DialogueResponseLink>()
             .HasOne(d => d.ChildDialogue)
             .WithMany(r => r.ParentResponses);
+        */
 
         builder.Entity<DialogueLink>().HasKey(e => new { e.FromDialogueId, e.ToDialogueId });
         builder.Entity<DialogueLink>()

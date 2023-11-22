@@ -138,6 +138,16 @@ export class RunAdventureComponent implements OnInit {
     this.currentView = 'location';
   }
 
+  backtoMainDialogue(event: NPC){
+    this.currentView = 'npc';
+    this.npcService.getNpcDetail(event.id).subscribe({
+      next: (result) => {
+        this.npc = result;
+      },
+      error: (error) => this.toastr.error(error),
+    });
+  }
+
   containerSelected(event: Container) {
     this.currentView = 'container';
     this.locationService.getPlayerContainer(event.id).subscribe({

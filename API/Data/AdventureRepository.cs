@@ -196,7 +196,7 @@ namespace API.Data
 
         public async Task<ContainerDto> GetContainer(int id)
         {
-            var container = await context.ContainerCollection
+            var container = await context.Containers
                 .Include(c => c.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -222,7 +222,7 @@ namespace API.Data
 
         public async Task<List<ItemSave>> CheckForItemSaves(ContainerSave containerSave)
         {
-            var baseContainer = await context.ContainerCollection
+            var baseContainer = await context.Containers
                 .Include(c => c.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync(c => c.Id == containerSave.ContainerId);
 

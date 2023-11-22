@@ -18,6 +18,7 @@ namespace API.Entities
         public List<EnemyLocationLink> EnemyLocationLinks { get; set; }
         public string VisibilityRequirements { get; set; }
         public int? RoomNumber { get; set; }
+        public bool ItemsRequirePurchase { get; set; }
     }
 
     public class LocationLink

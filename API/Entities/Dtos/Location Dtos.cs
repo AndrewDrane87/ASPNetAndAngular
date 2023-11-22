@@ -20,6 +20,7 @@ namespace API.Entities
         public List<ActionTrigger> Triggers { get; set; }
         public string VisibilityRequirements { get; set; }
         public int RoomNumber { get; set; }
+        public bool ItemsRequirePurchase { get; set; }
 
         public static LocationDto Convert(Location location, List<ConnectedLocationDto> connectedLocations, List<ContainerDto> containers)
         {
@@ -37,6 +38,7 @@ namespace API.Entities
                 Location = location,
                 VisibilityRequirements = location.VisibilityRequirements,
                 RoomNumber = location.RoomNumber == null ? -1 : (int)location.RoomNumber,
+                ItemsRequirePurchase = location.ItemsRequirePurchase,
             };
         }
     }

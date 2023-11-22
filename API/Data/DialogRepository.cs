@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using API.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,66 +18,55 @@ namespace API.Data
             this.mapper = mapper;
         }
 
-        public async Task<DialogueDto> CreateMainDialogue(DialogueDto dialogue, int npcId)
+        public async Task<DialogueNodeDto> CreateMainDialogue(DialogueNodeDto dialogue, int npcId)
         {
 
-            NPC npc = await context.NPCCollection.Where(n => n.Id == npcId).FirstOrDefaultAsync();
-            if (npc == null) return null;
-
-            Dialogue d = new Dialogue { Text = dialogue.Text };
-            await context.DialogueCollection.AddAsync(d);
+            NPC npc = await context.NPCs.FirstOrDefaultAsync(n => n.Id == npcId);
+            npc.Dialogue = new DialogueNode { Text = dialogue.Text};
             await context.SaveChangesAsync();
-
-            npc.Dialogue = d;
-            return dialogue;
+            return DialogueNodeDto.Convert(npc.Dialogue);
         }
 
-        public async Task<DialogueDto> CreateResponse(DialogueResponse response, int dialogId)
+        public async Task<DialogueNodeDto> CreateResponse(DialogueNode response, int dialogId)
         {
-            var d = await context.DialogueCollection
-                .Include(d => d.ChildResponses)
+            var d = await context.DialogueNodes
+                .Include(d => d.ToDialogueLinks)
                 .FirstOrDefaultAsync(d => d.Id == dialogId);
             if (d == null) return null;
 
 
-            d.ChildResponses.Add(response);
+            d.ToDialogueLinks.Add(new DialogueLink { ToDialogue = response, FromDialogue = d});
 
-            return DialogueDto.Convert(d);
+            return DialogueNodeDto.Convert(d);
         }
 
-        public async Task<DialogueDto> CreateChildDialogue(DialogueDto dialogue, int responseId)
+        public async Task<DialogueNodeDto> CreateDialogue(DialogueNodeDto dialogue, int fromDialogueId)
         {
-            var response = await context.ResponseCollection.FirstOrDefaultAsync(r => r.Id == responseId);
-            if (response == null) return null;
+            var fromDialogue = await context.DialogueNodes
+                .Include(d => d.ToDialogueLinks)
+                .FirstOrDefaultAsync(r => r.Id == fromDialogueId);
 
-            Dialogue d = new Dialogue { Text = dialogue.Text };
-            List<DialogueResponseLink> parentResponses = new List<DialogueResponseLink>() { new DialogueResponseLink { Response = response, ChildDialogue = d } };
-            d.ParentResponses = parentResponses;
+            if (fromDialogue == null) return null;
+
+            DialogueNode newDialogue = new DialogueNode { Text = dialogue.Text };
             
-            await context.DialogueCollection.AddAsync(d);
+            fromDialogue.ToDialogueLinks.Add(new DialogueLink { FromDialogue = fromDialogue, ToDialogue = newDialogue });
             await context.SaveChangesAsync();
-
-            return DialogueDto.Convert(d);
+            
+            return DialogueNodeDto.Convert(newDialogue);
         }
 
-        public async Task<DialogueDto> DeleteResponse(int responseId)
+        public async Task<StatusMessage> DeleteResponse(int responseId)
         {
-            var response = await context.ResponseCollection.FirstOrDefaultAsync(r => r.Id == responseId);
+            var response = await context.DialogueNodes.FirstOrDefaultAsync(r => r.Id == responseId);
+            if(response == null) return new StatusMessage { Status = false, Message = "Could not find node" };
+            
+            context.DialogueNodes.Remove(response);
 
-            var dialogue = await context.DialogueCollection
-                .Where(d => d.ChildResponses.Contains(response))
-                .Include(d => d.ChildResponses)
-                .FirstOrDefaultAsync();
-
-            if (dialogue == null || response == null) return null;
-
-            dialogue.ChildResponses.Remove(response);
-            context.ResponseCollection.Remove(response);
-
-            context.DialogueResponseLinkCollection.RemoveRange(context.DialogueResponseLinkCollection.Where(link => link.ResponseId == responseId));
-            return DialogueDto.Convert(dialogue);
+            return new StatusMessage { Status = true };
         }
 
+        /*
         /// <summary>
         /// This will set what dialog is pulled once a user selects a response
         /// A response to the response if you will
@@ -90,14 +80,14 @@ namespace API.Data
             DialogueResponse response = await context.ResponseCollection.Where(r => r.Id == responseId).FirstOrDefaultAsync();
             if (response == null) return null;
 
-            Dialogue dialog = await context.DialogueCollection.Where(d => d.Id == dialogId).FirstOrDefaultAsync();
+            DialogueNode dialog = await context.DialogueNodes.Where(d => d.Id == dialogId).FirstOrDefaultAsync();
             if (dialog == null) return null;
 
             //response.Response = dialog;
             return response;
         }
-
-        public async Task<DialogueResponse> CreateDialogue(DialogueDto dialogue, int responseId)
+        
+        public async Task<DialogueResponse> CreateDialogue(DialogueNodeDto dialogue, int responseId)
         {
             DialogueResponse response = await context.ResponseCollection.Where(r => r.Id == responseId).FirstOrDefaultAsync();
             if (response == null) return null;
@@ -105,16 +95,18 @@ namespace API.Data
             //response.Response = dialogue;
             return response;
         }
+        */
 
-        public async Task<DialogueDto> GetDialogue(int id)
+        public async Task<DialogueNodeDto> GetDialogue(int id)
         {
-            Dialogue d = await context.DialogueCollection
-                .Include(r => r.ChildResponses).ThenInclude(l => l.ChildDialogueLink).ThenInclude(link => link.ChildDialogue)
+            DialogueNode d = await context.DialogueNodes
+                .Include(d => d.ToDialogueLinks).ThenInclude(l => l.ToDialogue)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            return DialogueDto.Convert(d);
+            return DialogueNodeDto.Convert(d);
         }
 
+        
         /*
         public async Task<DialogueDto> GetPreviousDialogue(int id)
         {
@@ -131,16 +123,16 @@ namespace API.Data
         }
         */
 
-        public async Task<DialogueDto> GetDialogueFromResponse(int responseId)
+        public async Task<DialogueNodeDto> GetDialogueFromResponse(int responseId)
         {
-            var responseLink = await context.DialogueResponseLinkCollection
-                .Include(link => link.ChildDialogue).ThenInclude(d => d.ChildResponses)
-                .FirstOrDefaultAsync( link => link.ResponseId == responseId);
+            var responseLink = await context.DialogueLinks
+                .Include(link => link.ToDialogue).ThenInclude(d => d.ToDialogueLinks).ThenInclude(link => link.ToDialogue)
+                .FirstOrDefaultAsync( link => link.FromDialogueId == responseId);
             
             
             if (responseLink == null) return null;
 
-            return DialogueDto.Convert(responseLink.ChildDialogue);
+            return DialogueNodeDto.Convert(responseLink.ToDialogue);
         }
     }
 }

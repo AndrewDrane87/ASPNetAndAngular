@@ -1,17 +1,41 @@
-<div *ngIf="character !== undefined" class="container m-0 pad-0" style="width: 100%;">
+<div
+  *ngIf="character !== undefined"
+  class="container m-0 pad-0"
+  style="width: 100%"
+>
   <div class="row">
     <div class="col-9 no-padding">
       <div class="row">
-        <app-stat-block [statName]="'Fighter'" [statValue]="fighterStat" class="col no-padding"></app-stat-block>
-        <app-stat-block [statName]="'Rogue'" [statValue]="rogueStat" class="col no-padding"></app-stat-block>
-        <app-stat-block [statName]="'Healer'" [statValue]="healerStat" class="col no-padding"></app-stat-block>
-        <app-stat-block [statName]="'Mage'" [statValue]="mageStat" class="col no-padding"></app-stat-block>
-        <app-stat-block [statName]="'Bard'" [statValue]="bardStat" class="col no-padding"></app-stat-block>
+        <app-stat-block
+          [statName]="'Fighter'"
+          [statValue]="fighterStat"
+          class="col no-padding"
+        ></app-stat-block>
+        <app-stat-block
+          [statName]="'Rogue'"
+          [statValue]="rogueStat"
+          class="col no-padding"
+        ></app-stat-block>
+        <app-stat-block
+          [statName]="'Healer'"
+          [statValue]="healerStat"
+          class="col no-padding"
+        ></app-stat-block>
+        <app-stat-block
+          [statName]="'Mage'"
+          [statValue]="mageStat"
+          class="col no-padding"
+        ></app-stat-block>
+        <app-stat-block
+          [statName]="'Bard'"
+          [statValue]="bardStat"
+          class="col no-padding"
+        ></app-stat-block>
       </div>
       <div class="row">
         <div class="col-4 no-padding">
           <div class="card no-padding">
-            <h4>{{ character.name }}</h4>
+            <h4>{{ character.name }} - Level [{{ character.level }}]</h4>
             <!-- <img
                 class="img-thumbnail"
                 src="{{ character.photoUrl }}"
@@ -33,37 +57,44 @@
         <div class="col-4 no-padding">
           <div class="card no-padding">
             <div class="container">
-              <div class="row">
-                <div class="col-8 no-padding center-v">
-                  <h6 class="center-v">Health {{ currentHealth }}/{{ totalHealth }}</h6>
-                </div>
+              <table style="width: 100%">
+                <tbody>
+                  <tr>
+                    <td class="title">Total Armor:</td>
+                    <td class="value">{{ totalArmor }}</td>
+                  </tr>
 
-                <div class="col-2 no-padding">
-                  <button
-                    [disabled]="currentHealth <= 0"
-                    class="btn btn-danger btn-icon"
-                    (click)="decrementHealth()"
-                  >
-                    <i class="fa fa-minus"></i>
-                  </button>
-                </div>
-                <div class="col-2 no-padding">
-                  <button
-                    [disabled]="currentHealth >= totalHealth"
-                    class="btn btn-primary btn-icon"
-                    (click)="incrementHealth()"
-                  >
-                    <i class="fa fa-plus"></i>
-                  </button>
-                </div>
-              </div>
+                  <tr>
+                    <td class="title">Gold:</td>
+                    <td class="value">{{ character.gold }}</td>
+                  </tr>
+
+                  <tr>
+                    <td class="title">
+                      Health: {{ character.currentHitpoints }}/{{
+                        character.maxHitpoints
+                      }}
+                    </td>
+                    <td class="value">
+                      <button
+                        [disabled]="currentHealth <= 0"
+                        class="btn btn-danger btn-icon me-2"
+                        (click)="decrementHealth()"
+                      >
+                        <i class="fa fa-minus"></i>
+                      </button>
+                      <button
+                        [disabled]="character.currentHitpoints >= character.maxHitpoints"
+                        class="btn btn-primary btn-icon"
+                        (click)="incrementHealth()"
+                      >
+                        <i class="fa fa-plus"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-
-            <div>
-              <h6 class="m-0">Total Armor: {{ totalArmor }}</h6>
-            </div>
-
-            
           </div>
         </div>
       </div>
@@ -75,7 +106,9 @@
           <div class="card" *ngIf="character.leftHand !== undefined">
             <app-item-card
               [item]="character.leftHand"
-              (selectRequestEvent)="itemSelector('leftHand', character.leftHand.id)"
+              (selectRequestEvent)="
+                itemSelector('leftHand', character.leftHand.id)
+              "
             ></app-item-card>
           </div>
         </div>
@@ -95,7 +128,9 @@
           <div class="card" *ngIf="character.rightHand !== undefined">
             <app-item-card
               [item]="character.rightHand"
-              (selectRequestEvent)="itemSelector('rightHand', character.rightHand.id)"
+              (selectRequestEvent)="
+                itemSelector('rightHand', character.rightHand.id)
+              "
             ></app-item-card>
           </div>
         </div>
@@ -124,42 +159,52 @@
     <div class="col-3 no-padding">
       <div
         class="no-padding"
-        style="height: 10%;"
+        style="height: 10%"
         *ngFor="let item of character.backPack; index as i"
       >
         <div class="card pad-2">
           <div class="container">
             <div class="row">
-              <div *ngIf="item !== null && item !== undefined" class="col-10 pad-0">
+              <div
+                *ngIf="item !== null && item !== undefined"
+                class="col-10 pad-0"
+              >
                 <div class="container no-padding">
                   <div class="row" (click)="openItemView(item)">
                     <div class="col-3 pad-0">
                       <img
                         src="{{ item?.photoUrl }}"
                         alt=""
-                        style="max-height: 3vw; display: block; padding: 0px;"
+                        style="max-height: 3vw; display: block; padding: 0px"
                       />
                     </div>
-                    <div class="col-9 pad-0 center-v" >
-                      <p class="m-0"  style="vertical-align: middle;">{{ item!.name }}</p>
+                    <div class="col-9 pad-0 center-v">
+                      <p class="m-0" style="vertical-align: middle">
+                        {{ item!.name }}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div  class="col-10 center-v" *ngIf="item === null || item === undefined">
+              <div
+                class="col-10 center-v"
+                *ngIf="item === null || item === undefined"
+              >
                 <h6 class="m-0">Empty</h6>
               </div>
 
               <div class="col-2 pad-0">
-                <button *ngIf="item === null || item === undefined"
+                <button
+                  *ngIf="item === null || item === undefined"
                   class="btn btn-dark btn-icon"
                   (click)="itemSelector('backpack', -1, i)"
                 >
                   <i class="fa fa-wrench"></i>
                 </button>
 
-                <button *ngIf="item !== null && item !== undefined"
+                <button
+                  *ngIf="item !== null && item !== undefined"
                   class="btn btn-dark btn-icon"
                   (click)="itemSelector('backpack', item!.id, i)"
                 >

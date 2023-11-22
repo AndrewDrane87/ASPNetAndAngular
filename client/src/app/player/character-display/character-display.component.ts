@@ -47,14 +47,14 @@ export class CharacterDisplayComponent implements OnInit {
   }
 
   incrementHealth() {
-    this.currentHealth = this.currentHealth + 1;
-    if (this.currentHealth > this.totalHealth)
-      this.currentHealth = this.totalHealth;
+    this.character!.currentHitpoints = this.character!.currentHitpoints + 1;
+    if (this.character!.currentHitpoints > this.character!.maxHitpoints)
+      this.character!.currentHitpoints = this.character!.currentHitpoints;
   }
 
   decrementHealth() {
-    this.currentHealth = this.currentHealth - 1;
-    if (this.currentHealth < 0) this.currentHealth = 0;
+    this.character!.currentHitpoints = this.character!.currentHitpoints - 1;
+    if (this.character!.currentHitpoints < 0) this.character!.currentHitpoints = 0;
   }
 
   calculateTotalArmor() {

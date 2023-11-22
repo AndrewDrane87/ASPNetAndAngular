@@ -13,26 +13,26 @@ namespace API.Controllers
         }
 
         [HttpPost("create-main")]
-        public async Task<ActionResult<DialogueDto>> CreateMain(DialogueDto dialogue, [FromQuery] int npcId)
+        public async Task<ActionResult<DialogueNodeDto>> CreateMain(DialogueNodeDto dialogue, [FromQuery] int npcId)
         {
             var result = await uow.DialogRepository.CreateMainDialogue(dialogue, npcId);
-            if (result != null && await uow.Complete())
+            if (result != null)
                 return Ok(result);
 
             return BadRequest("failed to create main dialogue");
         }
 
-        [HttpPost("create-child-dialogue")]
-        public async Task<ActionResult<DialogueDto>> CreateChildDialogue(DialogueDto dialogue, [FromQuery] int responseId)
+        [HttpPost("create-dialogue")]
+        public async Task<ActionResult<DialogueNodeDto>> CreateChildDialogue(DialogueNodeDto dialogue, [FromQuery] int fromDialogueId)
         {
-            var d = await uow.DialogRepository.CreateChildDialogue(dialogue, responseId);
+            var d = await uow.DialogRepository.CreateDialogue(dialogue, fromDialogueId);
             if (d == null) return BadRequest("Could not find response to tie dialogue to");
 
             return Ok(d);
         }
 
         [HttpPost("create-response")]
-        public async Task<ActionResult<DialogueDto>> CreateResponse(DialogueResponse response, [FromQuery] int dialogueId)
+        public async Task<ActionResult<DialogueNodeDto>> CreateResponse(DialogueNode response, [FromQuery] int dialogueId)
         {
             var result = await uow.DialogRepository.CreateResponse(response, dialogueId);
             if (result != null && await uow.Complete())
@@ -42,7 +42,7 @@ namespace API.Controllers
         }
 
         [HttpGet("get-dialogue")]
-        public async Task<ActionResult<DialogueDto>> GetDialogue([FromQuery] int dialogueId)
+        public async Task<ActionResult<DialogueNodeDto>> GetDialogue([FromQuery] int dialogueId)
         {
             var dialogue = await uow.DialogRepository.GetDialogue(dialogueId);
 
@@ -52,7 +52,7 @@ namespace API.Controllers
         }
 
         [HttpGet("get-dialogue-from-response")]
-        public async Task<ActionResult<DialogueDto>> GetDialogueFromResponse([FromQuery] int responseId)
+        public async Task<ActionResult<DialogueNodeDto>> GetDialogueFromResponse([FromQuery] int responseId)
         {
             var dialogue = await uow.DialogRepository.GetDialogueFromResponse(responseId);
 
@@ -74,7 +74,7 @@ namespace API.Controllers
         */
 
         [HttpDelete("delete-response")]
-        public async Task<ActionResult<DialogueDto>> DeleteResponse([FromQuery] int responseId)
+        public async Task<ActionResult<DialogueNodeDto>> DeleteResponse([FromQuery] int responseId)
         {
             var dialogDto = await uow.DialogRepository.DeleteResponse(responseId);
 

@@ -6,14 +6,14 @@ namespace API.Entities
     public class DialogueSave
     {
         public int Id { get; set; }
-        [ForeignKey("Dialogue")]
-        public int DialogueId { get; set; }
-        public Dialogue Dialogue { get; set; }
-        public List<DialogueResponseSave> ChildResponses { get; set; }
-        public DialogueResponseSave ParentResponse { get; set; }
+
+        [ForeignKey("DialogueNodeDto")]
+        public int DialogueNodeId { get; set; }
+        public DialogueNode DialogueNode { get; set; }
         public List<ActionTriggerSave> Triggers { get; set; }
     }
 
+    /*
     public class DialogueResponseSave
     {
         public int Id { get; set; }
@@ -21,4 +21,5 @@ namespace API.Entities
         public int DialogueResponseId { get; set; }
         public DialogueResponse DialogueResponse { get; set; }
     }
+    */
 }

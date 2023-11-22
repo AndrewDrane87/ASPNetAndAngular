@@ -22,16 +22,17 @@ namespace API.Entities
     }
 
 
-    public class Dialogue
+    /*
+    public class xDialogue
     {
         public int Id { get; set; }
         public string Text { get; set; }
         public List<DialogueResponse> ChildResponses { get; set; }
-        public List<DialogueResponseLink> ParentResponses { get; set; }
+        public List<xDialogueResponseLink> ParentResponses { get; set; }
         public List<ActionTrigger> Triggers { get; set; }
     }
 
-    public class DialogueResponseLink
+    public class xDialogueResponseLink
     {
         public int Id { get; set; }
 
@@ -41,7 +42,7 @@ namespace API.Entities
 
         [ForeignKey("ChildDialogue")]
         public int? ChildDialogueId { get; set; }
-        public Dialogue ChildDialogue { get; set; }
+        public xDialogue ChildDialogue { get; set; }
     }
 
     public class DialogueResponse
@@ -52,47 +53,14 @@ namespace API.Entities
 
         [ForeignKey("ParentDialogue")]
         public int? ParentDialogueId { get; set; }
-        public Dialogue ParentDialogue { get; set; }
+        public xDialogue ParentDialogue { get; set; }
 
         [ForeignKey("ChildDialogueLink")]
         public int? DialogueResponseLinkId { get; set; }
-        public DialogueResponseLink ChildDialogueLink { get; set; }
+        public xDialogueResponseLink ChildDialogueLink { get; set; }
     }
 
-    public class DialogueDto
-    {
-        public int Id { get; set; }
-        public string Text { get; set; }
-        public List<DialogueResponseDto> Responses { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+    */
 
-        public static DialogueDto Convert(Dialogue d)
-        {
-            DialogueDto dto = new DialogueDto { Id = d.Id, Text = d.Text, Responses = DialogueResponseDto.ConvertList(d.ChildResponses) };
-            return dto;
-        }
-    }
-
-    public class DialogueResponseDto
-    {
-        public int Id { get; set; }
-        public string Text { get; set; }
-        public int ChildDialogueId { get; set; }
-
-        public static DialogueResponseDto Convert(DialogueResponse response)
-        {
-            int childDialogueId = response.ChildDialogueLink == null ? -1 : (int)response.ChildDialogueLink.ChildDialogueId;
-            DialogueResponseDto dto = new DialogueResponseDto { Id = response.Id, Text = response.Text, ChildDialogueId = childDialogueId };
-            return dto;
-        }
-
-        public static List<DialogueResponseDto> ConvertList(List<DialogueResponse> responses)
-        {
-            List<DialogueResponseDto> List = new List<DialogueResponseDto>();
-            foreach (DialogueResponse response in responses)
-                List.Add(Convert(response));
-            return List;
-
-        }
-    }
+    
 }

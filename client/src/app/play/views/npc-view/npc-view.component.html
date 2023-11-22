@@ -4,25 +4,33 @@
       <div class="col-10 no-padding">
         <h1>{{ npc.name }}</h1>
       </div>
-      <div class="col-2 no-padding">
-        <button class="btn btn-dark" (click)="backToLocation()">
-          Back to Location
-        </button>
-      </div>
+      <div class="col-2 no-padding"></div>
     </div>
   </div>
 
   <div class="mt-3">
-    <h5>{{ npc.dialogue.text }}</h5>
+    <h5>[{{npc.dialogue.id}}] {{ npc.dialogue.text }}</h5>
   </div>
 
   <div class="mt-3">
     <div class="container">
-    <div class="row">
-      <div *ngFor="let r of npc.dialogue.responses" class="col-3 no-padding">
+      <div class="row">
+        <div *ngFor="let r of npc.dialogue.responses" class="col-3 no-padding">
           <div class="card m-1 text-center" (click)="responseSelected(r)">
-            <p>{{ r.text }}</p>
+            <p class="description">[{{r.id}}] {{ r.text }}</p>
           </div>
+        </div>
+
+          <div class="col-3 no-padding" *ngIf="notAtMain">
+            <div class="card m-1 text-center" (click)="backToMainDialogue()">
+              <p class="description">(...back)</p>
+            </div>
+          </div>
+
+          <div class="col-3 no-padding">
+            <div class="card m-1 text-center" (click)="backToLocation()">
+              <p class="description">(Exit to location)</p>
+            </div>
         </div>
       </div>
     </div>

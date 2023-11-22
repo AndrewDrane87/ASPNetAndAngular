@@ -34,3 +34,21 @@ app-item-card{
     margin: 0px;
     padding: 0px;
 }
+
+td{
+    font-size: .8rem;
+}
+
+td.title{
+text-align: right;
+}
+
+td.value{
+    text-align: center;
+    width: 50%;
+    white-space: nowrap;
+}
+
+button{
+    display: inline;
+}

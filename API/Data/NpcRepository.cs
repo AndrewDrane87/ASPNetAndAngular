@@ -28,16 +28,16 @@ namespace API.Data
 
         public async Task<bool> DeleteNpc(int id)
         {
-            var npc = await context.NPCCollection.Where(n => n.Id == id).FirstOrDefaultAsync();
+            var npc = await context.NPCs.Where(n => n.Id == id).FirstOrDefaultAsync();
             if (npc == null) return false;
 
-            context.NPCCollection.Remove(npc);
+            context.NPCs.Remove(npc);
             return true;
         }
 
         public async Task<NpcDto> Get(int id)
         {
-            var npc = await context.NPCCollection.Include(d => d.Dialogue).FirstOrDefaultAsync(i => i.Id == id);
+            var npc = await context.NPCs.Include(d => d.Dialogue).FirstOrDefaultAsync(i => i.Id == id);
             if (npc == null) return null;
 
             NpcDto dto = new NpcDto
@@ -49,15 +49,11 @@ namespace API.Data
 
             if (npc.Dialogue != null)
             {
-                Dialogue d = await context.DialogueCollection
-                    .Include(d => d.ChildResponses).ThenInclude(l=> l.ChildDialogueLink)
+                DialogueNode d = await context.DialogueNodes
+                    .Include(d => d.ToDialogueLinks).ThenInclude(l=> l.ToDialogue)
                     .FirstOrDefaultAsync(r => r.Id == npc.Dialogue.Id);
                 
-                List<DialogueResponse> responses = new List<DialogueResponse>();
-                foreach (DialogueResponse r in d.ChildResponses)
-                    responses.Add(r);
-
-                dto.Dialogue = DialogueDto.Convert(d);
+                dto.Dialogue = DialogueNodeDto.Convert(d);
             }
             
             return dto;

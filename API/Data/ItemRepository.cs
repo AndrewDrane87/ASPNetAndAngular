@@ -33,7 +33,7 @@ public class ItemRepository
             ItemType = dto.ItemType.ToLower()
         };
 
-        await context.ItemCollection.AddAsync(newItem);
+        await context.Items.AddAsync(newItem);
         return newItem;
     }
 
@@ -42,19 +42,19 @@ public class ItemRepository
         List<ItemDto> items = new List<ItemDto>();
         if (itemType == "any")
         {
-            foreach(Item i in await context.ItemCollection.Include(p=>p.Photo).OrderBy(i => i.ItemType).ToListAsync())
+            foreach(Item i in await context.Items.Include(p=>p.Photo).OrderBy(i => i.ItemType).ToListAsync())
                 items.Add(ItemDto.Convert(i));
             return items;
         }
 
         if(itemType == "hand")
         {
-            foreach (Item i in await context.ItemCollection.Where(i => i.ItemType == "sword" || i.ItemType == "shield").Include(p => p.Photo).OrderBy(i => i.ItemType).ToListAsync())
+            foreach (Item i in await context.Items.Where(i => i.ItemType == "sword" || i.ItemType == "shield").Include(p => p.Photo).OrderBy(i => i.ItemType).ToListAsync())
                 items.Add(ItemDto.Convert(i));
         }
 
 
-        foreach (Item i in await context.ItemCollection.Where(i => i.ItemType == itemType).Include(p => p.Photo).OrderBy(i => i.ItemType).ToListAsync())
+        foreach (Item i in await context.Items.Where(i => i.ItemType == itemType).Include(p => p.Photo).OrderBy(i => i.ItemType).ToListAsync())
             items.Add(ItemDto.Convert(i));
 
         return items;
@@ -62,11 +62,11 @@ public class ItemRepository
 
     public async Task<bool> DeleteItem(int itemId)
     {
-        Item i = await context.ItemCollection.Where(i => i.Id == itemId).FirstOrDefaultAsync();
+        Item i = await context.Items.Where(i => i.Id == itemId).FirstOrDefaultAsync();
         if (i == null)
             return false;
 
-        context.ItemCollection.Remove(i);
+        context.Items.Remove(i);
         return true;
     }
 
@@ -74,11 +74,11 @@ public class ItemRepository
     {
         BasicItemCollection items = new BasicItemCollection();
         
-        items.Helmet = await context.ItemCollection.Where(i => i.ItemType == "helmet" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
-        items.Sword = await context.ItemCollection.Where(i => i.ItemType == "sword" && i.AttackValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
-        items.Shield = await context.ItemCollection.Where(i => i.ItemType == "shield" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
-        items.Armor = await context.ItemCollection.Where(i => i.ItemType == "armor" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
-        items.Boots = await context.ItemCollection.Where(i => i.ItemType == "boot" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
+        items.Helmet = await context.Items.Where(i => i.ItemType == "helmet" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
+        items.Sword = await context.Items.Where(i => i.ItemType == "sword" && i.AttackValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
+        items.Shield = await context.Items.Where(i => i.ItemType == "shield" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
+        items.Armor = await context.Items.Where(i => i.ItemType == "armor" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
+        items.Boots = await context.Items.Where(i => i.ItemType == "boot" && i.ArmorValue == 1).Include(p => p.Photo).FirstOrDefaultAsync();
 
         return items;
     }

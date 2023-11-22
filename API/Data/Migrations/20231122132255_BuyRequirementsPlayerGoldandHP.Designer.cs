@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace API.Data.migrations
+namespace API.data.migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231119140208_RoomNumbersAndDescriptions")]
-    partial class RoomNumbersAndDescriptions
+    [Migration("20231122132255_BuyRequirementsPlayerGoldandHP")]
+    partial class BuyRequirementsPlayerGoldandHP
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,7 +75,7 @@ namespace API.Data.migrations
                     b.Property<int?>("ContainerId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("DialogueId")
+                    b.Property<int?>("DialogueNodeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("EventType")
@@ -94,7 +94,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("ContainerId");
 
-                    b.HasIndex("DialogueId");
+                    b.HasIndex("DialogueNodeId");
 
                     b.HasIndex("InteractionId");
 
@@ -363,7 +363,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("ContainerCollection");
+                    b.ToTable("Containers");
                 });
 
             modelBuilder.Entity("API.Entities.ContainerSave", b =>
@@ -392,7 +392,22 @@ namespace API.Data.migrations
                     b.ToTable("ContainerSaves");
                 });
 
-            modelBuilder.Entity("API.Entities.Dialogue", b =>
+            modelBuilder.Entity("API.Entities.DialogueLink", b =>
+                {
+                    b.Property<int>("FromDialogueId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ToDialogueId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FromDialogueId", "ToDialogueId");
+
+                    b.HasIndex("ToDialogueId");
+
+                    b.ToTable("DialogueLinks");
+                });
+
+            modelBuilder.Entity("API.Entities.DialogueNode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -405,56 +420,7 @@ namespace API.Data.migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DialogueCollection");
-                });
-
-            modelBuilder.Entity("API.Entities.DialogueResponse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("DialogueResponseLinkId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ParentDialogueId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DialogueResponseLinkId");
-
-                    b.HasIndex("ParentDialogueId");
-
-                    b.ToTable("ResponseCollection");
-                });
-
-            modelBuilder.Entity("API.Entities.DialogueResponseLink", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ChildDialogueId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ResponseId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildDialogueId");
-
-                    b.HasIndex("ResponseId");
-
-                    b.ToTable("DialogueResponseLinkCollection");
+                    b.ToTable("DialogueNodes");
                 });
 
             modelBuilder.Entity("API.Entities.Enemy", b =>
@@ -489,9 +455,6 @@ namespace API.Data.migrations
                     b.Property<string>("AttackStrategy")
                         .HasColumnType("text");
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("MaxHp")
                         .HasColumnType("integer");
 
@@ -509,11 +472,35 @@ namespace API.Data.migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
-
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("EnemyCollection");
+                    b.ToTable("Enemies");
+                });
+
+            modelBuilder.Entity("API.Entities.EnemyLocationLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EnemyId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequiredPlayerCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnemyId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("EnemyLocationLink");
                 });
 
             modelBuilder.Entity("API.Entities.EnemySave", b =>
@@ -530,12 +517,17 @@ namespace API.Data.migrations
                     b.Property<int>("EnemyId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("EnemyLocationLinkId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("LocationSaveId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EnemyId");
+
+                    b.HasIndex("EnemyLocationLinkId");
 
                     b.HasIndex("LocationSaveId");
 
@@ -601,7 +593,13 @@ namespace API.Data.migrations
                     b.Property<string>("ResistanceModifiers")
                         .HasColumnType("text");
 
+                    b.Property<int>("StackSize")
+                        .HasColumnType("integer");
+
                     b.Property<string>("StatModifiers")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Use")
                         .HasColumnType("text");
 
                     b.Property<int>("Value")
@@ -611,7 +609,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("ItemCollection");
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("API.Entities.ItemContainerLink", b =>
@@ -646,6 +644,9 @@ namespace API.Data.migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ContainerSaveId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CurrentStackSize")
                         .HasColumnType("integer");
 
                     b.Property<int>("ItemId")
@@ -686,6 +687,9 @@ namespace API.Data.migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<bool>("ItemsRequirePurchase")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -784,7 +788,7 @@ namespace API.Data.migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("NPCCollection");
+                    b.ToTable("NPCs");
                 });
 
             modelBuilder.Entity("API.Entities.Photo", b =>
@@ -831,13 +835,25 @@ namespace API.Data.migrations
                     b.Property<int?>("BodyItemSaveId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CurrentHitpoints")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("FeetItemSaveId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Gold")
                         .HasColumnType("integer");
 
                     b.Property<int?>("HelmetItemSaveId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("LeftHandItemSaveId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaxHitpoints")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -1064,9 +1080,9 @@ namespace API.Data.migrations
                         .WithMany("Triggers")
                         .HasForeignKey("ContainerId");
 
-                    b.HasOne("API.Entities.Dialogue", null)
+                    b.HasOne("API.Entities.DialogueNode", null)
                         .WithMany("Triggers")
-                        .HasForeignKey("DialogueId");
+                        .HasForeignKey("DialogueNodeId");
 
                     b.HasOne("API.Entities.Interaction", null)
                         .WithMany("Triggers")
@@ -1174,47 +1190,51 @@ namespace API.Data.migrations
                     b.Navigation("LocationSave");
                 });
 
-            modelBuilder.Entity("API.Entities.DialogueResponse", b =>
+            modelBuilder.Entity("API.Entities.DialogueLink", b =>
                 {
-                    b.HasOne("API.Entities.DialogueResponseLink", "ChildDialogueLink")
+                    b.HasOne("API.Entities.DialogueNode", "FromDialogue")
+                        .WithMany("ToDialogueLinks")
+                        .HasForeignKey("FromDialogueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.DialogueNode", "ToDialogue")
                         .WithMany()
-                        .HasForeignKey("DialogueResponseLinkId");
+                        .HasForeignKey("ToDialogueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("API.Entities.Dialogue", "ParentDialogue")
-                        .WithMany("ChildResponses")
-                        .HasForeignKey("ParentDialogueId");
+                    b.Navigation("FromDialogue");
 
-                    b.Navigation("ChildDialogueLink");
-
-                    b.Navigation("ParentDialogue");
-                });
-
-            modelBuilder.Entity("API.Entities.DialogueResponseLink", b =>
-                {
-                    b.HasOne("API.Entities.Dialogue", "ChildDialogue")
-                        .WithMany("ParentResponses")
-                        .HasForeignKey("ChildDialogueId");
-
-                    b.HasOne("API.Entities.DialogueResponse", "Response")
-                        .WithMany()
-                        .HasForeignKey("ResponseId");
-
-                    b.Navigation("ChildDialogue");
-
-                    b.Navigation("Response");
+                    b.Navigation("ToDialogue");
                 });
 
             modelBuilder.Entity("API.Entities.Enemy", b =>
                 {
-                    b.HasOne("API.Entities.Location", null)
-                        .WithMany("Enemies")
-                        .HasForeignKey("LocationId");
-
                     b.HasOne("API.Entities.Photo", "Photo")
                         .WithMany()
                         .HasForeignKey("PhotoId");
 
                     b.Navigation("Photo");
+                });
+
+            modelBuilder.Entity("API.Entities.EnemyLocationLink", b =>
+                {
+                    b.HasOne("API.Entities.Enemy", "Enemy")
+                        .WithMany()
+                        .HasForeignKey("EnemyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Location", "Location")
+                        .WithMany("EnemyLocationLinks")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enemy");
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("API.Entities.EnemySave", b =>
@@ -1225,11 +1245,19 @@ namespace API.Data.migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Entities.EnemyLocationLink", "EnemyLocationLink")
+                        .WithMany()
+                        .HasForeignKey("EnemyLocationLinkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("API.Entities.LocationSave", null)
                         .WithMany("Enemies")
                         .HasForeignKey("LocationSaveId");
 
                     b.Navigation("Enemy");
+
+                    b.Navigation("EnemyLocationLink");
                 });
 
             modelBuilder.Entity("API.Entities.Interaction", b =>
@@ -1338,7 +1366,7 @@ namespace API.Data.migrations
 
             modelBuilder.Entity("API.Entities.NPC", b =>
                 {
-                    b.HasOne("API.Entities.Dialogue", "Dialogue")
+                    b.HasOne("API.Entities.DialogueNode", "Dialogue")
                         .WithMany()
                         .HasForeignKey("DialogueId");
 
@@ -1501,11 +1529,9 @@ namespace API.Data.migrations
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("API.Entities.Dialogue", b =>
+            modelBuilder.Entity("API.Entities.DialogueNode", b =>
                 {
-                    b.Navigation("ChildResponses");
-
-                    b.Navigation("ParentResponses");
+                    b.Navigation("ToDialogueLinks");
 
                     b.Navigation("Triggers");
                 });
@@ -1523,7 +1549,7 @@ namespace API.Data.migrations
 
                     b.Navigation("Containers");
 
-                    b.Navigation("Enemies");
+                    b.Navigation("EnemyLocationLinks");
 
                     b.Navigation("Interactions");
 

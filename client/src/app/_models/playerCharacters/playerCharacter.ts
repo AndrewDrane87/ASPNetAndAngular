@@ -4,6 +4,10 @@ export interface PlayerCharacter{
     id: number;
     name: string;
     photoUrl: string;
+    level: number;
+    currentHitpoints: number;
+    maxHitpoints : number;
+    gold: number;
     leftHand: Item | undefined;
     rightHand: Item | undefined;
     helmet: Item | undefined;
