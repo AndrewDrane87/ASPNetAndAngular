@@ -13,7 +13,7 @@
       <p  *ngIf="item.statModifiers.length > 0">
         <strong>Stat Modifiers:</strong>
         {{
-          item.statModifiers.replace(":", ": ").replace("|", ", ") | titlecase
+          statModifiers |titlecase
         }}
       </p>
 

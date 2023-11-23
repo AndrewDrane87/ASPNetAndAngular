@@ -1,6 +1,6 @@
 ﻿namespace API.Entities
 {
-    public class ActionTrigger
+    public class Trigger
     {
         public int Id { get; set; }
 

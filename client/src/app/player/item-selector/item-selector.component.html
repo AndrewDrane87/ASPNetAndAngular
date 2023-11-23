@@ -27,8 +27,11 @@
         <td>{{ item.attackValue === undefined ? 0 : item.attackValue }}</td>
         <td>{{ item.armorValue }}</td>
         <td>
-          <button class="btn btn-primary" (click)="selectItem(item)">
+          <button *ngIf="item.cost ===0" class="btn btn-primary" (click)="selectItem(item)">
             Select
+          </button>
+          <button *ngIf="item.cost > 0" class="btn btn-danger" (click)="purchaseItem(item)">
+            Purchase ${{item.cost}}
           </button>
         </td>
       </tr>

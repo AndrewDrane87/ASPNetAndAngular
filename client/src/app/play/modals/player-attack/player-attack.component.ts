@@ -12,6 +12,7 @@ export class PlayerAttackComponent {
   diceValue = 1;
   damageValue = 0;
   modifiers: string[] = [];
+  statModifiers = '';
   disableAttack = false;
   useEvent = new EventEmitter<string>();
   constructor(public bsModalRef: BsModalRef) {}
@@ -19,6 +20,16 @@ export class PlayerAttackComponent {
   setItem(item: Item) {
     this.item = item;
     this.updateDamage();
+
+    try {
+      var json = JSON.parse(item.statModifiers);
+      Object.keys(json).forEach((key) => {
+        const modifier = ` [${key}: ${json[key]}] `;
+        this.statModifiers += modifier;
+      });
+    } catch {
+      return;
+    }
   }
 
   updateDamage() {

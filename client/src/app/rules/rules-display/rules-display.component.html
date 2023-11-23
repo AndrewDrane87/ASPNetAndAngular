@@ -1,0 +1,22 @@
+<div style="background-color: whitesmoke" class="card m-2 mt-5 pad-2">
+  <h1>How to play</h1>
+
+  <app-rule-display [rule]="rules.classes"></app-rule-display>
+
+  <app-rule-display [rule]="rules.stats"></app-rule-display>
+
+  <app-rule-display [rule]="rules.challenge"></app-rule-display>
+
+  <div class="container pad-0">
+    <div class="row pad-0 m-0">
+      <div class="col-11 pad-0">
+        <app-rule-display [rule]="rules.infoBox"></app-rule-display>
+      </div>
+      <div class="col-1 pad-0 m-0">
+        <button class="btn btn-info btn-icon">
+          <i class="fa fa-info"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

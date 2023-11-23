@@ -13,3 +13,7 @@
 .description{
     font-style: italic;
 }
+
+p{
+    font-weight: bold;
+}

@@ -10,7 +10,7 @@ namespace API.Entities
         [ForeignKey("DialogueNodeDto")]
         public int DialogueNodeId { get; set; }
         public DialogueNode DialogueNode { get; set; }
-        public List<ActionTriggerSave> Triggers { get; set; }
+        public List<TriggerSave> Triggers { get; set; }
     }
 
     /*

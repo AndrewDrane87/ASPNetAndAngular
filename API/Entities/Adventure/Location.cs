@@ -14,7 +14,7 @@ namespace API.Entities
         public List<LocationLink> ConnectedFromLocations { get; set; }
         public List<Interaction> Interactions { get; set; }
         public List<Container> Containers { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
         public List<EnemyLocationLink> EnemyLocationLinks { get; set; }
         public string VisibilityRequirements { get; set; }
         public int? RoomNumber { get; set; }
@@ -42,14 +42,7 @@ namespace API.Entities
         public int RequiredPlayerCount { get; set; }
     }
 
-    public class Interaction
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Information { get; set; }
-        public int LocationId { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
-    }
+    
 
    
 

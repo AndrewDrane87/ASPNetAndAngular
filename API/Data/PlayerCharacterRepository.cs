@@ -138,7 +138,7 @@ public class PlayerCharacterRepository : IPlayerCharacterRepository
         location.Items.Add(item);
     }
 
-    public async Task<StatusMessage> SetCharacterItem(int characterId, int itemId, string slot)
+    public async Task<StatusMessage> SetCharacterItem(int characterId, int itemId, string slot, int cost)
     {
         var pc = await context.PlayerCharacters
             .Include(p => p.AdventureSave)
@@ -206,10 +206,12 @@ public class PlayerCharacterRepository : IPlayerCharacterRepository
         else
             await MoveItemToLocation(pc.AdventureSave.CurrentLocationId ?? default, oldItem);
 
+        pc.Gold -= cost;
+        await context.SaveChangesAsync();
         return new StatusMessage { Status = true };
     }
 
-    public async Task<StatusMessage> SetBackpack(int characterId, int itemId, int backPackIndex)
+    public async Task<StatusMessage> SetBackpack(int characterId, int itemId, int backPackIndex, int cost)
     {
         var pc = await context.PlayerCharacters
             .Include(p => p.BackPack)
@@ -246,9 +248,9 @@ public class PlayerCharacterRepository : IPlayerCharacterRepository
 
 
         pc.BackPack.Add(item);
+        pc.Gold -= cost;
 
-        await context.SaveChangesAsync();
-
+        
         return new StatusMessage { Status = true };
     }
 

@@ -16,18 +16,20 @@ namespace API.Entities
         public int LocationId { get; set; }
         public Location Location { get; set; }
         public bool IsCurrentLocation { get; set; }
-        public List<ActionTriggerSave> Triggers { get; set; }
+        public List<TriggerSave> Triggers { get; set; }
         public string VisibilityRequirement { get; set; }
         public List<EnemySave> Enemies { get; set; }
         public List<ContainerSave> Containers { get; set; }
         public List<ItemSave> Items { get; set; }
+        public List<InteractionSave> Interactions { get; set; }
+        
+        
         /*
          * Need to be mapped
          */
         [NotMapped]
         public List<NPC> NPCs { get; set; }
-        [NotMapped]
-        public List<Interaction> Interactions { get; set; }
+        
         #endregion
 
         #region Not Mapped

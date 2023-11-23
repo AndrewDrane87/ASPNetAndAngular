@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace API.Entities.Dtos
+namespace API.Entities
 {
-    public class ActionTriggerSaveDto
+    public class TriggerSaveDto
     {
         public int Id { get; set; }
         [ForeignKey("ActionTrigger")]
@@ -20,9 +20,9 @@ namespace API.Entities.Dtos
         public string ActionType { get; set; }
         public string ActionData { get; set; }
         public string ResultData { get; set; }
-        public static ActionTriggerSaveDto Create(ActionTriggerSave save)
+        public static TriggerSaveDto Convert(TriggerSave save)
         {
-            ActionTriggerSaveDto dto = new ActionTriggerSaveDto()
+            TriggerSaveDto dto = new TriggerSaveDto()
             {
                 Id = save.Id,
                 ActionTriggerId = save.ActionTrigger.Id,
@@ -36,16 +36,16 @@ namespace API.Entities.Dtos
             return dto;
         }
 
-        public static List<ActionTriggerSaveDto> CreateList(List<ActionTriggerSave> saves)
+        public static List<TriggerSaveDto> ConvertList(List<TriggerSave> saves)
         {
-            List<ActionTriggerSaveDto> list = new List<ActionTriggerSaveDto>();
+            List<TriggerSaveDto> list = new List<TriggerSaveDto>();
             if (saves != null)
             {
-                foreach (ActionTriggerSave save in saves)
+                foreach (TriggerSave save in saves)
                 {
                     if (save.Complete) continue;
 
-                    ActionTriggerSaveDto dto = new ActionTriggerSaveDto()
+                    TriggerSaveDto dto = new TriggerSaveDto()
                     {
                         Id = save.Id,
                         ActionTriggerId = save.ActionTrigger.Id,

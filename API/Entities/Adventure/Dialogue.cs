@@ -8,7 +8,7 @@ namespace API.Entities
         public int Id { get; set; }
         public string Text { get; set; }
         public List<DialogueLink> ToDialogueLinks { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
     }
 
     public class DialogueLink

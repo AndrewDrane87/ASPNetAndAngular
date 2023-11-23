@@ -38,7 +38,11 @@ export interface Container{
 export interface Interaction{
     id: number;
     name: string;
-    information: string;
+    complete: boolean;
+    passed: boolean;
+    defaultText: string;
+    failedText: string;
+    passedText: string;
     locationId: number;
     triggers: ActionTrigger[];
 }

@@ -55,80 +55,6 @@ namespace API.data.migrations
                     b.ToTable("Connections");
                 });
 
-            modelBuilder.Entity("API.Entities.ActionTrigger", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ActionData")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ActionType")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("ContainerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("DialogueNodeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("EventType")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("InteractionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ResultData")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContainerId");
-
-                    b.HasIndex("DialogueNodeId");
-
-                    b.HasIndex("InteractionId");
-
-                    b.HasIndex("LocationId");
-
-                    b.ToTable("Triggers");
-                });
-
-            modelBuilder.Entity("API.Entities.ActionTriggerSave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActionTriggerId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Complete")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActionTriggerId");
-
-                    b.HasIndex("LocationId");
-
-                    b.ToTable("ActionTriggerSaves");
-                });
-
             modelBuilder.Entity("API.Entities.Adventure", b =>
                 {
                     b.Property<int>("Id")
@@ -539,7 +465,10 @@ namespace API.data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Information")
+                    b.Property<string>("DefaultText")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FailedText")
                         .HasColumnType("text");
 
                     b.Property<int>("LocationId")
@@ -548,11 +477,43 @@ namespace API.data.migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<string>("PassedText")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
                     b.ToTable("Interactions");
+                });
+
+            modelBuilder.Entity("API.Entities.InteractionSave", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Complete")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("InteractionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LocationSaveId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Passed")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InteractionId");
+
+                    b.HasIndex("LocationSaveId");
+
+                    b.ToTable("InteractionSaves");
                 });
 
             modelBuilder.Entity("API.Entities.Item", b =>
@@ -881,6 +842,85 @@ namespace API.data.migrations
                     b.ToTable("PlayerCharacters");
                 });
 
+            modelBuilder.Entity("API.Entities.Trigger", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActionData")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ActionType")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ContainerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("DialogueNodeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EventType")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("InteractionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ResultData")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContainerId");
+
+                    b.HasIndex("DialogueNodeId");
+
+                    b.HasIndex("InteractionId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Triggers");
+                });
+
+            modelBuilder.Entity("API.Entities.TriggerSave", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActionTriggerId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Complete")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("InteractionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Result")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActionTriggerId");
+
+                    b.HasIndex("InteractionId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("TriggerSaves");
+                });
+
             modelBuilder.Entity("API.Group", b =>
                 {
                     b.Property<string>("Name")
@@ -1071,44 +1111,6 @@ namespace API.data.migrations
                         .HasForeignKey("GroupName");
                 });
 
-            modelBuilder.Entity("API.Entities.ActionTrigger", b =>
-                {
-                    b.HasOne("API.Entities.Container", null)
-                        .WithMany("Triggers")
-                        .HasForeignKey("ContainerId");
-
-                    b.HasOne("API.Entities.DialogueNode", null)
-                        .WithMany("Triggers")
-                        .HasForeignKey("DialogueNodeId");
-
-                    b.HasOne("API.Entities.Interaction", null)
-                        .WithMany("Triggers")
-                        .HasForeignKey("InteractionId");
-
-                    b.HasOne("API.Entities.Location", null)
-                        .WithMany("Triggers")
-                        .HasForeignKey("LocationId");
-                });
-
-            modelBuilder.Entity("API.Entities.ActionTriggerSave", b =>
-                {
-                    b.HasOne("API.Entities.ActionTrigger", "ActionTrigger")
-                        .WithMany()
-                        .HasForeignKey("ActionTriggerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.LocationSave", "LocationSave")
-                        .WithMany("Triggers")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ActionTrigger");
-
-                    b.Navigation("LocationSave");
-                });
-
             modelBuilder.Entity("API.Entities.Adventure", b =>
                 {
                     b.HasOne("API.Entities.Location", "StartingLocation")
@@ -1264,6 +1266,25 @@ namespace API.data.migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Entities.InteractionSave", b =>
+                {
+                    b.HasOne("API.Entities.Interaction", "Interaction")
+                        .WithMany()
+                        .HasForeignKey("InteractionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.LocationSave", "LocationSave")
+                        .WithMany("Interactions")
+                        .HasForeignKey("LocationSaveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interaction");
+
+                    b.Navigation("LocationSave");
                 });
 
             modelBuilder.Entity("API.Entities.Item", b =>
@@ -1429,6 +1450,49 @@ namespace API.data.migrations
                     b.Navigation("RightHand");
                 });
 
+            modelBuilder.Entity("API.Entities.Trigger", b =>
+                {
+                    b.HasOne("API.Entities.Container", null)
+                        .WithMany("Triggers")
+                        .HasForeignKey("ContainerId");
+
+                    b.HasOne("API.Entities.DialogueNode", null)
+                        .WithMany("Triggers")
+                        .HasForeignKey("DialogueNodeId");
+
+                    b.HasOne("API.Entities.Interaction", null)
+                        .WithMany("Triggers")
+                        .HasForeignKey("InteractionId");
+
+                    b.HasOne("API.Entities.Location", null)
+                        .WithMany("Triggers")
+                        .HasForeignKey("LocationId");
+                });
+
+            modelBuilder.Entity("API.Entities.TriggerSave", b =>
+                {
+                    b.HasOne("API.Entities.Trigger", "ActionTrigger")
+                        .WithMany()
+                        .HasForeignKey("ActionTriggerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.InteractionSave", "InteractionSave")
+                        .WithMany("TriggerSaves")
+                        .HasForeignKey("InteractionId");
+
+                    b.HasOne("API.Entities.LocationSave", "LocationSave")
+                        .WithMany("Triggers")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("ActionTrigger");
+
+                    b.Navigation("InteractionSave");
+
+                    b.Navigation("LocationSave");
+                });
+
             modelBuilder.Entity("API.Message", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "Recipient")
@@ -1538,6 +1602,11 @@ namespace API.data.migrations
                     b.Navigation("Triggers");
                 });
 
+            modelBuilder.Entity("API.Entities.InteractionSave", b =>
+                {
+                    b.Navigation("TriggerSaves");
+                });
+
             modelBuilder.Entity("API.Entities.Location", b =>
                 {
                     b.Navigation("ConnectedFromLocations");
@@ -1560,6 +1629,8 @@ namespace API.data.migrations
                     b.Navigation("Containers");
 
                     b.Navigation("Enemies");
+
+                    b.Navigation("Interactions");
 
                     b.Navigation("Items");
 

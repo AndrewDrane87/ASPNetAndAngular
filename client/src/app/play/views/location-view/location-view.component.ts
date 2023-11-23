@@ -5,7 +5,7 @@ import {
   AdminContainer,
   AdminInteraction,
 } from 'src/app/_models/Adventure';
-import { AdventureLocation, Enemy } from 'src/app/_models/AdventureSave';
+import { AdventureLocation, Enemy, Interaction } from 'src/app/_models/AdventureSave';
 import { NPC } from 'src/app/_models/npc';
 import { LocationService } from 'src/app/_services/adventures/locationService';
 import { AvilableItemsComponent } from '../../modals/avilable-items/avilable-items.component';
@@ -20,10 +20,10 @@ export class LocationViewComponent implements OnInit {
   @Output() locationSelectedEvent = new EventEmitter<AdventureLocation>();
   @Output() npcSelectedEvent = new EventEmitter<NPC>();
   @Output() containerSelectedEvent = new EventEmitter<AdminContainer>();
-  @Output() interactionSelectedEvent = new EventEmitter<AdminInteraction>();
+  @Output() interactionSelectedEvent = new EventEmitter<Interaction>();
   @Output() enemySelectedEvent = new EventEmitter<Enemy>();
   @Output() enemyAttackEvent = new EventEmitter();
-
+isCollapsed = true;
   constructor(
     private bsModalRef: BsModalRef,
     private bsModalService: BsModalService,
@@ -43,7 +43,7 @@ export class LocationViewComponent implements OnInit {
     this.containerSelectedEvent.emit(container);
   }
 
-  interactionSelected(interaction: AdminInteraction) {
+  interactionSelected(interaction: Interaction) {
     this.interactionSelectedEvent.emit(interaction);
   }
 

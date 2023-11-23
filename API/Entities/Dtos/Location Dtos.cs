@@ -1,5 +1,4 @@
 ﻿using API.Entities;
-using API.Entities.Dtos;
 using System.Text.Json.Serialization;
 
 namespace API.Entities
@@ -10,14 +9,14 @@ namespace API.Entities
         public string Name { get; set; }
         public string ShortDescription { get; set; }
         public string Description { get; set; }
-        
+
         [JsonIgnore]
         public Location Location { get; set; }
         public List<NPC> NPCs { get; set; }
         public List<ConnectedLocationDto> ConnectedLocations { get; set; }
         public List<ContainerDto> Containers { get; set; }
         public List<Interaction> Interactions { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
         public string VisibilityRequirements { get; set; }
         public int RoomNumber { get; set; }
         public bool ItemsRequirePurchase { get; set; }
@@ -61,11 +60,12 @@ namespace API.Entities
         public List<NPC> NPCs { get; set; }
         public List<ConnectedLocationDto> ConnectedLocations { get; set; }
         public List<ContainerSaveDto> Containers { get; set; }
-        public List<Interaction> Interactions { get; set; }
-        public List<ActionTriggerSaveDto> Triggers { get; set; }
+        public List<InteractionSaveDto> Interactions { get; set; }
+        public List<TriggerSaveDto> Triggers { get; set; }
         public List<EnemySaveDto> Enemies { get; set; }
         public List<Item> AvailableItems { get; set; }
         public int RoomNumber { get; set; }
+        public bool ItemsRequirePurchase { get; set; }
 
 
         public static LocationSaveDto Convert(LocationSave save)
@@ -79,6 +79,7 @@ namespace API.Entities
                 ShortDescription = save.Location.ShortDescription,
                 Description = save.Location.Description,
                 LocationId = save.LocationId,
+                ItemsRequirePurchase = save.Location.ItemsRequirePurchase
             };
 
             return dto;
@@ -89,7 +90,7 @@ namespace API.Entities
             if (save.Location == null) return null;
 
             List<EnemySave> livingEnemies = new List<EnemySave>();
-            foreach(EnemySave e in save.Enemies)
+            foreach (EnemySave e in save.Enemies)
             {
                 if (e.CurrentHp > 0)
                     livingEnemies.Add(e);
@@ -99,17 +100,17 @@ namespace API.Entities
             {
                 Id = save.Id,
                 Name = save.Location.Name,
-                ShortDescription=save.Location.ShortDescription,
+                ShortDescription = save.Location.ShortDescription,
                 Description = save.Location.Description,
                 LocationId = save.LocationId,
                 NPCs = locationDto.NPCs,
                 ConnectedLocations = locationDto.ConnectedLocations,
                 Containers = ContainerSaveDto.ConvertList(save.Containers),
-                Interactions = locationDto.Interactions,
-                Triggers = ActionTriggerSaveDto.CreateList(save.Triggers),
+                Interactions = InteractionSaveDto.ConvertList(save.Interactions),
+                Triggers = TriggerSaveDto.ConvertList(save.Triggers),
                 Enemies = EnemySaveDto.ConvertList(livingEnemies),
                 RoomNumber = locationDto.RoomNumber,
-                
+                ItemsRequirePurchase = save.Location.ItemsRequirePurchase
             };
 
             return dto;

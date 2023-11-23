@@ -1,0 +1,15 @@
+{
+  "Name": "Low quality Rogue's Boots",
+  "PhotoId": 37,
+  "AttackValue": 0,
+  "ArmorValue": 1,
+  "StatModifiers": "rogue:5|healer:-3|mage:-3|bard:-3",
+  "ItemType": "boot",
+  "DamageType": null,
+  "RequiredLevel": 0,
+  "DamageModifiers": null,
+  "ResistanceModifiers": null,
+  "Value": 5,
+  "StackSize": -1,
+  "Use": null
+}

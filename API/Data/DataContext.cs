@@ -23,21 +23,16 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationLink> LocationLink { get; set; }
     public DbSet<NPC> NPCs { get; set; }
-    //public DbSet<Dialogue> DialogueCollection { get; set; }
-    //public DbSet<DialogueResponse> ResponseCollection { get; set; }
-    //public DbSet<DialogueResponseLink> DialogueResponseLinkCollection { get; set; }
-
     public DbSet<DialogueNode> DialogueNodes { get; set; }
     public DbSet<DialogueLink> DialogueLinks { get; set; }
-
-
     public DbSet<Container> Containers { get; set; }
     public DbSet<Interaction> Interactions { get; set; }
-    public DbSet<ActionTrigger> Triggers { get; set; }
+    public DbSet<Trigger> Triggers { get; set; }
     public DbSet<Enemy> Enemies { get; set; }
     public DbSet<AdventureSave> AdventureSaves { get; set; }
     public DbSet<LocationSave> LocationSaves { get; set; }
-    public DbSet<ActionTriggerSave> ActionTriggerSaves { get; set; }
+    public DbSet<TriggerSave> TriggerSaves { get; set; }
+    public DbSet<InteractionSave> InteractionSaves { get; set; }
     public DbSet<EnemySave> EnemySaves { get; set; }
     public DbSet<ContainerSave> ContainerSaves { get; set; }
     public DbSet<ItemSave> ItemSaves { get; set; }

@@ -228,8 +228,8 @@ export class ItemService {
     return this.http.get<Item[]>(url);
   }
 
-  setCharacterItem(itemType: string, itemId: number, charcaterId: number, backpackIndex: number) {
-    var body = { itemType: itemType, itemId: itemId, characterId: charcaterId, backpackIndex :backpackIndex };
+  setCharacterItem(itemType: string, itemId: number, charcaterId: number, backpackIndex: number, cost: number) {
+    var body = { itemType: itemType, itemId: itemId, characterId: charcaterId, backpackIndex :backpackIndex, cost: cost };
     console.log(body);
     var url = this.baseUrl + `playercharacters/set-character-item`;
     return this.http.put(url, body);

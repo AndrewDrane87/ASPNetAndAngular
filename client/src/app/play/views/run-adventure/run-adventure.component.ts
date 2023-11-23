@@ -23,6 +23,7 @@ import {
   AdventureLocation,
   Container,
   Enemy,
+  Interaction,
 } from 'src/app/_models/AdventureSave';
 import { MonsterCombatComponent } from '../../modals/monster-combat/monster-combat.component';
 import { EnemyAttackModalComponent } from '../../modals/enemy-attack-modal/enemy-attack-modal.component';
@@ -138,7 +139,7 @@ export class RunAdventureComponent implements OnInit {
     this.currentView = 'location';
   }
 
-  backtoMainDialogue(event: NPC){
+  backtoMainDialogue(event: NPC) {
     this.currentView = 'npc';
     this.npcService.getNpcDetail(event.id).subscribe({
       next: (result) => {
@@ -160,16 +161,34 @@ export class RunAdventureComponent implements OnInit {
     });
   }
 
-  interactionSelected(event: AdminInteraction) {
-    console.log(event);
+  interactionSelected(event: Interaction) {
+    //Subscribe to the complete so we know we have finished the exit triggers
+    if (event.triggers.length > 0) {
+      this.triggerService.checkTriggers(event.triggers, 'enter');
+      this.triggerService.complete.pipe(take(1)).subscribe({
+        next: () => {
+          //Clear the events array now that we have processed them. This way we dont have to refresh the whole page or reload data.
+          event.triggers = [];
+          const result = this.triggerService.result;
+          event.passed = result;
+          
+          this.displayInteraction(event);
+        },
+      });
+    } else {
+      this.displayInteraction(event);
+    }
+  }
+
+  displayInteraction(event: Interaction) {
     this.modalRef = this.modalService.show(InteractionModalComponent);
     this.modalRef.content.setInteraction(event);
     return this.modalRef.onHidden!.subscribe((result) => {
-      console.log(result);
-      this.toastr.warning('Need to save state');
-      if (this.modalRef?.content.result === true) {
-        console.log(result);
-      }
+      event.complete = true;
+      this.adventureService.updateInteractionSave(event).subscribe({
+        next: () => {console.log('Saved interaction: ' + event.id)},
+        error: (error) => this.toastr.error(error),
+      });
     });
   }
 
@@ -194,8 +213,12 @@ export class RunAdventureComponent implements OnInit {
           backdrop: false,
           ignoreBackdropClick: true,
         };
-        this.bsModalRef = this.bsModalService.show(EnemyAttackModalComponent, modalConfig);
-        this.bsModalRef!.content.enemy = this.location?.enemies[this.enemyIndex];
+        this.bsModalRef = this.bsModalService.show(
+          EnemyAttackModalComponent,
+          modalConfig
+        );
+        this.bsModalRef!.content.enemy =
+          this.location?.enemies[this.enemyIndex];
         this.bsModalRef.onHidden?.subscribe({
           next: () => {
             this.enemyIndex++;
@@ -207,6 +230,4 @@ export class RunAdventureComponent implements OnInit {
       }
     }
   }
-
-  
 }

@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Text { get; set; }
         public List<DialogueNodeDto> Responses { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
 
         public static DialogueNodeDto Convert(DialogueNode d)
         {

@@ -13,7 +13,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public List<ItemDto> Items { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
 
         public static ContainerDto Convert(Container container)
         {
@@ -39,7 +39,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public List<ItemDto> Items { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
         public bool Complete { get; set; }
 
         public static ContainerSaveDto Convert(ContainerSave save)
