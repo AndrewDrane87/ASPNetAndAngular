@@ -9,15 +9,9 @@
       </button>      
     </div>
   </div>
-  
-  
 
-
-
-
-  <div class="mt-3">
-    <div *ngFor="let i of container.items">
-      <div class="col-3">
+  <div class="mt-3 row">
+    <div *ngFor="let i of container.items" class="col-3">
         <div class="card m-1 text-center" [tooltip]="itemData">
           <ng-template #itemData>
             <p>Required Level: {{ i.requiredLevel }}</p>
@@ -29,7 +23,6 @@
           <p>{{ i.name }}</p>
           <img src="{{ i.photoUrl }}" />
         </div>
-      </div>
     </div>
   </div>
 </div>

@@ -18,7 +18,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<Connection> Connections { get; set; }
     public DbSet<PlayerCharacter> PlayerCharacters { get; set; }
     public DbSet<Item> Items { get; set; }
-    public DbSet<ItemPhoto> ItemPhotoCollection { get; set; }
+    public DbSet<Photo> Photos { get; set; }
     public DbSet<Adventure> Adventures { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationLink> LocationLink { get; set; }

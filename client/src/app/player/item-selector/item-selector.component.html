@@ -3,38 +3,55 @@
     class="m-2 text-center"
     *ngIf="availableItems === undefined || availableItems.length === 0"
   >
-    <h5 class="m-0">There are no items available in this location to equip...</h5>
+    <h5 class="m-0">
+      There are no items available in this location to equip...
+    </h5>
   </div>
 
-  <table
-    class="mt-0"
-    style="width: 100%"
-    *ngIf="availableItems !== undefined && availableItems.length > 0"
-  >
-    <thead>
-      <td style="width: 20"></td>
-      <td style="width: 20%">Name</td>
-      <td style="width: 20%">Attack Value</td>
-      <td style="width: 20%">Armor Value</td>
-      <td style="width: 20%"></td>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of availableItems; let index = index">
-        <td>
-          <img class="img-circle" src="{{ item.photoUrl }}" alt="" />
-        </td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.attackValue === undefined ? 0 : item.attackValue }}</td>
-        <td>{{ item.armorValue }}</td>
-        <td>
-          <button *ngIf="item.cost ===0" class="btn btn-primary" (click)="selectItem(item)">
-            Select
-          </button>
-          <button *ngIf="item.cost > 0" class="btn btn-danger" (click)="purchaseItem(item)">
-            Purchase ${{item.cost}}
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="row no-padding" *ngFor="let item of availableItems">
+    <div class="col-2 no-padding text-center">
+      <img class="img-circle" src="{{ item.photoUrl }}" alt="" />
+    </div>
+    <div class="col-8 no-padding">
+      <strong>{{ item.name }}</strong>
+      <div class="row">
+        <div class="col">
+          <p>
+            <strong>Armor Value: </strong>{{ item.armorValue}}
+          </p>
+          <p>
+            <strong>Attack Value: </strong>{{ item.attackValue}}
+          </p>
+        </div>
+        <div class="col">
+          <p>
+            <strong>Stat Modifiers: </strong
+            >{{ item.statModifiers | jsonConvert }}
+          </p>
+          <p>
+            <strong>Damage Modifiers: </strong
+            >{{ item.damageModifiers | jsonConvert }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-2 no-padding">
+      <button
+        *ngIf="item.cost === 0"
+        class="btn btn-primary"
+        (click)="selectItem(item)"
+      >
+        Select
+      </button>
+      <button
+        *ngIf="item.cost > 0"
+        class="btn btn-danger"
+        (click)="purchaseItem(item)"
+      >
+        Purchase ${{ item.cost }}
+      </button>
+    </div>
+  </div>
+
+  
 </div>

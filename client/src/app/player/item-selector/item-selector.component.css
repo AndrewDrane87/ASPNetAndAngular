@@ -1,3 +1,20 @@
 img{
     width: 75px;
 }
+
+td{
+    font-size: .7rem;
+}
+
+thead td{
+    font-size: .8rem;
+    font-weight: bold;
+}
+
+tbody tr{
+    border-top: 1px solid black;
+}
+
+p{
+    margin: 0px;
+}

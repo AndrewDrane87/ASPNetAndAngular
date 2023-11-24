@@ -40,7 +40,7 @@ export class RunAdventureComponent implements OnInit {
   location: AdventureLocation | undefined;
   newLocation: AdventureLocation | undefined;
   npc: NPC | undefined;
-  container: AdminContainer | undefined;
+  container: Container | undefined;
   currentView = 'location';
   public bsModalRef: BsModalRef | undefined;
 

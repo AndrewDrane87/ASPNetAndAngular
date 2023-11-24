@@ -72,6 +72,7 @@ import { BackpackComponent } from './play/modals/backpack/backpack.component';
 import { StatBlockComponent } from './player/stat-block/stat-block.component';
 import { RulesDisplayComponent } from './rules/rules-display/rules-display.component';
 import { RuleDisplayComponent } from './rules/rule-display/rule-display.component';
+import { JsonConvertPipe } from './_pipes/json-convert.pipe';
 
 @NgModule({
   declarations: [
@@ -135,6 +136,7 @@ import { RuleDisplayComponent } from './rules/rule-display/rule-display.componen
     StatBlockComponent,
     RulesDisplayComponent,
     RuleDisplayComponent,
+    JsonConvertPipe,
   ],
   imports: [
     BrowserModule,

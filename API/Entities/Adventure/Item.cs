@@ -8,7 +8,7 @@ public class Item
     public int Id { get; set; }
     public string Name { get; set; }
     public int RequiredLevel { get; set; }
-    public ItemPhoto Photo { get; set; }
+    public API.Photo Photo { get; set; }
     public int AttackValue { get; set; }
     public int ArmorValue { get; set; }
     public string DamageModifiers { get; set; }

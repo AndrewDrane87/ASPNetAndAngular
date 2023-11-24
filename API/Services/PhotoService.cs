@@ -2,10 +2,11 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace API;
 
-public class PhotoService : IPhotoService
+public class PhotoService
 {
     private readonly Cloudinary cloudinary;
     public  PhotoService(IOptions<CloudinarySettings> config)
@@ -14,29 +15,26 @@ public class PhotoService : IPhotoService
         cloudinary = new Cloudinary(acc);
     }
 
-    public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
-    {
+    public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file,string objectType, string objectSubType, string publicId){
         var uploadResult = new ImageUploadResult();
-        if(file.Length>0){
-            using var stream = file.OpenReadStream();
-            var uploadParams = new ImageUploadParams{
-                File = new FileDescription(file.FileName,stream),
-                Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face"),
-                Folder = "KewlBeans"
-            };
-            uploadResult = await cloudinary.UploadAsync(uploadParams);
-        }
-        return uploadResult;
-    }
+        StringBuilder builder = new StringBuilder();
+        builder.Append("mythos");
+        if (objectType != null && objectType.Length > 0)
+            builder.Append($"/{objectType}");
+        if (objectSubType != null && objectSubType.Length > 0)
+            builder.Append($"/{objectSubType}");
 
-    public async Task<ImageUploadResult> AddItemPhotoAsync(IFormFile file){
-        var uploadResult = new ImageUploadResult();
-        if(file.Length>0){
+        Console.WriteLine(builder.ToString());
+
+        if (file.Length>0){
             using var stream = file.OpenReadStream();
-            var uploadParams = new ImageUploadParams{
-                File = new FileDescription(file.FileName,stream),
-                Transformation = new Transformation().Height(200).Width(200).Crop("fill"),
-                Folder = "mythos/items"
+            var uploadParams = new ImageUploadParams {
+                File = new FileDescription(file.FileName, stream),
+                Transformation = new Transformation().Height(400).Width(400).Crop("fill").Chain()
+                .Quality("auto:good").Chain()
+                .FetchFormat("auto").Chain(),
+                PublicId = publicId,
+                Folder = builder.ToString(),
             };
             uploadResult = await cloudinary.UploadAsync(uploadParams);
         }

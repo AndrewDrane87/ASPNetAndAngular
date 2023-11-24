@@ -33,6 +33,7 @@ export interface Container{
     name: string;
     description: string;
     items: Item[];
+    isCorpse: boolean;
 }
 
 export interface Interaction{

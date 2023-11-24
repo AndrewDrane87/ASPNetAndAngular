@@ -84,13 +84,14 @@
     <div class="row">
       <div *ngFor="let c of location.containers" class="col-3 no-padding">
         <div
+        *ngIf="location.enemies.length === 0"
           class="card m-1 text-center bg-parchment"
           (click)="containerSelected(c)"
         >
           <p class="m-0">
             <strong>{{ c.name }}</strong>
           </p>
-          <p class="description">"{{ c.description }}""</p>
+          <p class="description">{{ c.description }}</p>
         </div>
       </div>
     </div>

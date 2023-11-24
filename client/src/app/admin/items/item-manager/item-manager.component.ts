@@ -12,23 +12,15 @@ import { ItemService } from 'src/app/_services/items/item.service';
   templateUrl: './item-manager.component.html',
   styleUrls: ['./item-manager.component.css'],
 })
-export class ItemManagerComponent implements OnInit {
-  itemPhotos: ItemPhoto[] | undefined;
+export class ItemManagerComponent{
+  
   pagination?: Pagination;
   pageNumber = 1;
   pageSize = 5;
 
   constructor(public itemService: ItemService, private toastr: ToastrService) {}
 
-  ngOnInit(): void {
-    if (this.itemService.checkIfPhotosLoaded() === false) {
-      this.itemService
-        .loadItemPhotos()
-        .subscribe({ next: (photos) => (this.itemPhotos = photos) });
-    } else {
-      this.itemPhotos = this.itemService.getItemPhotos('');
-    }
-  }
+  
 
   helmetsOpen(event: any) {
     if (event) {
@@ -66,20 +58,9 @@ export class ItemManagerComponent implements OnInit {
     }
   }
 
-  deletePhoto(photo: ItemPhoto) {
-    this.itemService.deletePhoto(photo.id).subscribe({
-      next: () =>
-        this.itemPhotos!.forEach((item, index) => {
-          if (item === photo) this.itemPhotos!.splice(index, 1);
-        }),
-    });
-  }
+  
 
-  refreshImages() {}
-
-  newImage(newPhoto: ItemPhoto) {
-    this.itemPhotos?.push(newPhoto);
-  }
+  
 
   deleteHandItem(item: Item) {
     this.itemService.deleteHandItem(item).then((result) => {

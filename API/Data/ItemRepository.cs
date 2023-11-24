@@ -19,7 +19,7 @@ public class ItemRepository
 
     public async Task<Item> CreateItem(NewItemDto dto)
     {
-        ItemPhoto photo = await context.ItemPhotoCollection.Where(p => p.Id == dto.PhotoId).FirstOrDefaultAsync();
+        Photo photo = await context.Photos.Where(p => p.Id == dto.PhotoId).FirstOrDefaultAsync();
 
         Item newItem = new Item
         {
