@@ -8,6 +8,7 @@
             ? "[Room - " + location.roomNumber + "]"
             : null
         }}
+        [{{location.locationId}}]
       </h4>
       <p class="m-1">{{ location.shortDescription }}</p>
       <p class="m-1">{{ location.description }}</p>
@@ -129,11 +130,11 @@
           (click)="enemySelected(i)"
         >
           <div class="row m-0">
-            <div class="col-2 no-padding">
+            <div class="col-4 no-padding">
               <img class="card-thumbnail" src="{{ i.photoUrl }}" />
             </div>
 
-            <div class="col-10 no-padding">
+            <div class="col-8 no-padding center-vertical">
               <h5 class="mt-0 mb-0">
                 {{ i.name }}
               </h5>

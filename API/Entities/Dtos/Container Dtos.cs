@@ -40,8 +40,8 @@
         public int ContainerId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<ItemDto> Items { get; set; }
-        public List<Trigger> Triggers { get; set; }
+        public List<ItemSaveDto> Items { get; set; }
+        public List<TriggerSave> Triggers { get; set; }
         public bool Complete { get; set; }
         public bool IsCorpse { get; set; }
 
@@ -55,12 +55,13 @@
                 Description = save.Container.Description,
                 Complete = save.Complete,
                 IsCorpse = save.Container.IsCorpse,
+                Triggers = save.TriggerSaves,
             };
-            dto.Items = new List<ItemDto>();
+            dto.Items = new List<ItemSaveDto>();
             if (save.Items != null)
             {
                 foreach (ItemSave i in save.Items)
-                    dto.Items.Add(ItemDto.Convert(i.Item));
+                    dto.Items.Add(ItemSaveDto.Convert(i));
             }
             return dto;
         }

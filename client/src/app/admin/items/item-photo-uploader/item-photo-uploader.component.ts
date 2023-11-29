@@ -32,7 +32,7 @@ export class ItemPhotoUploaderComponent {
   objectTypeUrl = '';
   objectSubTypeUrl = '';
 
-  objectTypes = ['Item', 'NPC', 'Location'];
+  objectTypes = ['Item', 'NPC', 'Location', 'Monster'];
   objectSubTypes: String[] = [];
   itemTypes = ['Sword', 'Shield', 'Helmet', 'Armor', 'Boot'];
 

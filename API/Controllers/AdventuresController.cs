@@ -338,9 +338,9 @@ namespace API.Controllers
         }
 
         [HttpPut("reset")]
-        public async Task<ActionResult> Reset()
+        public async Task<ActionResult> Reset(int adventureSaveId)
         {
-            await uow.AdventureRepository.ResetSaves();
+            await uow.AdventureRepository.ResetSaves(adventureSaveId);
             return Ok();
 
         }

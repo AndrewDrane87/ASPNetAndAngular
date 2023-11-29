@@ -142,7 +142,7 @@ namespace API.data.migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AdventureSaveId")
+                    b.Property<int>("AdventureSaveId")
                         .HasColumnType("integer");
 
                     b.Property<int>("AdventureVariableId")
@@ -446,7 +446,7 @@ namespace API.data.migrations
                     b.Property<int>("EnemyLocationLinkId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("LocationSaveId")
+                    b.Property<int>("LocationSaveId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -679,17 +679,9 @@ namespace API.data.migrations
                     b.Property<int>("ToId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("FromLocationId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("integer");
-
                     b.HasKey("FromId", "ToId");
 
-                    b.HasIndex("FromLocationId");
-
-                    b.HasIndex("LocationId");
+                    b.HasIndex("ToId");
 
                     b.ToTable("LocationLink");
                 });
@@ -877,6 +869,9 @@ namespace API.data.migrations
                     b.Property<bool>("Complete")
                         .HasColumnType("boolean");
 
+                    b.Property<int?>("ContainerSaveId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("InteractionId")
                         .HasColumnType("integer");
 
@@ -889,6 +884,8 @@ namespace API.data.migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ActionTriggerId");
+
+                    b.HasIndex("ContainerSaveId");
 
                     b.HasIndex("InteractionId");
 
@@ -1129,15 +1126,19 @@ namespace API.data.migrations
 
             modelBuilder.Entity("API.Entities.AdventureVariableSave", b =>
                 {
-                    b.HasOne("API.Entities.AdventureSave", null)
+                    b.HasOne("API.Entities.AdventureSave", "AdventureSave")
                         .WithMany("Variables")
-                        .HasForeignKey("AdventureSaveId");
+                        .HasForeignKey("AdventureSaveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("API.Entities.AdventureVariable", "AdventureVariable")
                         .WithMany()
                         .HasForeignKey("AdventureVariableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AdventureSave");
 
                     b.Navigation("AdventureVariable");
                 });
@@ -1229,13 +1230,17 @@ namespace API.data.migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.LocationSave", null)
+                    b.HasOne("API.Entities.LocationSave", "LocationSave")
                         .WithMany("Enemies")
-                        .HasForeignKey("LocationSaveId");
+                        .HasForeignKey("LocationSaveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Enemy");
 
                     b.Navigation("EnemyLocationLink");
+
+                    b.Navigation("LocationSave");
                 });
 
             modelBuilder.Entity("API.Entities.Interaction", b =>
@@ -1298,7 +1303,8 @@ namespace API.data.migrations
                 {
                     b.HasOne("API.Entities.ContainerSave", "ContainerSave")
                         .WithMany("Items")
-                        .HasForeignKey("ContainerSaveId");
+                        .HasForeignKey("ContainerSaveId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("API.Entities.Item", "Item")
                         .WithMany()
@@ -1308,7 +1314,8 @@ namespace API.data.migrations
 
                     b.HasOne("API.Entities.LocationSave", "LocationSave")
                         .WithMany("Items")
-                        .HasForeignKey("LocationSaveId");
+                        .HasForeignKey("LocationSaveId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("API.Entities.PlayerCharacter", null)
                         .WithMany("BackPack")
@@ -1332,14 +1339,19 @@ namespace API.data.migrations
                 {
                     b.HasOne("API.Entities.Location", "FromLocation")
                         .WithMany("ConnectedToLocations")
-                        .HasForeignKey("FromLocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FromId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("API.Entities.Location", null)
+                    b.HasOne("API.Entities.Location", "ToLocation")
                         .WithMany("ConnectedFromLocations")
-                        .HasForeignKey("LocationId");
+                        .HasForeignKey("ToId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FromLocation");
+
+                    b.Navigation("ToLocation");
                 });
 
             modelBuilder.Entity("API.Entities.LocationSave", b =>
@@ -1445,9 +1457,15 @@ namespace API.data.migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Entities.ContainerSave", "ContainerSave")
+                        .WithMany("TriggerSaves")
+                        .HasForeignKey("ContainerSaveId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("API.Entities.InteractionSave", "InteractionSave")
                         .WithMany("TriggerSaves")
-                        .HasForeignKey("InteractionId");
+                        .HasForeignKey("InteractionId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("API.Entities.LocationSave", "LocationSave")
                         .WithMany("Triggers")
@@ -1455,6 +1473,8 @@ namespace API.data.migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("ActionTrigger");
+
+                    b.Navigation("ContainerSave");
 
                     b.Navigation("InteractionSave");
 
@@ -1556,6 +1576,8 @@ namespace API.data.migrations
             modelBuilder.Entity("API.Entities.ContainerSave", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("TriggerSaves");
                 });
 
             modelBuilder.Entity("API.Entities.DialogueNode", b =>

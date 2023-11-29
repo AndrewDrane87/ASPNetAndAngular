@@ -23,9 +23,14 @@ namespace API.Entities
 
     public class LocationLink
     {
-        public Location FromLocation { get; set; }
+        [ForeignKey("FromLocation")]
         public int FromId { get; set; }
+        public Location FromLocation { get; set; }
+
+        [ForeignKey("ToLocation")]
         public int ToId { get; set; }
+        public Location ToLocation { get; set; }
+
     }
 
     public class EnemyLocationLink

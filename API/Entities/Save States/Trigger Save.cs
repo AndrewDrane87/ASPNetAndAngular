@@ -20,6 +20,11 @@ namespace API.Entities
         [JsonIgnore]
         public InteractionSave InteractionSave { get; set; }
 
+        [ForeignKey("ContainerSave")]
+        public int? ContainerSaveId { get; set; }
+        [JsonIgnore]
+        public ContainerSave ContainerSave { get; set; }
+
         public bool Complete { get; set; }
         public string? Result { get; set; }
     }

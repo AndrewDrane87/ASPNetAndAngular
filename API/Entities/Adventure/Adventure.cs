@@ -1,4 +1,7 @@
-﻿namespace API.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace API.Entities
 {
     public class Adventure
     {

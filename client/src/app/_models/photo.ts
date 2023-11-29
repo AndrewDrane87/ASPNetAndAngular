@@ -4,4 +4,5 @@ export interface Photo {
     isMain: boolean
     objectType : string;
     objectSubType: string;
+    publicId: string;
   }

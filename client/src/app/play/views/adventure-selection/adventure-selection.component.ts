@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { AdminAdventure } from 'src/app/_models/Adventure';
 import { Adventure } from 'src/app/_models/AdventureSave';
 import { AdventureService } from 'src/app/_services/adventures/adventureService';
@@ -11,7 +12,7 @@ import { AdventureService } from 'src/app/_services/adventures/adventureService'
 })
 export class AdventureSelectionComponent implements OnInit{
 
-  constructor(public adventureService: AdventureService,
+  constructor(public adventureService: AdventureService, private toastr: ToastrService,
     private router : Router){}
 
   ngOnInit(): void {
@@ -27,5 +28,9 @@ export class AdventureSelectionComponent implements OnInit{
 
   selectAdventure(adventure: Adventure){
     this.router.navigate(['player/adventure/' + adventure.id]);
+  }
+
+  resetSave(adventureSaveId: number){
+this.adventureService.reset(adventureSaveId).subscribe({ next: ()=>{this.toastr.success('Successfully reset save')}, error: error => this.toastr.error(error)})
   }
 }

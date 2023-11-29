@@ -6,58 +6,130 @@
   <h2 class="text-center text-primary">Create New Item</h2>
   <hr />
 
-  <div class="row">
-    <app-item-type-selector
-      (setItemTypeEvent)="setItemType($event)"
-    ></app-item-type-selector>
+  <!-- <div [hidden]="!itemTypeSelected"> -->
+  <div class="card m-2">
+    <div class="row mt-1">
+      <app-item-type-selector
+        (setItemTypeEvent)="setItemType($event)"
+      ></app-item-type-selector>
+    </div>
+
+    <div class="row mb-2">
+      <div class="col">
+        <h6 class="mb-0">Item Name</h6>
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['name'])"
+          [label]="'Item Name'"
+        />
+
+        <h6 class="mb-0">Attack Value</h6>
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['attackValue'])"
+          [label]="'Attack Value'"
+        />
+
+        <h6 class="mb-0">Armor Value</h6>
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['armorValue'])"
+          [label]="'Armor Value'"
+        />
+        <h6 class="mb-0">Value</h6>
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['value'])"
+          [label]="'Value'"
+        />
+      </div>
+
+      <div class="col">
+        <h6 class="mb-0">Damage Modifiers</h6>
+
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['damageModifier'])"
+          [label]="'Damage Modifiers'"
+        />
+
+        <h6 class="mb-0">Resistance Modifiers</h6>
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['resistanceModifier'])"
+          [label]="'Resistance Modifiers'"
+        />
+
+        <h6 class="mb-0">Stack Size</h6>
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['stackSize'])"
+          [label]="'Stack Size'"
+        />
+
+        <h6 class="mb-0">Useage</h6>
+        <app-text-input
+          [formControl]="$any(createItemForm.controls['useage'])"
+          [label]="'Useage'"
+        />
+      </div>
+    </div>
   </div>
-  
-  <div [hidden]="!itemTypeSelected">
-    <p class="mb-0">Item Name</p>
-    <app-text-input
-      [formControl]="$any(createItemForm.controls['name'])"
-      [label]="'Item Name'"
-    />
 
-    <p [hidden]="attackValueDisabled" class="mb-0">Attack Value</p>
-    <app-text-input
-      [hidden]="attackValueDisabled"
-      [formControl]="$any(createItemForm.controls['attackValue'])"
-      [label]="'Attack Value'"
-    />
+  <hr />
 
-    <p [hidden]="armorValueDisabled" class="mb-0">Armor Value</p>
-    <app-text-input
-      [hidden]="armorValueDisabled"
-      [formControl]="$any(createItemForm.controls['armorValue'])"
-      [label]="'Armor Value'"
-    />
+  <div class="row card m-2">
+    <h6>Stat Modifiers</h6>
+    <div class="row">
+      <div class="col text-right">
+        <p>Fighter</p>
+        <div>
+          <input type="number" name="mFighter" placeholder="Fighter" />
+        </div>
+        <p>Rogue</p>
+        <div>
+          <input type="number" name="mRogue" placeholder="Rogue" />
+        </div>
+        <p>Healer</p>
+        <div>
+          <input type="number" name="mHealer" placeholder="Healer" />
+        </div>
+      </div>
 
-    <button class="btn btn-primary mb-2" type="button" (click)="openImageSelector()">
-      Select Image
+      <div class="col">
+        <p>Mage</p>
+        <div>
+          <input type="number" name="mMage" placeholder="Mage" />
+        </div>
+        <p>Bard</p>
+        <div>
+          <input type="number" name="mBard" placeholder="Bard" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button
+    class="btn btn-primary mb-2"
+    type="button"
+    (click)="openImageSelector()"
+  >
+    Select Image
+  </button>
+  <div class="ms-2" *ngIf="itemPhoto !== undefined">
+    <img src="{{ itemPhoto.url }}" alt="" />
+  </div>
+
+  <!-- output a list of errors from the API -->
+  <div class="row" *ngIf="validationErrors">
+    <ul class="text-danger">
+      <li *ngFor="let error of validationErrors">{{ error }}</li>
+    </ul>
+  </div>
+
+  <div class="text-center">
+    <button
+      class="btn btn-success me-2"
+      type="submit"
+      [disabled]="!createItemForm.valid || itemPhoto === undefined"
+    >
+      Create
     </button>
-    <div class="ms-2" *ngIf="itemPhoto !== undefined">
-      <img src="{{ itemPhoto.url }}" alt="" />
-    </div>
-
-    <!-- output a list of errors from the API -->
-    <div class="row" *ngIf="validationErrors">
-      <ul class="text-danger">
-        <li *ngFor="let error of validationErrors">{{ error }}</li>
-      </ul>
-    </div>
-
-    <div class="text-center">
-      <button
-        class="btn btn-success me-2"
-        type="submit"
-        [disabled]="!createItemForm.valid || itemPhoto === undefined"
-      >
-        Create
-      </button>
-      <button class="btn btn-default" type="button" (click)="cancel()">
-        Cancel
-      </button>
-    </div>
+    <button class="btn btn-default" type="button" (click)="cancel()">
+      Cancel
+    </button>
   </div>
 </form>

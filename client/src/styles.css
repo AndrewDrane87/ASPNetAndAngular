@@ -1,6 +1,15 @@
 html{
-  /* background-color: black; */
+  /* background-image: url('./assets/images/backgrounds/background.PNG'); */
+  background:url('./assets/images/backgrounds/background.PNG')no-repeat center center fixed; 
+  background-size: cover;
+  width: 100%;
 }
+
+body{
+  background-image: "./assets/images/backgrounds/background.png";
+}
+
+
 .bg-dark {
   background-color: black !important;
 }
@@ -12,6 +21,9 @@ html{
   margin: 0px;
 }
 
+div{
+  background-color: transparent;
+}
 
 .row{
   margin: 0px;

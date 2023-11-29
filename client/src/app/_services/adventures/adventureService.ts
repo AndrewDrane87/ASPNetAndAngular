@@ -50,7 +50,7 @@ updateInteractionSave(interaction: Interaction){
   return this.http.put(url, interaction);
 }
 
-  reset() {
-    return this.http.put(this.baseUrl + 'adventures/reset', {});
+  reset(adventureSaveId: number) {
+    return this.http.put(this.baseUrl + `adventures/reset?adventureSaveId=${adventureSaveId}`, {});
   }
 }

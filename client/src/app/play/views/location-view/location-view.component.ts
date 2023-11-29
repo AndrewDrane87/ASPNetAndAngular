@@ -5,10 +5,16 @@ import {
   AdminContainer,
   AdminInteraction,
 } from 'src/app/_models/Adventure';
-import { AdventureLocation, Container, Enemy, Interaction } from 'src/app/_models/AdventureSave';
+import {
+  AdventureLocation,
+  Container,
+  Enemy,
+  Interaction,
+} from 'src/app/_models/AdventureSave';
 import { NPC } from 'src/app/_models/npc';
 import { LocationService } from 'src/app/_services/adventures/locationService';
 import { AvilableItemsComponent } from '../../modals/avilable-items/avilable-items.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-location-view',
@@ -23,19 +29,27 @@ export class LocationViewComponent implements OnInit {
   @Output() interactionSelectedEvent = new EventEmitter<Interaction>();
   @Output() enemySelectedEvent = new EventEmitter<Enemy>();
   @Output() enemyAttackEvent = new EventEmitter();
-isCollapsed = true;
+  isCollapsed = true;
   constructor(
     private bsModalRef: BsModalRef,
     private bsModalService: BsModalService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private toastr: ToastrService
   ) {}
   ngOnInit(): void {}
 
   locationSelected(location: AdventureLocation) {
+    if (this.location!.enemies) {
+      if (this.location!.enemies.length > 0) {
+        this.toastr.warning('You must defeat all enemies!!!');
+        return;
+      }
+    }
     this.locationSelectedEvent.emit(location);
   }
 
   npcSelected(npc: NPC) {
+    
     this.npcSelectedEvent.emit(npc);
   }
 
@@ -59,7 +73,9 @@ isCollapsed = true;
   getAvailableItems() {
     this.locationService.getAvailableItems(this.location!.id).subscribe({
       next: (items) => {
-        this.bsModalRef = this.bsModalService.show(AvilableItemsComponent,{ class: 'modal-lg' });
+        this.bsModalRef = this.bsModalService.show(AvilableItemsComponent, {
+          class: 'modal-lg',
+        });
         this.bsModalRef.content.items = items;
         this.bsModalRef.onHidden?.subscribe();
       },

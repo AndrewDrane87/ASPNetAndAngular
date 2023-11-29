@@ -67,6 +67,10 @@ export class RunAdventureComponent implements OnInit {
       next: (data) => {
         this.adventure = data['adventure'];
         console.log(this.adventure);
+        if (this.adventure!.currentLocation.locationId === 0) {
+          this.toastr.error('CurrentLocationId == 0');
+          //return;
+        }
         this.locationService
           .getPlayerLocation(this.adventure!.currentLocation.locationId)
           .subscribe({
@@ -153,7 +157,24 @@ export class RunAdventureComponent implements OnInit {
     this.currentView = 'container';
     this.locationService.getPlayerContainer(event.id).subscribe({
       next: (result) => {
-        this.container = result;
+        console.log(`Selected Container: ${result}` )
+        console.log(result.triggers)
+        this.toastr.warning('Finish triggers');
+        //Subscribe to the complete so we know we have finished the exit triggers
+        if (result?.triggers) {
+          this.triggerService.checkTriggers(
+            result.triggers,
+            'enter'
+          );
+          this.triggerService.complete.pipe(take(1)).subscribe({
+            next: () => {
+              this.container = result;
+            },
+          });
+        }
+        else{
+          this.container = result;
+        }
       },
       error: (error) => {
         this.toastr.error(error);
@@ -171,7 +192,7 @@ export class RunAdventureComponent implements OnInit {
           event.triggers = [];
           const result = this.triggerService.result;
           event.passed = result;
-          
+
           this.displayInteraction(event);
         },
       });
@@ -186,7 +207,9 @@ export class RunAdventureComponent implements OnInit {
     return this.modalRef.onHidden!.subscribe((result) => {
       event.complete = true;
       this.adventureService.updateInteractionSave(event).subscribe({
-        next: () => {console.log('Saved interaction: ' + event.id)},
+        next: () => {
+          console.log('Saved interaction: ' + event.id);
+        },
         error: (error) => this.toastr.error(error),
       });
     });
