@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -297,10 +298,8 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateTriggerSave(int triggerSaveId, bool isComplete, string result)
         {
             if (await uow.AdventureRepository.UpdateTriggerSave(triggerSaveId, isComplete, result))
-            {
-                if (await uow.Complete())
                     return Ok();
-            }
+            
             return BadRequest("Failed to update trigger save");
         }
 
@@ -308,6 +307,16 @@ namespace API.Controllers
         {
             public int damageAmount { get; set; }
             public int enemyId { get; set; }
+        }
+
+        [HttpPut("update-interaction-save")]
+        public async Task<ActionResult> UpdateInteractionSave(InteractionSave save)
+        {
+            StatusMessage status = await uow.AdventureRepository.UpdateInteractionSave(save);
+            if (status.Status)
+                return Ok();
+
+            return BadRequest("Failed to save interaction");
         }
 
         [HttpPut("deal-damage")]
@@ -329,9 +338,9 @@ namespace API.Controllers
         }
 
         [HttpPut("reset")]
-        public async Task<ActionResult> Reset()
+        public async Task<ActionResult> Reset(int adventureSaveId)
         {
-            await uow.AdventureRepository.ResetSaves();
+            await uow.AdventureRepository.ResetSaves(adventureSaveId);
             return Ok();
 
         }

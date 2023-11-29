@@ -1,18 +1,29 @@
 ﻿using API.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace API.Entities
 {
-    public class ActionTriggerSave
+    public class TriggerSave
     {
         public int Id { get; set; }
         [ForeignKey("ActionTrigger")]
         public int ActionTriggerId { get; set; }
-        public ActionTrigger ActionTrigger { get; set; }
+        public Trigger ActionTrigger { get; set; }
 
         [ForeignKey("LocationSave")]
-        public int LocationId { get; set; }
+        public int? LocationId { get; set; }
         public LocationSave LocationSave { get; set; }
+
+        [ForeignKey("InteractionSave")]
+        public int? InteractionId { get; set; }
+        [JsonIgnore]
+        public InteractionSave InteractionSave { get; set; }
+
+        [ForeignKey("ContainerSave")]
+        public int? ContainerSaveId { get; set; }
+        [JsonIgnore]
+        public ContainerSave ContainerSave { get; set; }
 
         public bool Complete { get; set; }
         public string? Result { get; set; }

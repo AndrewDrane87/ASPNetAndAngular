@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import {
-  PlayerCharacter,
-} from 'src/app/_models/playerCharacters/playerCharacter';
+import { ToastrService } from 'ngx-toastr';
+import { PlayerCharacter } from 'src/app/_models/playerCharacters/playerCharacter';
 import { ItemService } from 'src/app/_services/items/item.service';
 
 @Component({
@@ -16,10 +15,12 @@ export class ItemSelectorComponent implements OnInit {
   character: PlayerCharacter | undefined;
   selectedItem: any | undefined;
   currentItemId = -1;
+  cost = 0;
 
   constructor(
     private itemService: ItemService,
-    public bsModalRef: BsModalRef
+    public bsModalRef: BsModalRef,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {}
@@ -31,29 +32,34 @@ export class ItemSelectorComponent implements OnInit {
           .getAvailableHelmets(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
-        case 'leftHand':
-          this.itemService
+      case 'leftHand':
+        this.itemService
           .getAvailableHandItems(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
-        case 'rightHand':
-          this.itemService
+      case 'rightHand':
+        this.itemService
           .getAvailableHandItems(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
-        case 'armor':
-          this.itemService
+      case 'armor':
+        this.itemService
           .getAvailableArmor(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
-        case 'boots':
-          this.itemService
+      case 'boots':
+        this.itemService
           .getAvailableBoots(this.character!, this.currentItemId)
-          .subscribe({ next: (results) => {(this.availableItems = results);console.log(results); }});
-          
+          .subscribe({
+            next: (results) => {
+              this.availableItems = results;
+              console.log(results);
+            },
+          });
+
         break;
-        case 'backpack':
-          this.itemService
+      case 'backpack':
+        this.itemService
           .getAvailable(this.character!, this.currentItemId)
           .subscribe({ next: (results) => (this.availableItems = results) });
         break;
@@ -64,6 +70,18 @@ export class ItemSelectorComponent implements OnInit {
     this.selectedItem = item;
     this.result = true;
     this.bsModalRef.hide();
+  }
+
+  purchaseItem(item: any) {
+    console.log('Character gold: ' + this.character!.gold)
+    if (this.character!.gold < item.cost) {
+      this.toastr.warning("You dont have enough gold sucka!!!")
+    } else {
+      this.selectedItem = item;
+      this.result = true;
+      this.cost = item.cost;
+      this.bsModalRef.hide();
+    }
   }
 
   cancel() {

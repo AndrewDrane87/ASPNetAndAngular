@@ -2,8 +2,18 @@
     padding: .25rem;
     height: 5rem;
     cursor: pointer;
+    line-height: 100%;
+}
+
+.card p{
+    margin-top: auto;
+    margin-Bottom: auto;
 }
 
 .description{
     font-style: italic;
+}
+
+p{
+    font-weight: bold;
 }

@@ -47,14 +47,15 @@ export class CharacterDisplayComponent implements OnInit {
   }
 
   incrementHealth() {
-    this.currentHealth = this.currentHealth + 1;
-    if (this.currentHealth > this.totalHealth)
-      this.currentHealth = this.totalHealth;
+    this.character!.currentHitpoints = this.character!.currentHitpoints + 1;
+    if (this.character!.currentHitpoints > this.character!.maxHitpoints)
+      this.character!.currentHitpoints = this.character!.currentHitpoints;
   }
 
   decrementHealth() {
-    this.currentHealth = this.currentHealth - 1;
-    if (this.currentHealth < 0) this.currentHealth = 0;
+    this.character!.currentHitpoints = this.character!.currentHitpoints - 1;
+    if (this.character!.currentHitpoints < 0)
+      this.character!.currentHitpoints = 0;
   }
 
   calculateTotalArmor() {
@@ -77,30 +78,20 @@ export class CharacterDisplayComponent implements OnInit {
     this.bardStat = this.baseSkillStat;
 
     if (this.character?.helmet) {
-      this.character.helmet.statModifiers
-        .split('|')
-        .forEach((mod) => this.processStatModifier(mod));
+      this.processJsonModifier(this.character.helmet.statModifiers);
     }
 
     if (this.character?.leftHand) {
-      this.character.leftHand.statModifiers
-        .split('|')
-        .forEach((mod) => this.processStatModifier(mod));
+      this.processJsonModifier(this.character.leftHand.statModifiers);
     }
     if (this.character?.body) {
-      this.character.body.statModifiers
-        .split('|')
-        .forEach((mod) => this.processStatModifier(mod));
+      this.processJsonModifier(this.character.body.statModifiers);
     }
     if (this.character?.rightHand) {
-      this.character.rightHand.statModifiers
-        .split('|')
-        .forEach((mod) => this.processStatModifier(mod));
+      this.processJsonModifier(this.character.rightHand.statModifiers);
     }
     if (this.character?.feet) {
-      this.character.feet.statModifiers
-        .split('|')
-        .forEach((mod) => this.processStatModifier(mod));
+      this.processJsonModifier(this.character.feet.statModifiers);
     }
   }
 
@@ -124,6 +115,35 @@ export class CharacterDisplayComponent implements OnInit {
       case 'bard':
         this.bardStat += value;
         break;
+    }
+  }
+
+  processJsonModifier(s: string) {
+    try {
+      var json = JSON.parse(s);
+      Object.keys(json).forEach((key) => {
+        console.log(`${key}: ${json[key]}`);
+        const value = json[key];
+        switch (key.toLowerCase()) {
+          case 'fighter':
+            this.fighterStat += value;
+            break;
+          case 'rogue':
+            this.rogueStat += value;
+            break;
+          case 'healer':
+            this.healerStat += value;
+            break;
+          case 'mage':
+            this.mageStat += value;
+            break;
+          case 'bard':
+            this.bardStat += value;
+            break;
+        }
+      });
+    } catch {
+      return;
     }
   }
 
@@ -190,10 +210,11 @@ export class CharacterDisplayComponent implements OnInit {
             itemType,
             this.modalRef.content.selectedItem.id,
             this.character!.id,
-            backpackIndex
+            backpackIndex, this.modalRef.content.selectedItem.cost
           )
           .subscribe({
-            next: () => this.toastr.success('Item selection saved'),
+            next: () => {this.toastr.success('Item selection saved');
+            this.character!.gold -= this.modalRef!.content.selectedItem.cost;},
             //error: (error) => this.toastr.error(error),
           });
 
@@ -223,14 +244,17 @@ export class CharacterDisplayComponent implements OnInit {
       const value = split[1];
       switch (name) {
         case 'heal':
-          if (this.currentHealth == this.totalHealth) {
+          if (
+            this.character?.currentHitpoints == this.character?.maxHitpoints
+          ) {
             this.toastr.warning('Already at max health');
             skipUse = true;
+          } else {
+            this.toastr.success(`You have been healed ${value} hp!`);
+            this.character!.currentHitpoints += Number(value);
+            if (this.character!.currentHitpoints > this.character!.maxHitpoints)
+              this.character!.currentHitpoints = this.character!.maxHitpoints;
           }
-          this.toastr.success(`You have been healed ${value} hp!`);
-          this.currentHealth += Number(value);
-          if (this.currentHealth > this.totalHealth)
-            this.currentHealth = this.totalHealth;
           break;
       }
     });

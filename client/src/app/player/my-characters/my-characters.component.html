@@ -1,11 +1,10 @@
-<div class="container m-0" *ngIf="!createMode && !displayPlayerCharacter">
+<div class="m-0" *ngIf="!createMode && !displayPlayerCharacter">
   <button class="btn btn-primary mb-1" (click)="createCharacter()">
     Create New
   </button>
 </div>
 
-<div class="container m-0"
-*ngIf="!displayPlayerCharacter">
+<div class="container m-0" *ngIf="!displayPlayerCharacter">
   <div class="row">
     <div class="col-2 card mb-2 me-2" *ngFor="let character of myCharacters">
       <div (click)="playerSelected(character.id)">
@@ -30,7 +29,8 @@
 </div>
 
 <div
-  class="container m-0" style="width: auto;"
+  class="container m-0"
+  style="width: auto"
   *ngIf="displayPlayerCharacter && selectedCharacter !== undefined"
 >
   <app-character-display #characterDisplay [character]="selectedCharacter">

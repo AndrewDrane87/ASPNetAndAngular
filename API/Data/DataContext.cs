@@ -17,27 +17,22 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }
     public DbSet<PlayerCharacter> PlayerCharacters { get; set; }
-    public DbSet<Item> ItemCollection { get; set; }
-    public DbSet<ItemPhoto> ItemPhotoCollection { get; set; }
+    public DbSet<Item> Items { get; set; }
+    public DbSet<Photo> Photos { get; set; }
     public DbSet<Adventure> Adventures { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationLink> LocationLink { get; set; }
-    public DbSet<NPC> NPCCollection { get; set; }
-    public DbSet<Dialogue> DialogueCollection { get; set; }
-    public DbSet<DialogueResponse> ResponseCollection { get; set; }
-    public DbSet<DialogueResponseLink> DialogueResponseLinkCollection { get; set; }
-
+    public DbSet<NPC> NPCs { get; set; }
     public DbSet<DialogueNode> DialogueNodes { get; set; }
     public DbSet<DialogueLink> DialogueLinks { get; set; }
-
-
-    public DbSet<Container> ContainerCollection { get; set; }
+    public DbSet<Container> Containers { get; set; }
     public DbSet<Interaction> Interactions { get; set; }
-    public DbSet<ActionTrigger> Triggers { get; set; }
-    public DbSet<Enemy> EnemyCollection { get; set; }
+    public DbSet<Trigger> Triggers { get; set; }
+    public DbSet<Enemy> Enemies { get; set; }
     public DbSet<AdventureSave> AdventureSaves { get; set; }
     public DbSet<LocationSave> LocationSaves { get; set; }
-    public DbSet<ActionTriggerSave> ActionTriggerSaves { get; set; }
+    public DbSet<TriggerSave> TriggerSaves { get; set; }
+    public DbSet<InteractionSave> InteractionSaves { get; set; }
     public DbSet<EnemySave> EnemySaves { get; set; }
     public DbSet<ContainerSave> ContainerSaves { get; set; }
     public DbSet<ItemSave> ItemSaves { get; set; }
@@ -70,10 +65,38 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<AdventureSave>()
+            .HasMany(a => a.Variables)
+            .WithOne(v => v.AdventureSave)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<AdventureSave>()
             .HasMany(a => a.PlayerCharacters)
             .WithOne(pc => pc.AdventureSave)
             .OnDelete(DeleteBehavior.Cascade);
 
+        SetupLocationSaveRelations(ref builder);
+
+        builder.Entity<ContainerSave>()
+            .HasMany(c => c.Items)
+            .WithOne(i => i.ContainerSave) 
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ContainerSave>()
+            .HasMany(c => c.TriggerSaves)
+            .WithOne(t => t.ContainerSave)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+
+        builder.Entity<DialogueLink>().HasKey(e => new { e.FromDialogueId, e.ToDialogueId });
+        builder.Entity<DialogueLink>()
+            .HasOne(link => link.FromDialogue)
+            .WithMany(d => d.ToDialogueLinks)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    public void SetupLocationSaveRelations(ref ModelBuilder builder)
+    {
         builder.Entity<LocationSave>()
             .HasMany(l => l.Triggers)
             .WithOne(t => t.LocationSave)
@@ -84,14 +107,24 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
             .WithOne(c => c.LocationSave)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<DialogueResponseLink>()
-            .HasOne(d => d.ChildDialogue)
-            .WithMany(r => r.ParentResponses);
+        builder.Entity<LocationSave>()
+            .HasMany(l => l.Items)
+            .WithOne(i => i.LocationSave)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<DialogueLink>().HasKey(e => new { e.FromDialogueId, e.ToDialogueId });
-        builder.Entity<DialogueLink>()
-            .HasOne(link => link.FromDialogue)
-            .WithMany(d => d.ToDialogueLinks)
+        builder.Entity<LocationSave>()
+            .HasMany(l => l.Enemies)
+            .WithOne(e => e.LocationSave)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<LocationSave>()
+            .HasMany(l => l.Interactions)
+            .WithOne(i => i.LocationSave)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<InteractionSave>()
+            .HasMany( i => i.TriggerSaves)
+            .WithOne(t => t.InteractionSave)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

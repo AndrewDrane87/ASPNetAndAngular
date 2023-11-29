@@ -13,7 +13,8 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public List<ItemDto> Items { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<Trigger> Triggers { get; set; }
+        public bool IsCorpse { get; set; }
 
         public static ContainerDto Convert(Container container)
         {
@@ -22,6 +23,7 @@
                 Id = container.Id,
                 Name = container.Name,
                 Description = container.Description,
+                IsCorpse = container.IsCorpse,
             };
             dto.Items = new List<ItemDto>();
 
@@ -38,9 +40,10 @@
         public int ContainerId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<ItemDto> Items { get; set; }
-        public List<ActionTrigger> Triggers { get; set; }
+        public List<ItemSaveDto> Items { get; set; }
+        public List<TriggerSave> Triggers { get; set; }
         public bool Complete { get; set; }
+        public bool IsCorpse { get; set; }
 
         public static ContainerSaveDto Convert(ContainerSave save)
         {
@@ -50,13 +53,15 @@
                 ContainerId = save.ContainerId,
                 Name = save.Container.Name,
                 Description = save.Container.Description,
-                Complete = save.Complete
+                Complete = save.Complete,
+                IsCorpse = save.Container.IsCorpse,
+                Triggers = save.TriggerSaves,
             };
-            dto.Items = new List<ItemDto>();
+            dto.Items = new List<ItemSaveDto>();
             if (save.Items != null)
             {
                 foreach (ItemSave i in save.Items)
-                    dto.Items.Add(ItemDto.Convert(i.Item));
+                    dto.Items.Add(ItemSaveDto.Convert(i));
             }
             return dto;
         }

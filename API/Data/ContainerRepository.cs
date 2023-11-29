@@ -62,8 +62,8 @@ namespace API.Data
 
         public async Task<ContainerDto> AddItemToContainer(int containerId, int itemId)
         {
-            var itemToAdd = await context.ItemCollection.Where(i => i.Id == itemId).FirstOrDefaultAsync();
-            var container = await context.ContainerCollection.Where(c => c.Id == containerId)
+            var itemToAdd = await context.Items.Where(i => i.Id == itemId).FirstOrDefaultAsync();
+            var container = await context.Containers.Where(c => c.Id == containerId)
                 .Include(i => i.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync();
 
@@ -104,7 +104,7 @@ namespace API.Data
 
         public async Task<ContainerDto> DeleteItemFromContainer(int containerId, int itemId)
         {
-            var container = await context.ContainerCollection.Where(c => c.Id == containerId)
+            var container = await context.Containers.Where(c => c.Id == containerId)
                 .Include(i => i.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync();
 
@@ -131,10 +131,10 @@ namespace API.Data
 
         public async Task<bool> DeleteContainer(int containerId)
         {
-            var container = await context.ContainerCollection.Where(c => c.Id == containerId).FirstOrDefaultAsync();
+            var container = await context.Containers.Where(c => c.Id == containerId).FirstOrDefaultAsync();
             if (container == null) return false;
 
-            context.ContainerCollection.Remove(container);
+            context.Containers.Remove(container);
 
             return true;
 

@@ -70,6 +70,9 @@ import { AvilableItemsComponent } from './play/modals/avilable-items/avilable-it
 import { PlayerAttackComponent } from './play/modals/player-attack/player-attack.component';
 import { BackpackComponent } from './play/modals/backpack/backpack.component';
 import { StatBlockComponent } from './player/stat-block/stat-block.component';
+import { RulesDisplayComponent } from './rules/rules-display/rules-display.component';
+import { RuleDisplayComponent } from './rules/rule-display/rule-display.component';
+import { JsonConvertPipe } from './_pipes/json-convert.pipe';
 
 @NgModule({
   declarations: [
@@ -131,6 +134,9 @@ import { StatBlockComponent } from './player/stat-block/stat-block.component';
     PlayerAttackComponent,
     BackpackComponent,
     StatBlockComponent,
+    RulesDisplayComponent,
+    RuleDisplayComponent,
+    JsonConvertPipe,
   ],
   imports: [
     BrowserModule,

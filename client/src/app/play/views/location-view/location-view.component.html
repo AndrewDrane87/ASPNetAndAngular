@@ -1,5 +1,5 @@
-<div *ngIf="location">
-  <div class="row">
+<div *ngIf="location" class="m-0">
+  <div class="row bg-box card">
     <div class="col-10 no-padding">
       <h4>
         {{ location.name }}
@@ -8,6 +8,7 @@
             ? "[Room - " + location.roomNumber + "]"
             : null
         }}
+        [{{location.locationId}}]
       </h4>
       <p class="m-1">{{ location.shortDescription }}</p>
       <p class="m-1">{{ location.description }}</p>
@@ -19,33 +20,57 @@
     </div>
   </div>
 
-  <div *ngIf="location.connectedLocations.length > 0">
-    <h5 class="m-0 mt-2">Connected Locations</h5>
+  <div *ngIf="location.connectedLocations.length > 0" class="bg-box mt-1">
+    <div class="row">
+      <div class="col-10"><h5 class="m-0">Connected Locations</h5></div>
+      <div class="col-2">
+        <button
+          type="button"
+          class="btn btn-dark"
+          (click)="isCollapsed = !isCollapsed"
+          [attr.aria-expanded]="!isCollapsed"
+          aria-controls="collapseBasic"
+        >
+          Show Map
+        </button>
+      </div>
+    </div>
+
     <div class="row">
       <div
         *ngFor="let l of location?.connectedLocations"
         class="col-3 no-padding"
       >
-        <div class="card m-1 text-center" (click)="locationSelected(l)">
+        <div
+          class="card m-1 text-center bg-parchment"
+          (click)="locationSelected(l)"
+        >
           <p class="m-0">
             <strong>{{ l.name }}</strong>
-            {{
-              l.roomNumber > 0
-                ? "[Room - " + l.roomNumber + "]"
-                : null
-            }}
+            {{ l.roomNumber > 0 ? "[Room - " + l.roomNumber + "]" : null }}
           </p>
           <p class="description m-0">"{{ l.shortDescription }}"</p>
         </div>
       </div>
     </div>
+    <div class="row text-center">
+      <div id="collapseBasic" [collapse]="isCollapsed" [isAnimated]="true">
+        <img
+          src="../../../../assets/images/maps/sunless-citadel-fortress-level.jpg"
+          alt=""
+        />
+      </div>
+    </div>
   </div>
 
-  <div class="mt-3" *ngIf="location.npCs.length > 0">
+  <div class="mt-1 bg-box" *ngIf="location.npCs.length > 0">
     <h5 class="m-0 mt-2">NPC's</h5>
     <div class="row">
       <div *ngFor="let npc of location?.npCs" class="col-3 no-padding">
-        <div class="card m-1 text-center" (click)="npcSelected(npc)">
+        <div
+          class="card m-1 text-center bg-parchment"
+          (click)="npcSelected(npc)"
+        >
           <p class="m-0">
             <strong>{{ npc.name }}</strong>
           </p>
@@ -55,25 +80,29 @@
     </div>
   </div>
 
-  <div class="mt-3" *ngIf="location.containers.length > 0">
+  <div class="mt-1 bg-box" *ngIf="location.containers.length > 0">
     <h5>Containers</h5>
     <div class="row">
       <div *ngFor="let c of location.containers" class="col-3 no-padding">
-        <div class="card m-1 text-center" (click)="containerSelected(c)">
+        <div
+        *ngIf="location.enemies.length === 0"
+          class="card m-1 text-center bg-parchment"
+          (click)="containerSelected(c)"
+        >
           <p class="m-0">
             <strong>{{ c.name }}</strong>
           </p>
-          <p class="description">"{{ c.description }}""</p>
+          <p class="description">{{ c.description }}</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="mt-3" *ngIf="location.interactions.length > 0">
+  <div class="mt-1 bg-box" *ngIf="location.interactions.length > 0">
     <h5>Interactions</h5>
     <div class="row">
       <div *ngFor="let i of location.interactions" class="col-3 no-padding">
-        <div class="card m-1 text-center" (click)="interactionSelected(i)">
+        <div class="card m-1 text-center bg-parchment" (click)="interactionSelected(i)">
           <p>
             <strong>{{ i.name }}</strong>
           </p>
@@ -82,20 +111,30 @@
     </div>
   </div>
 
-  <div class="mt-3" *ngIf="location.enemies.length > 0">
-    <h5>Enemies</h5>
-    <button class="btn btn-danger ms-1" (click)="enemyAttack()">
-      Enemy Attack Phase
-    </button>
+  <div class="mt-1 bg-box" *ngIf="location.enemies.length > 0">
+    <div class="row">
+      <div class="col-10 no-padding">
+        <h5>Enemies</h5>
+      </div>
+      <div class="col-2 no-padding">
+        <button class="btn btn-danger ms-1" (click)="enemyAttack()">
+          Enemy Attack Phase
+        </button>
+      </div>
+    </div>
+
     <div class="row">
       <div *ngFor="let i of location.enemies" class="col-3 no-padding">
-        <div class="card m-1 text-center" (click)="enemySelected(i)">
+        <div
+          class="card m-1 text-center bg-parchment"
+          (click)="enemySelected(i)"
+        >
           <div class="row m-0">
-            <div class="col-2 no-padding">
+            <div class="col-4 no-padding">
               <img class="card-thumbnail" src="{{ i.photoUrl }}" />
             </div>
 
-            <div class="col-10 no-padding">
+            <div class="col-8 no-padding center-vertical">
               <h5 class="mt-0 mb-0">
                 {{ i.name }}
               </h5>

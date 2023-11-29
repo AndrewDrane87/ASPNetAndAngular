@@ -18,9 +18,9 @@ export class TriggerService {
     ignoreBackdropClick: true,
   };
   baseUrl = environment.apiUrl;
-
+result = false;
   triggerArray: ActionTrigger[] = [];
-  complete = new EventEmitter();
+  complete = new EventEmitter<boolean>();
   constructor(
     private http: HttpClient,
     private modalService: BsModalService,
@@ -28,19 +28,20 @@ export class TriggerService {
   ) {}
 
   checkTriggers(triggers: ActionTrigger[], eventType: string) {
+    this.result = false;
     this.triggerArray = triggers;
     this.processTrigger(0, eventType);
   }
 
   processTrigger(currentIndex: number, eventType: string) {
-    console.log(`Checking Triggers - currentIndex: ${currentIndex}`);
+    //console.log(`Checking Triggers - currentIndex: ${currentIndex} arrayLength: ${this.triggerArray.length}`);
     if (currentIndex >= this.triggerArray.length) {
       this.complete.emit();
       return;
     }
     
     let t = this.triggerArray[currentIndex];
-    console.log(`t.eventType=${t!.eventType}; eventType=${eventType}`);
+    //console.log(`t.eventType=${t!.eventType}; eventType=${eventType}`);
     if (t!.eventType === eventType) {
       switch (t!.actionType) {
         case 'information':
@@ -61,6 +62,8 @@ export class TriggerService {
                 this.bsModalRef!.content.result
               ).subscribe({
                 next: (challengeResult) => {
+                  
+                  
                   this.http.put(this.baseUrl + `adventures/update-trigger-save?triggerSaveId=${t.id}&isComplete=true&result=${challengeResult}`,{}).subscribe({next:()=>{
                     this.processTrigger(currentIndex + 1, eventType);
                   }});
@@ -100,6 +103,8 @@ export class TriggerService {
       resultValue
         ? this.toastr.success('Check Passed')
         : this.toastr.error('Check Failed');
+        this.result = resultValue;
+        console.log(`Result: ${this.result}; challengeResult = ${resultValue}`)
       observer.next(resultValue ? 'Success' : 'Failure');
     });
   }

@@ -7,6 +7,10 @@ namespace API.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string PhotoUrl { get; set; }
+        public int CurrentHitpoints { get; set; }
+        public int MaxHitpoints { get; set; }
+        public int Level { get; set; }
+        public int Gold { get; set; }
 #nullable enable
         public ItemSaveDto? Helmet { get; set; }
 #nullable enable

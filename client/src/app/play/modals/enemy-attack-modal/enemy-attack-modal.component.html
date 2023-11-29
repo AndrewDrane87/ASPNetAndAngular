@@ -1,9 +1,9 @@
 <div *ngIf="enemy" style="padding: 1rem">
   <h3>{{ enemy.name }}</h3>
   <h5>Strategy:</h5>
-  <p>Strategy: {{ enemy.attackStrategy }}</p>
-
-  <h5>Attacks</h5>
+  <p class="m-0">Strategy: {{ enemy.attackStrategy }}</p>
+  <p class="m-0">Movement Range: {{enemy.movementRange}}</p>
+  <h5 class="mt-2">Attacks</h5>
 
   <div class="container">
     <div class="row">

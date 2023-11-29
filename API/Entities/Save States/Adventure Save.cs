@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace API.Entities
 {
@@ -29,6 +30,12 @@ namespace API.Entities
         public int AdventureVariableId { get; set; }
         public AdventureVariable AdventureVariable { get; set; }
         public string Value { get; set; }
+        
+        [ForeignKey("AdventureSave")]
+        public int AdventureSaveId { get; set; }
+        [JsonIgnore]
+        public AdventureSave AdventureSave { get; set; }
+
     }
 
     /// <summary>

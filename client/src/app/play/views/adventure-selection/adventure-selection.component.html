@@ -1,19 +1,27 @@
-<div *ngIf="adventureService.playerAdventures.length > 0">
-  <div class="mb-2" *ngFor="let a of adventureService.playerAdventures">
-    <div class="card element-div" (click)="selectAdventure(a)">
-      <h2>{{ a.name }}</h2>
-      <div class="inline">
-        <p class="bold">Current Location: </p>
-        <p>{{ a.currentLocation.name }}</p>
+<div  *ngIf="adventureService.playerAdventures.length > 0">
+  <div class=" mb-2" *ngFor="let a of adventureService.playerAdventures">
+    <div class="card element-div m-1">
+      <div class="row">
+        <div class="col-11"  (click)="selectAdventure(a)">
+          <h2>{{ a.name }}</h2>
+          <div class="inline">
+            <p class="bold">Current Location:</p>
+            <p>{{ a.currentLocation.name }}</p>
+          </div>
+
+          <div class="inline">
+            <p class="bold">Players:</p>
+            <p>
+              <span *ngFor="let pc of a.playerCharacters; index as i"
+                >{{ pc.name + (i < a.playerCharacters.length - 1 ? "," : "") }}
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="col-1">
+          <button class="btn btn-danger" (click)="resetSave(a.id)">Reset</button>
+        </div>
       </div>
-      
-      <div class="inline">
-        <p class="bold">Players: </p>
-        <p>
-          <span *ngFor="let pc of a.playerCharacters, index as i">{{ pc.name + (i < a.playerCharacters.length -1? ',':'')}} </span>
-        </p>
-      </div>
-      
     </div>
   </div>
 </div>

@@ -1,1 +1,41 @@
-<p>photo-management works!</p>
+<div class="tab-panel">
+  <tabset class="member-tabset">
+    <tab heading="Image Uploader"
+      ><app-item-photo-uploader
+        (newImage)="newImage($event)"
+      ></app-item-photo-uploader
+    ></tab>
+
+    <tab heading="Image Collection"
+      ><button class="btn btn-primary" (click)="refreshImages()">
+        Refresh
+      </button>
+      <div class="row">
+        <div
+          class="card card-img-wrapper col-2 me-2 mb-2"
+          *ngFor="let photo of itemPhotos"
+        >
+          <img
+            src="{{ photo.url || './assets/user.png' }}"
+            alt=""
+            class="card-img-top mt-2 mb-2"
+          />
+
+          <div class="row">
+            <p>{{photo.publicId}}</p>
+            <div class="col-9 no-padding"><p class="m-0">Type: {{ photo.objectType }}</p>
+                <p class="m-0">Sub-Type: {{ photo.objectSubType }}</p></div>
+            <div class="col-3 no-padding"><button
+                class="btn btn-primary btn-icon m-0"
+                (click)="deletePhoto(photo)"
+              >
+                <i class="fa fa-trash"></i>
+              </button></div>
+          </div>
+          
+          
+        </div>
+      </div></tab
+    >
+  </tabset>
+</div>

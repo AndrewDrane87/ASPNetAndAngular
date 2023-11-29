@@ -4,7 +4,7 @@ import {
   AdminAdventure,
   AdminAdventureLocation,
 } from 'src/app/_models/Adventure';
-import { Adventure, AdventureLocation } from 'src/app/_models/AdventureSave';
+import { Adventure, AdventureLocation, Interaction } from 'src/app/_models/AdventureSave';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -45,7 +45,12 @@ export class AdventureService {
     return this.http.put(url, { 'damageAmount': damageAmount, 'enemyId': enemyId });
   }
 
-  reset() {
-    return this.http.put(this.baseUrl + 'adventures/reset', {});
+updateInteractionSave(interaction: Interaction){
+  var url = this.baseUrl + 'adventures/update-interaction-save'
+  return this.http.put(url, interaction);
+}
+
+  reset(adventureSaveId: number) {
+    return this.http.put(this.baseUrl + `adventures/reset?adventureSaveId=${adventureSaveId}`, {});
   }
 }

@@ -12,6 +12,8 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TimeagoModule } from 'ngx-timeago';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   declarations: [],
   imports: [
@@ -32,6 +34,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     TimeagoModule.forRoot(),
     ModalModule.forRoot(),
     TooltipModule.forRoot(),
+    BrowserAnimationsModule,
+    CollapseModule.forRoot(),
   ],
   exports: [
     BsDropdownModule,
@@ -45,6 +49,8 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     ButtonsModule,
     TimeagoModule,
     ModalModule,
+    CollapseModule,
+    BrowserAnimationsModule
   ],
 })
 export class SharedModule {}

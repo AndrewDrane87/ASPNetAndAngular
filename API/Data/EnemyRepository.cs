@@ -34,7 +34,7 @@ namespace API.Data
 
         public async Task<EnemyDto> GetEnemyById(int id)
         {
-            var enemy = await context.EnemyCollection
+            var enemy = await context.Enemies
                 .Include(e => e.Photo)
                 .FirstOrDefaultAsync(e => e.Id == id);
 

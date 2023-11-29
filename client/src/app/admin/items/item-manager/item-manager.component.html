@@ -122,34 +122,6 @@
   <tab heading="Create New Item">
     <app-create-item-form></app-create-item-form>
   </tab>
-  <tab heading="Image Collection"
-    ><button class="btn btn-primary mt-5 mb-2" (click)="refreshImages()">
-      Refresh
-    </button>
-    <div class="row">
-      <div
-        class="card card-img-wrapper col-2 me-2 mb-2"
-        *ngFor="let photo of itemPhotos"
-      >
-        <img
-          src="{{ photo.url || './assets/user.png' }}"
-          alt=""
-          class="card-img-top mt-2 mb-2"
-        />
-        <ul class="list-inline member-icons animate text-center">
-          <li class="list-inline-item">
-            <button class="btn btn-primary" (click)="deletePhoto(photo)">
-              <i class="fa fa-trash"></i>
-            </button>
-          </li>
-        </ul>
-        <p>Type: {{ photo.itemType }}</p>
-      </div>
-    </div></tab
-  >
-  <tab heading="Image Uploader"
-    ><app-item-photo-uploader
-      (newImage)="newImage($event)"
-    ></app-item-photo-uploader
-  ></tab>
+  
+  
 </tabset>

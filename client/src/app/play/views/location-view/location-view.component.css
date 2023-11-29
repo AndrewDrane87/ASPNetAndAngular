@@ -5,10 +5,15 @@
 }
 
 .card-thumbnail{
-    height: 3rem;
-    width: 3rem;
+    border-radius: .25rem;
+    height: 4rem;
+    width: 4rem;
 }
 
+.center-vertical{
+    margin-top: auto;
+    margin-bottom: auto;
+}
 .description{
     font-style: italic;
 }

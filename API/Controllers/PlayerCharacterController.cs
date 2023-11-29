@@ -94,9 +94,9 @@ public class PlayerCharactersController : BaseApiController
     {
         StatusMessage statusMessage = new StatusMessage() { Status = false};
         if (set.ItemType == "backpack")
-            statusMessage = await uow.PlayerCharacterRepository.SetBackpack(set.CharacterId, set.ItemId, set.BackpackIndex);
+            statusMessage = await uow.PlayerCharacterRepository.SetBackpack(set.CharacterId, set.ItemId, set.BackpackIndex, set.Cost);
         else
-            statusMessage = await uow.PlayerCharacterRepository.SetCharacterItem(set.CharacterId, set.ItemId, set.ItemType);
+            statusMessage = await uow.PlayerCharacterRepository.SetCharacterItem(set.CharacterId, set.ItemId, set.ItemType,set.Cost);
         
         if (statusMessage.Status)
         {

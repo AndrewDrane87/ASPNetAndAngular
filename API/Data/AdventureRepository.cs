@@ -1,5 +1,6 @@
 ﻿using API.DTOs.Admin;
 using API.Entities;
+using API.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
@@ -95,10 +96,13 @@ namespace API.Data
         public async Task<LocationSaveDto> GetPlayerLocation(int locationId, int adventureSaveId)
         {
             var adventure = await context.AdventureSaves
+                .Include(a => a.Adventure).ThenInclude(a => a.StartingLocation)
                     .Include(a => a.LocationSaves).ThenInclude(l => l.Enemies)
+                    .Include(a => a.LocationSaves).ThenInclude(l => l.Triggers)
                     .Include(a => a.PlayerCharacters)
                     .Include(a => a.LocationSaves).ThenInclude(l => l.Containers)
-                    .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
+                    .Include(a => a.LocationSaves).ThenInclude(l => l.Interactions).ThenInclude(i => i.TriggerSaves)
+                                        .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
             if (adventure == null) return null;
 
             var locationSave = await checkForRequiredLocationSaves(locationId, adventure);
@@ -112,8 +116,10 @@ namespace API.Data
             locationSave.IsCurrentLocation = true;
             adventure.CurrentLocation = locationSave;
 
+            locationSave = await CheckForTriggerSaves(locationSave, adventure);
             locationSave = await CheckForEnemySaves(locationSave, adventure);
             locationSave = await CheckForContainerSaves(locationSave, adventure);
+            locationSave = await CheckForInteractionSaves(locationSave, adventure);
 
             LocationSaveDto dto = LocationSaveDto.Convert(locationSave, await GetLocationById(locationSave.LocationId));
 
@@ -130,15 +136,16 @@ namespace API.Data
         {
             //Check to see if a save exists for this location.
             var locationSave = await context.LocationSaves
-                .Include(s => s.Location)
+                .Include(s => s.Location).ThenInclude(l => l.Interactions).ThenInclude(i => i.Triggers)
                 .Include(l => l.Triggers)
                 .FirstOrDefaultAsync(l => l.LocationId == locationId && l.AdventureSaveId == adventure.Id);
 
             //If we didnt find the location save it means we have to make one.
             if (locationSave == null)
             {
-                locationSave = await CreateNewLocationSave(locationId);
+                locationSave = await CreateNewLocationSave(locationId == 0 ? adventure.Adventure.StartingLocation.Id : locationId);
                 adventure.LocationSaves.Add(locationSave);
+                await context.SaveChangesAsync();
             }
 
             foreach (var connectedLocation in await buildConnectedLocationList(locationId))
@@ -164,7 +171,7 @@ namespace API.Data
             var newLocation = await GetLocationById(locationId);
             if (newLocation == null) return null;
 
-            List<ActionTriggerSave> triggerSaves = CreateActionTriggerSavesForLocation(newLocation);
+            List<TriggerSave> triggerSaves = CreateActionTriggerSavesForLocation(newLocation);
 
             LocationSave newSave = new LocationSave
             {
@@ -177,12 +184,12 @@ namespace API.Data
             return newSave;
         }
 
-        public List<ActionTriggerSave> CreateActionTriggerSavesForLocation(LocationDto location)
+        public List<TriggerSave> CreateActionTriggerSavesForLocation(LocationDto location)
         {
-            List<ActionTriggerSave> list = new List<ActionTriggerSave>();
-            foreach (ActionTrigger trigger in location.Triggers)
+            List<TriggerSave> list = new List<TriggerSave>();
+            foreach (Trigger trigger in location.Triggers)
             {
-                ActionTriggerSave save = new ActionTriggerSave()
+                TriggerSave save = new TriggerSave()
                 {
                     ActionTrigger = trigger,
                     Complete = false,
@@ -193,10 +200,54 @@ namespace API.Data
             return list;
         }
 
+        public async Task<LocationSave> CheckForTriggerSaves(LocationSave locationSave, AdventureSave adventureSave)
+        {
+            var baseLocation = await context.Locations
+                .Include(l => l.Containers).ThenInclude(c => c.Items)
+                .Include(l => l.Triggers)
+                .FirstOrDefaultAsync(l => l.Id == locationSave.LocationId);
+
+            List<TriggerSave> saves = new List<TriggerSave>();
+            foreach (Trigger t in baseLocation.Triggers)
+            {
+                var triggerSave = locationSave.Triggers.FirstOrDefault(save => save.ActionTriggerId == t.Id);
+                if (triggerSave == null)
+                {
+                    triggerSave = new TriggerSave
+                    {
+                        ActionTriggerId = t.Id,
+                        LocationSave = locationSave,
+                        Complete = false
+                    };
+                }
+                saves.Add(triggerSave);
+            }
+            locationSave.Triggers = saves;
+            await context.SaveChangesAsync();
+            return locationSave;
+        }
+
+        public async Task<List<TriggerSave>> CheckForTriggerSaves(ContainerSave containerSave)
+        {
+            var baseContainer = await context.Containers.Include(c => c.Triggers).FirstOrDefaultAsync(c => c.Id == containerSave.ContainerId);
+
+            List<TriggerSave> saves = new List<TriggerSave>();
+            foreach (Trigger t in baseContainer.Triggers)
+            {
+                TriggerSave save = new TriggerSave
+                {
+                    ActionTriggerId = t.Id,
+                    ContainerSave = containerSave,
+                    Complete = false
+                };
+                saves.Add(save);
+            }
+            return saves;
+        }
 
         public async Task<ContainerDto> GetContainer(int id)
         {
-            var container = await context.ContainerCollection
+            var container = await context.Containers
                 .Include(c => c.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -213,6 +264,7 @@ namespace API.Data
             if (save.Complete == false)
             {
                 save.Items = await CheckForItemSaves(save);
+                save.TriggerSaves = await CheckForTriggerSaves(save);
                 save.Complete = true;
                 await context.SaveChangesAsync();
             }
@@ -222,7 +274,7 @@ namespace API.Data
 
         public async Task<List<ItemSave>> CheckForItemSaves(ContainerSave containerSave)
         {
-            var baseContainer = await context.ContainerCollection
+            var baseContainer = await context.Containers
                 .Include(c => c.Items).ThenInclude(i => i.Item).ThenInclude(i => i.Photo)
                 .FirstOrDefaultAsync(c => c.Id == containerSave.ContainerId);
 
@@ -351,7 +403,7 @@ namespace API.Data
             Interaction interaction = new Interaction
             {
                 Name = newInteractionDto.Name,
-                Information = newInteractionDto.Information,
+                DefaultText = newInteractionDto.Information,
             };
 
             location.Interactions.Add(interaction);
@@ -487,11 +539,12 @@ namespace API.Data
 
         public async Task<bool> UpdateTriggerSave(int triggerSaveId, bool isComplete, string result)
         {
-            var save = await context.ActionTriggerSaves
+            var save = await context.TriggerSaves
                 .Include(t => t.ActionTrigger)
                 .Include(l => l.LocationSave)
                 .FirstOrDefaultAsync(t => t.Id == triggerSaveId);
             if (save == null) return false;
+
 
             //These are additional actions that can be built into the trigger.
             if (save.ActionTrigger.ResultData != null)
@@ -505,8 +558,10 @@ namespace API.Data
                 }
             }
 
+
             save.Complete = isComplete;
             save.Result = result;
+            await context.SaveChangesAsync();
 
             return true;
         }
@@ -602,7 +657,7 @@ namespace API.Data
                         Enemy = link.Enemy,
                         CurrentHp = adventureSave.PlayerCharacters.Count > link.RequiredPlayerCount ? link.Enemy.MaxHp : -1,
                         EnemyLocationLink = link,
-                        
+
                     };
                 }
                 enemySaves.Add(enemySave);
@@ -611,6 +666,56 @@ namespace API.Data
             await context.SaveChangesAsync();
 
             return locationSave;
+        }
+
+        public async Task<LocationSave> CheckForInteractionSaves(LocationSave locationSave, AdventureSave adventureSave)
+        {
+            var baseLocation = await context.Locations
+                .Include(l => l.Interactions).ThenInclude(c => c.Triggers)
+                .FirstOrDefaultAsync(l => l.Id == locationSave.LocationId);
+
+            List<InteractionSave> saves = new List<InteractionSave>();
+            foreach (Interaction i in baseLocation.Interactions)
+            {
+                var interactionSave = locationSave.Interactions.FirstOrDefault(save => save.InteractionId == i.Id);
+                if (interactionSave == null)
+                {
+                    interactionSave = new InteractionSave
+                    {
+                        InteractionId = i.Id,
+                        Interaction = i,
+                        Complete = false,
+                        TriggerSaves = new List<TriggerSave>()
+                    };
+
+                    foreach (Trigger t in i.Triggers)
+                    {
+                        TriggerSave triggerSave = new TriggerSave()
+                        {
+                            ActionTrigger = t,
+                            ActionTriggerId = t.Id,
+                            InteractionId = i.Id,
+                            InteractionSave = interactionSave
+                        };
+                        interactionSave.TriggerSaves.Add(triggerSave);
+                    }
+                }
+                saves.Add(interactionSave);
+            }
+            locationSave.Interactions = saves;
+            await context.SaveChangesAsync();
+            return locationSave;
+        }
+        public async Task<StatusMessage> UpdateInteractionSave(InteractionSave save)
+        {
+            var dbSave = await context.InteractionSaves.FirstOrDefaultAsync(i => i.Id == save.Id);
+            if (save == null) return new StatusMessage() { Status = false, Message = "Could not find that save" };
+
+            dbSave.Complete = save.Complete;
+            dbSave.Passed = save.Passed;
+            await context.SaveChangesAsync();
+
+            return new StatusMessage { Status = true };
         }
 
         public async Task<bool> DealDamage(int damageAmount, int enemyId)
@@ -655,6 +760,7 @@ namespace API.Data
         public async Task<List<ItemSaveDto>> GetAvailableItems(int LocationSaveId)
         {
             var locationSave = await context.LocationSaves
+                .Include(l => l.Location)
                 .Include(l => l.Containers).ThenInclude(c => c.Items).ThenInclude(items => items.Item).ThenInclude(i => i.Photo)
                 .Include(l => l.Items).ThenInclude(i => i.Item.Photo)
                 .FirstOrDefaultAsync(l => l.Id == LocationSaveId);
@@ -667,7 +773,7 @@ namespace API.Data
             foreach (ItemSave i in locationSave.Items)
                 items.Add(i);
 
-            return ItemSaveDto.ConvertList(items);
+            return ItemSaveDto.ConvertList(items, locationSave.Location.ItemsRequirePurchase);
         }
 
         public async Task<List<ItemSaveDto>> GetItems(int characterId, string itemType, int currentItemId = -1)
@@ -698,33 +804,18 @@ namespace API.Data
 
         }
 
-        public async Task ResetSaves()
+        public async Task ResetSaves(int adventureSaveId)
         {
-            //Reset trigger saves
-            var triggerSaves = await context.ActionTriggerSaves.ToListAsync();
-            foreach (ActionTriggerSave save in triggerSaves)
-                save.Complete = false;
-
             //Reset Variables
             var adventure = await context.AdventureSaves
-                .Include(a => a.Variables)
-                .Include(a => a.LocationSaves).ThenInclude(l => l.Containers)
-                .FirstOrDefaultAsync(a => a.Id == 1);
+                .Include(a => a.CurrentLocation)
+                .FirstOrDefaultAsync(a => a.Id == adventureSaveId);
 
-            adventure.Variables.Clear();
+            if (adventure == null) return;
 
-            //Reset the current location
-            var baseAdventure = await context.Adventures
-                .Include(a => a.StartingLocation)
-                .FirstOrDefaultAsync(a => a.Id == adventure.AdventureId);
-            foreach (var location in adventure.LocationSaves)
-            {
-                location.IsCurrentLocation = false;
-                location.Containers.Clear();
-            }
-
-            var startingLocationId = baseAdventure.StartingLocation.Id;
-            adventure.LocationSaves.FirstOrDefault(l => l.LocationId == startingLocationId).IsCurrentLocation = true;
+            adventure.CurrentLocation = null;
+            var locationSaves = await context.LocationSaves.Where(l => l.AdventureSaveId == adventureSaveId).ToListAsync();
+            context.LocationSaves.RemoveRange(locationSaves);
 
             await context.SaveChangesAsync();
         }

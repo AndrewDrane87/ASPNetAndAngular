@@ -1,5 +1,7 @@
 export interface ItemPhoto{
     id: number,
     url : string
-    itemType: string;
+    objectType: string;
+    objectSubType: string;
+    publicId: string;
 }

@@ -6,5 +6,6 @@
         public int ItemId { get; set; }
         public int CharacterId { get; set; }
         public int BackpackIndex { get; set; }
+        public int Cost { get; set; }
     }
 }

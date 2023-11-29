@@ -10,9 +10,17 @@ export class NpcViewComponent {
 @Input() npc : NPC | undefined
 @Output() responseSelectedEvent = new EventEmitter<DialogueResponse>();
 @Output() backToLocationEvent = new EventEmitter();
+@Output() backToMainDialogueEvent = new EventEmitter<NPC>();
+notAtMain = false;
 
 responseSelected(response: DialogueResponse){
+  this.notAtMain = true;
   this.responseSelectedEvent.emit(response);
+}
+
+backToMainDialogue(){
+  this.notAtMain = false;
+this.backToMainDialogueEvent.emit(this.npc);
 }
 
 backToLocation(){

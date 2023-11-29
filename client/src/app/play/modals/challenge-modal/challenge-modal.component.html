@@ -1,16 +1,37 @@
-<h3>Challenge!</h3>
-<p class="mb-0">{{ challengeText }}</p>
-<div class="text-center">
-  <h5 class="mt-2 mb-0">
-    {{ challengeSkill | titlecase
-    }}{{ showMinimum === "show" ? ": " + challengeMinimum : null }}
-  </h5>
-  <div class="mt-2">
-    <input type="number" [(ngModel)]="playerScore" />
+<div class="container">
+  <div class="row no-padding">
+    <div class="col-10 no-padding"><h3>Challenge!</h3></div>
+    <div class="col-2" *ngIf="toolTipContent.length > 0">
+      <button
+        type="button"
+        class="btn btn-info btn-icon"
+        [tooltip]="toolTipContent"
+        triggers="click"
+      >
+        <i class="fa fa-info"></i>
+      </button>
+    </div>
   </div>
-  <div class="mt-2 mb-2">
-    <button class="btn btn-dark" (click)="submit()">Submit</button>
+
+  <div class="row no-padding">
+    <h6 class="mb-0">{{ challengeText }}</h6>
+    <div class="text-center">
+      <h5 class="mt-4 mb-0">
+        {{ challengeSkill | titlecase }}
+      </h5>
+      <div class="mt-2">
+        <h6>Modifier: {{ modifier }}</h6>
+      </div>
+      <div class="mt-2 mb-2">
+        <div class="row justify-content-center">
+          <div class="col-4">
+            <button class="btn btn-dark" (click)="pass()">Pass</button>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-danger" (click)="fail()">Fail</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
-

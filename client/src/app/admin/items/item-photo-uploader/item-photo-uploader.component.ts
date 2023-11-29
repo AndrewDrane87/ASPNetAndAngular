@@ -19,9 +19,22 @@ export class ItemPhotoUploaderComponent {
   uploader: FileUploader | undefined;
   hasBaseDropZoneOver = false;
   baseUrl = environment.apiUrl;
+  uploadUrl = environment.apiUrl;
   user: User | undefined;
-  itemType= '';
-  itemTypeSelected = false;
+
+  publicId = '';
+  objectType = 'Object Type';
+  objectSubType = 'Sub Type';
+
+  objectTypeSelected = false;
+  objectSubTypeSelected = false;
+
+  objectTypeUrl = '';
+  objectSubTypeUrl = '';
+
+  objectTypes = ['Item', 'NPC', 'Location', 'Monster'];
+  objectSubTypes: String[] = [];
+  itemTypes = ['Sword', 'Shield', 'Helmet', 'Armor', 'Boot'];
 
   imgUrl = '';
   @Output() newImage = new EventEmitter<ItemPhoto>();
@@ -46,7 +59,7 @@ export class ItemPhotoUploaderComponent {
 
   initializeUploader() {
     this.uploader = new FileUploader({
-      url: this.baseUrl + 'items/add-item-photo/',
+      url: this.baseUrl,
       authToken: 'Bearer ' + this.user?.token,
       isHTML5: true,
       allowedFileType: ['image'],
@@ -64,11 +77,28 @@ export class ItemPhotoUploaderComponent {
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       console.log(this.uploader?.options.url);
       if (response) {
+        console.log(response);
         const photo = JSON.parse(response);
         this.imgUrl = photo.url;
         this.newImage.emit(photo);
       }
     };
+  }
+
+  buildUploaderUrl() {
+    let url = this.baseUrl + 'items/add-item-photo';
+
+    url = url + `?publicId=${this.publicId}`;
+
+    if (this.objectTypeSelected) {
+      url = url + `&objectType=${this.objectType}`;
+    }
+    if (this.objectSubTypeSelected) {
+      url = url + `&objectSubType=${this.objectSubType}`;
+    }
+
+    this.uploadUrl = url;
+    this.uploader!.options.url = url;
   }
 
   deletePhoto(photoId: number) {
@@ -83,12 +113,39 @@ export class ItemPhotoUploaderComponent {
     });
   }
 
-  setItemType(event: any) {
-    this.itemTypeSelected = true;
-    this.itemType = event;
-    this.uploader!.setOptions({
-      url: this.baseUrl + 'items/add-item-photo?itemType=' + this.itemType,
-    });
-    console.log(this.uploader!.options.url);
+  setObjectType(event: any) {
+    this.objectTypeSelected = true;
+    this.objectType = event;
+    this.objectTypeUrl = `objectType=${event}`;
+    this.objectSubType = '';
+    switch (event) {
+      case 'Item':
+        this.objectSubTypes = this.itemTypes;
+        break;
+      case 'NPC':
+        this.objectSubTypes = [];
+        break;
+      case 'Location':
+        this.objectSubTypes = [];
+        break;
+    }
+
+    this.buildUploaderUrl();
+  }
+
+  setObjectSubType(event: any) {
+    this.objectSubTypeSelected = true;
+    this.objectSubType = event;
+    this.objectSubTypeUrl = `objectSubType=${event}`;
+    this.buildUploaderUrl();
+  }
+
+  reset() {
+    this.publicId = '';
+    this.objectType = 'Object Type';
+    this.objectSubType = 'Sub Type';
+
+    this.objectTypeSelected = false;
+    this.objectSubTypeSelected = false;
   }
 }

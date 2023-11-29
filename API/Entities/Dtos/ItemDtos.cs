@@ -55,6 +55,7 @@
         public string DamageType { get; set; }
         public int StorageIndex { get; set; }
         public int Value { get; set; }
+        public int Cost { get; set; }
 
         private int maxStackSize;
         public int MaxStackSize
@@ -69,7 +70,7 @@
 
         public int CurrentStackSize { get; set; }
         public string Use { get; set; }
-        public static ItemSaveDto Convert(ItemSave save)
+        public static ItemSaveDto Convert(ItemSave save,bool itemsRequirePurchase = false)
         {
             return new ItemSaveDto
             {
@@ -90,15 +91,15 @@
                 MaxStackSize = save.Item.StackSize,
                 CurrentStackSize = save.CurrentStackSize,
                 Use = save.Item.Use,
-                
+                Cost = itemsRequirePurchase ? save.Item.Value : 0
             };
         }
 
-        public static List<ItemSaveDto> ConvertList(List<ItemSave> saves)
+        public static List<ItemSaveDto> ConvertList(List<ItemSave> saves, bool itemsRequirePurchase = false)
         {
             List<ItemSaveDto> list = new List<ItemSaveDto>();
             foreach (ItemSave save in saves)
-                list.Add(Convert(save));
+                list.Add(Convert(save,itemsRequirePurchase));
 
             return list;
         }

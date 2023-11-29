@@ -16,5 +16,5 @@ export interface Item{
     maxStackSize: number;
     currentStackSize: number;
     use: string;
-    
+    cost: number;
 }

@@ -1,3 +1,4 @@
+import { Action } from "rxjs/internal/scheduler/Action";
 import { ActionTrigger } from "./actionTrigger";
 import { Item } from "./item";
 import { NPC } from "./npc";
@@ -33,12 +34,18 @@ export interface Container{
     name: string;
     description: string;
     items: Item[];
+    isCorpse: boolean;
+    triggers: ActionTrigger[]
 }
 
 export interface Interaction{
     id: number;
     name: string;
-    information: string;
+    complete: boolean;
+    passed: boolean;
+    defaultText: string;
+    failedText: string;
+    passedText: string;
     locationId: number;
     triggers: ActionTrigger[];
 }

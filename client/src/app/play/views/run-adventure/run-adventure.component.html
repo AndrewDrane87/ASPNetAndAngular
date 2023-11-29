@@ -1,4 +1,4 @@
-<div class="m-1">
+<div style="padding: .25rem;">
   <app-location-view
     *ngIf="currentView === 'location'"
     [location]="location"
@@ -15,6 +15,7 @@
     [npc]="npc"
     (responseSelectedEvent)="responseSelected($event)"
     (backToLocationEvent)="backToLocation()"
+    (backToMainDialogueEvent)="backtoMainDialogue($event)"
   ></app-npc-view>
 
   <app-container-view

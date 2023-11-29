@@ -1,7 +1,8 @@
 <div *ngIf="interaction">
   <div style="padding: 2rem">
     <h3>{{ interaction.name }}</h3>
-    <p>{{ interaction.information }}</p>
+    <p *ngIf="interaction.defaultText !== null ">{{ interaction.defaultText}}</p>
+    <p *ngIf="interaction.defaultText === null">{{ interaction.passed? interaction.passedText : interaction.failedText }}</p>
     <div class="text-center">
       <button class="btn btn-dark pull-center" (click)="ok()">Ok</button>
     </div>

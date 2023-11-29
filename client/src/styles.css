@@ -1,7 +1,33 @@
-.bg-dark {
-  background-color: #3D0000 !important;
+html{
+  /* background-image: url('./assets/images/backgrounds/background.PNG'); */
+  background:url('./assets/images/backgrounds/background.PNG')no-repeat center center fixed; 
+  background-size: cover;
+  width: 100%;
 }
 
+body{
+  background-image: "./assets/images/backgrounds/background.png";
+}
+
+
+.bg-dark {
+  background-color: black !important;
+}
+
+.bg-box{
+  background-color: whitesmoke;
+  border-radius: .5rem;
+  padding: .5rem;
+  margin: 0px;
+}
+
+div{
+  background-color: transparent;
+}
+
+.row{
+  margin: 0px;
+}
 /* body{
   background-color: #3D0000 !important;
 }
@@ -25,20 +51,45 @@
 }
 */
 
+.bg-parchment {
+  background-image: url('assets/images/textures/parchment.jpg');
+  background-size: cover;
+
+}
+
+.bg-stone{
+  background-image: url('assets/images/textures/stone.jpg');
+  background-size: cover;
+}
+
+.bg-village {
+  background-image: url('assets/images/backgrounds/village.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+h1 {
+  color: black;
+}
+
 h4 {
   font-size: .9rem;
+  color: black;
 }
 
 h5 {
   font-size: .85rem;
+  color: black;
 }
 
 h6 {
   font-size: .8rem;
+  color: black;
 }
 
 p {
   font-size: x-small;
+  color: black;
 }
 
 

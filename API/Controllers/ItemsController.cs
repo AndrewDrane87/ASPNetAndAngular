@@ -12,9 +12,9 @@ namespace API;
 public class ItemsController : BaseApiController
 {
     private readonly UnitOfWork uow;
-    private readonly IPhotoService photoService;
+    private readonly PhotoService photoService;
 
-    public ItemsController(UnitOfWork uow, IPhotoService photoService)
+    public ItemsController(UnitOfWork uow, PhotoService photoService)
     {
         this.uow = uow;
         this.photoService = photoService;
@@ -59,19 +59,20 @@ public class ItemsController : BaseApiController
     #region Photos
 
     [HttpPost("add-item-photo")]
-    public async Task<ActionResult<ItemPhoto>> AddHandItemPhoto(IFormFile file, [FromQuery] string itemType)
+    public async Task<ActionResult<Photo>> AddHandItemPhoto(IFormFile file, [FromQuery] string objectType, string objectSubType, string publicId)
     {
-        var result = await photoService.AddItemPhotoAsync(file);
+        var result = await photoService.AddPhotoAsync(file,objectType, objectSubType, publicId);
         if (result.Error != null) return BadRequest(result);
 
-        var photo = new ItemPhoto
+        var photo = new Photo
         {
             Url = result.SecureUrl.AbsoluteUri,
-            ItemType = itemType,
+            ObjectType = objectType,
+            ObjectSubType = objectSubType,
             PublicId = result.PublicId
         };
 
-        uow.context.ItemPhotoCollection.Add(photo);
+        uow.context.Photos.Add(photo);
         if (await uow.Complete())
         {
             //Incorrect response for a rest api
@@ -83,13 +84,13 @@ public class ItemsController : BaseApiController
     }
 
     [HttpGet("get-item-photos")]
-    public async Task<ActionResult<List<ItemPhoto>>> GetHandItemPhotos([FromQuery] string itemType)
+    public async Task<ActionResult<List<Photo>>> GetHandItemPhotos([FromQuery] string itemType)
     {
-        List<ItemPhoto> itemPhotos;
+        List<Photo> itemPhotos;
         if (itemType == null)
-            itemPhotos = await uow.context.ItemPhotoCollection.ToListAsync();
+            itemPhotos = await uow.context.Photos.ToListAsync();
         else
-            itemPhotos = uow.context.ItemPhotoCollection.Where(i => i.ItemType == itemType).ToList();
+            itemPhotos = uow.context.Photos.Where(i => i.ObjectType == itemType).ToList();
 
         if (itemPhotos == null || itemPhotos.Count == 0)
             return NoContent();
@@ -100,7 +101,7 @@ public class ItemsController : BaseApiController
     [HttpDelete("delete-item-photo/{id}")]
     public async Task<ActionResult> DeleteItemPhoto(int id)
     {
-        var photo = await uow.context.ItemPhotoCollection.Where(p => p.Id == id).FirstOrDefaultAsync();
+        var photo = await uow.context.Photos.Where(p => p.Id == id).FirstOrDefaultAsync();
         if (photo == null) return NotFound("Could not find that item in the photo context");
 
         if (photo.PublicId != null)
@@ -109,7 +110,7 @@ public class ItemsController : BaseApiController
             if (result.Error != null) return BadRequest(result.Error.Message);
         }
 
-        uow.context.ItemPhotoCollection.Remove(photo);
+        uow.context.Photos.Remove(photo);
         if (await uow.Complete())
             return NoContent();
 
